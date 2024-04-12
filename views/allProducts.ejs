@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html>
+    
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title>All Products - Redstore</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+        <!--added a cdn link by searching font awesome4 cdn and getting this link from https://www.bootstrapcdn.com/fontawesome/ this url*/-->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+    /* Pagination CSS */
+.pagination {
+  margin-top: 25px;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.pagination a {
+  color: #000;
+  padding: 1px 17px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.pagination a.active {
+  background-color: #ff523b;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+</style>
+    </head>
+    <body>
+        <div class ="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <a href="/Homepage"><img src="images/logo.png" width="125px"></a>
+                </div>
+               <nav>
+                    <ul id="MenuItems">
+                        <li><a href="/Homepage">Home</a></li>
+                         <li><a href="">Products</a></li>
+                         <li><a href="">About</a></li>
+                         <li><a href="">Contact</a></li>
+                         <li><a href="/userProfile">Account</a></li>
+
+                    </ul>
+                </nav>
+                <a href="/cart"><img src="images/cart.png" width="30px" height="30px"></a>
+                <img src="images/menu.png" class="menu-icon" onClick="menutoggle()" >
+            </div>
+           
+        </div>
+    </div>
+    
+        
+        <!------------------------------ Products------------------------------>
+        <div class="small-container">
+
+
+
+            <form action="/filter" method="post" class="my-4">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <label for="category" class="form-label">Select Category:</label>
+                        <select name="category" id="category" class="form-select">
+                            <option value="">All Categories</option>
+                            <option value="">Casual</option>
+                            <option value="">Sports</option>
+                            <option value="">Formals</option>
+                            
+                            <!-- Add your category options here -->
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="list-group mt-3">
+                    <div class="list-group-item">
+                        <label for="sortprice" class="form-label">Sort Price:</label>
+                        <select name="sortprice" id="sortprice" class="form-select">
+                            <option value="">All Prices</option>
+                            <option value="lowToHigh">Low to High</option>
+                            <option value="highToLow">High to Low</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <div class="list-group mt-3">
+                    <div class="list-group-item">
+                        <label for="priceRange" class="form-label">Select Price Range:</label>
+                        <select name="priceRange" id="priceRange" class="form-select">
+                            <option value="">All Prices</option>
+                            <option value="100-1000">100 - 1000</option>
+                            <option value="1000-1500">1000 - 1500</option>
+                            <option value="1500-2000">1500 - 2000</option>
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- Add the alphabetical sorting option -->
+                <div class="list-group mt-3">
+                    <div class="list-group-item">
+                        <label for="sortAlphabetically" class="form-label">Sort Alphabetically:</label>
+                        <select name="sortAlphabetically" id="sortAlphabetically" class="form-select">
+                            <option value="">Alphabetical Order</option>
+                            <option value="ascending">Ascending (A to Z)</option>
+                            <option value="descending">Descending (Z to A)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Filter</button>
+            </form>
+            
+           
+
+            <!--<h2 class="title" >Featured Products</h2>-->
+             <!------------------------------ featured Products------------------------------>
+        <div class="small-container">
+            
+            <h2 class="title">All Products</h2>
+            <div class="row">
+                
+                <% if (productcollection) { %>
+                    <% productcollection.forEach(product => { %>
+                        <div class="col-4">
+                            <a href="/admin/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
+                            <a href="/admin/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
+                            <div class="rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star-half-o"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                            <p>₹<%= product.price %></p>
+                            <a href="/admin/getproduct/<%= product._id %>" class="btn">View</a> 
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+            
+        <!-- Pagination Controls -->
+<div class="pagination">
+    <% if (currentPage > 1) { %>
+        <a href="/allProducts?page=<%= currentPage - 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">&laquo; Previous</a>
+      <% } %>
+      
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <a href="/allProducts?page=<%= i %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+      <% } %>
+      
+      <% if (currentPage < totalPages) { %>
+        <a href="/allProducts?page=<%= currentPage + 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">Next &raquo;</a>
+      <% } %>
+      
+  </div>
+  
+            
+        </div>
+        
+        
+        <!----------------------------------footer------------------------------------->
+        <div class ="footer">
+        <div class="container">
+            
+            <div class="row">
+                <div class="footer-col-1">
+                    <h3>Download Our App</h3>
+                    <p>Download App for Android and ios mobile phone.</p>
+                    <div class="app-logo">
+                        <img src="images/play-store.png" alt="">
+                        <img src="images/app-store.png" alt="">
+                    </div>
+                </div>
+                <div class="footer-col-2">
+                    <img src="images/logo-white.png">
+                    <p>Our Purpose Is To Sustainably Make the Pleasure and Benefits of Sports Accessible to the Many.</p>
+                </div>
+                <div class="footer-col-3">
+                    <h3>Useful Links</h3>
+                   <ul>
+                       <li>Coupons</li>
+                       <li>Blog Post</li>
+                       <li>Return Policy</li>
+                       <li>Join Affiliate</li>
+                    </ul>
+                </div>
+                <div class="footer-col-4">
+                    <h3>Follow us</h3>
+                   <ul>
+                       <li>Facebook</li>
+                       <li>Twitter</li>
+                       <li>Instagram</li>
+                       <li>Youtube</li>
+                    </ul>
+                </div>
+                
+            </div>
+            
+            <hr><!--horizontal line-->
+            <p class="copyright">Copyright 2021 - Apurba Kr. Pramanik</p>
+            
+        </div>
+    </div>
+  
+     
+        <!-----------------------------------js for toggle menu----------------------------------------------->
+        <script>
+            var menuItems=document.getElementById("MenuItems");
+            
+            MenuItems.style.maxHeight="0px";
+            function menutoggle(){
+                if(MenuItems.style.maxHeight == "0px"){
+                    MenuItems.style.maxHeight="200px";
+                }
+                else{
+                    MenuItems.style.maxHeight="0px";
+                }
+            }
+        </script>
+
+
+
+<!-- <script>
+    // Get the select element for sorting prices
+    var sortPriceSelect = document.getElementById('sortprice');
+    
+    // Add event listener to detect changes in the select element
+    sortPriceSelect.addEventListener('change', function() {
+        // Get the selected sorting option
+        var selectedOption = this.value;
+        
+        // Get all product elements
+        var productElements = document.querySelectorAll('.col-4');
+        
+        // Convert product elements to an array
+        var productsArray = Array.from(productElements);
+        
+        // Sort products based on the selected option
+        if (selectedOption === 'lowToHigh') {
+            productsArray.sort(function(a, b) {
+                var priceA = parseFloat(a.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
+                var priceB = parseFloat(b.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
+                return priceA - priceB; // Sort in ascending order
+            });
+        } else if (selectedOption === 'highToLow') {
+            productsArray.sort(function(a, b) {
+                var priceA = parseFloat(a.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
+                var priceB = parseFloat(b.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
+                return priceB - priceA; // Sort in descending order
+            });
+        }
+        
+        // Remove existing product elements from the container
+        var productContainer = document.querySelector('.row');
+        productContainer.innerHTML = '';
+        
+        // Append sorted product elements to the container
+        productsArray.forEach(function(product) {
+            productContainer.appendChild(product);
+        });
+    });
+</script> -->
+
+    </body>
+</html>

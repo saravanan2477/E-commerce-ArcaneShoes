@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="profileone.css">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+<style>
+    .error-message {
+        color: #f20505;
+    }
+</style>
+
+<body style="background-color: white;">
+    <style type="text/css">
+        body {
+            background-color: white;
+        }
+
+        .profile-badge {
+            border: 1px solid #c1c1c1;
+            padding: 5px;
+            position: relative;
+            margin-top: 119px; /* Added margin-top */
+        }
+
+        .user-detail {
+            background-color: #fff;
+            position: relative;
+            padding: 115px 0px 10px 0px;
+            color: #8B8B89;
+        }
+
+        .user-detail h3 {
+            margin: 0px;
+            margin: 0px 0px 5px 0px;
+            color: #000;
+        }
+
+        .user-detail p {
+            font-size: 14px;
+        }
+
+        .user-detail .btn-update {
+            margin-bottom: 10px;
+            background-color: #5cb85c; /* Green color */
+            border: 1px solid #4cae4c;
+            border-radius: 0px;
+            color: #fff; /* White text */
+        }
+
+        .user-detail .btn-update:hover {
+            background-color: #4cae4c; /* Darker green color on hover */
+        }
+
+        .user-detail .btn-update i {
+            color: #D35B4D;
+            padding-right: 18px;
+        }
+
+        .profile-pic {
+            position: absolute;
+            height: 120px;
+            width: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0px;
+            z-index: 1001;
+            padding: 10px;
+        }
+
+        .profile-pic img {
+            border-radius: 50%;
+            box-shadow: 0px 0px 5px 0px #c1c1c1;
+            cursor: pointer;
+            width: 100px;
+            height: 100px;
+        }
+        .back-to-profile-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            margin: 10px;
+            /* Add margin for spacing */
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+<div class="container">
+    <button class="back-to-profile-btn" onclick="window.location.href='/userProfile'">Back to Profile</button>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 col-sm-6 col-xs-12 profile-badge">
+            <div class="user-detail text-center">
+                
+                <form action="/updateProfile" method="post" id="profile-form" onsubmit="return validateForm()">
+                    <div class="profile-pic">
+                        <img alt="User Pic" src="https://d30y9cdsu7xlg0.cloudfront.net/png/138926-200.png"
+                             id="profile-image1" height="200">
+                        <input id="profile-image-upload" class="hidden" type="file" onchange="previewFile()"
+                               name="profileImage">
+                        <div style="color:#f20505;"> </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">User Name</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter User Name"
+                               name="username">
+                        <div id="username-error" class="error-message"></div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="text" class="form-control" id="mobile" placeholder="Enter Mobile Number"
+                               name="mobile">
+                        <div id="mobile-error" class="error-message"></div>
+                    </div> -->
+
+                    <div class="form-group">
+                        <label for="email">Mail ID</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter Mail" name="email">
+                        <div id="email-error" class="error-message"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-update" id="updateBtn">Update Profile</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function validateForm() {
+        // Reset error messages
+        document.getElementById("username-error").innerHTML = "";
+        document.getElementById("mobile-error").innerHTML = "";
+        document.getElementById("email-error").innerHTML = "";
+
+        // Get form values
+        var username = document.getElementById("username").value.trim();
+        var mobile = document.getElementById("mobile").value.trim();
+        var email = document.getElementById("email").value.trim();
+
+        // Null validation
+        if (username === null || mobile === null || email === null) {
+            alert("Null values are not allowed.");
+            return false;
+        }
+
+        // Validate username
+        if (username === "") {
+            document.getElementById("username-error").innerHTML = "Please enter a username.";
+            return false;
+        }
+
+        // Validate mobile number
+        if (mobile === "") {
+            document.getElementById("mobile-error").innerHTML = "Please enter a mobile number.";
+            return false;
+        } else if (!/^\d{10}$/.test(mobile)) {
+            document.getElementById("mobile-error").innerHTML = "Mobile number must be 10 digits.";
+            return false;
+        }
+
+        // Validate email
+        if (email === "") {
+            document.getElementById("email-error").innerHTML = "Please enter an email address.";
+            return false;
+        } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+            document.getElementById("email-error").innerHTML = "Please enter a valid email address.";
+            return false;
+        }
+
+        // If all validations pass, the form is valid
+        return true;
+    }
+</script>
+
+</body>
+
+</html>

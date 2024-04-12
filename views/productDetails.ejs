@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>SKS</title>
+    <!-- MDB icon -->
+    <link rel="icon" href="/img/mdb-favicon.ico" type="/image/x-icon" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+    <!-- MDB -->
+    <link rel="stylesheet" href="/style/mdb.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="/style.css"> -->
+     <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 
+<style>
+
+
+
+
+
+
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    body {
+        line-height: 1.5;
+    }
+    
+    .card-wrapper {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+    
+  
+    .img-display {
+        overflow: hidden;
+    }
+    
+    .img-showcase {
+        display: flex;
+        width: 100%;
+        transition: all 0.5s ease;
+    }
+    
+    .img-showcase img {
+        min-width: 100%;
+    }
+    
+    .img-select {
+        display: flex;
+    }
+    
+    .img-item {
+        margin: 0.3rem;
+    }
+    
+    .img-item:nth-child(1),
+    .img-item:nth-child(2),
+    .img-item:nth-child(3) {
+        margin-right: 0;
+    }
+    
+    .img-item:hover {
+        opacity: 0.8;
+    }
+    
+    .product-content {
+        padding: 2rem 1rem;
+    }
+    
+    .product-title {
+        font-size: 3rem;
+        text-transform: capitalize;
+        font-weight: 700;
+        position: relative;
+        color: #12263a;
+        margin: 1rem 0;
+    }
+    
+    .product-title::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 4px;
+        width: 80px;
+        background: #12263a;
+    }
+    
+    .product-link {
+        text-decoration: none;
+        text-transform: uppercase;
+        font-weight: 400;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-bottom: 0.5rem;
+        background: #256eff;
+        color: #fff;
+        padding: 0 0.3rem;
+        transition: all 0.5s ease;
+    }
+    
+    .product-link:hover {
+        opacity: 0.9;
+    }
+    
+    .product-rating {
+        color: #ffc107;
+    }
+    
+    .product-rating span {
+        font-weight: 600;
+        color: #252525;
+    }
+    
+    .product-price {
+        margin: 1rem 0;
+        font-size: 1rem;
+        font-weight: 700;
+    }
+    
+    .product-price span {
+        font-weight: 400;
+    }
+    
+    .last-price span {
+        color: #f64749;
+        text-decoration: line-through;
+    }
+    
+    .new-price span {
+        color: #256eff;
+    }
+    
+    .product-detail h2 {
+        text-transform: capitalize;
+        color: #12263a;
+        padding-bottom: 0.6rem;
+    }
+    
+    .product-detail p {
+        font-size: 0.9rem;
+        padding: 0.3rem;
+        opacity: 0.8;
+    }
+    
+    .product-detail ul {
+        margin: 1rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .product-detail ul li {
+        margin: 0;
+        list-style: none;
+        background: url(https://fadzrinmadu.github.io/hosted-assets/product-detail-page-design-with-image-slider-html-css-and-javascript/checked.png) left center no-repeat;
+        background-size: 18px;
+        padding-left: 1.7rem;
+        margin: 0.4rem 0;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+    
+    .product-detail ul li span {
+        font-weight: 400;
+    }
+    
+    .purchase-info {
+        margin: 1.5rem 0;
+    }
+    
+    .purchase-info input,
+    .purchase-info .btn {
+        border: 1.5px solid #ddd;
+        border-radius: 25px;
+        text-align: center;
+        padding: 0.45rem 0.8rem;
+        outline: 0;
+        margin-right: 0.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .purchase-info input {
+        width: 60px;
+    }
+    
+    .purchase-info .btn {
+        cursor: pointer;
+        color: #fff;
+    }
+    
+    .purchase-info .btn:first-of-type {
+        background: #256eff;
+    }
+    
+    .purchase-info .btn:last-of-type {
+        background: #f64749;
+    }
+    
+    .purchase-info .btn:hover {
+        opacity: 0.9;
+    }
+    
+  
+    
+    
+    
+    
+    @media screen and (min-width: 992px) {
+        .card {
+            display: contents;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 1.5rem;
+        }
+    
+        .card-wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .product-imgs {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    
+        .product-content {
+            padding-top: 0;
+        }
+    }
+    
+    .img-zoom-container {
+        position: relative;
+    }
+    
+    .img-zoom-lens {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .img-zoom-result {
+        border: 1px solid #d4d4d4;
+        width: 300px;
+        height: 300px;
+    }
+    
+    .img-showcase {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+    }
+    
+    .img-showcase img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    
+    .img-display {
+        overflow: hidden;
+    }
+
+
+
+/* .related{
+    width: 60vh;
+} */
+
+/* General styles for the related products container */
+.related {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ gap: 37vh; /* Adjust the gap between cards */
+}
+
+/* Styles for each product card */
+.row1 {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ width: 200px; /* Adjust the width of each card */
+ padding: 20px;
+ border: 1px solid #ccc;
+ border-radius: 10px;
+ box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the product image */
+.cardimg {
+ width: 100%;
+ height: auto;
+ object-fit: cover;
+ border-radius: 10px;
+ margin-bottom: 10px;
+}
+
+/* Styles for the card body */
+.cardbody {
+ text-align: center;
+}
+
+/* Styles for the product title */
+.cardtitle {
+ margin-bottom: 10px;
+ font-size: 18px;
+ font-weight: bold;
+}
+
+/* Styles for the product price */
+.cardtext {
+ margin-bottom: 15px;
+ font-size: 16px;
+}
+
+/* Styles for the button */
+.btnn.btnprimary {
+ padding: 10px 20px;
+ background-color: #007bff;
+ color: white;
+ text-decoration: none;
+ border-radius: 5px;
+ transition: background-color 0.3s ease;
+}
+
+.btnn.btnprimary:hover {
+ background-color: #0056b3;
+}
+
+
+
+
+
+</style>
+    
+</head>
+
+<body>
+
+
+
+   
+    
+
+    
+    <%- include('sidenav') %>
+
+   <br>
+    <!-- Main Content -->
+    <div class="card-wrapper mt-5">
+        <div class="card">
+            <!-- Card left -->
+            <div class="product-imgs">
+                <div class="img-display">
+                    <div class="img-showcase mb-4">
+                        <% product.image.forEach(function(imageSrc, index) { %>
+                            <img style="height: 70vh; width: 5vw;" id="myimage<%= index %>" class="big_img" src="<%= imageSrc %>" alt="shoe image">
+                            <% }); %>
+                    </div>
+                </div>
+                <div class="img-select">
+                    <% product.image.forEach(function(imageSrc, index) { %>
+                        <div class="img-item">
+                            <a href="#" data-id="<%= index + 1 %>">
+                                <img style="height: 20vh; width: 9rem;" src="<%= imageSrc %>" alt="shoe image">
+                            </a>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+
+            <!-- Card right -->
+            <div class="product-content">
+                <h2 class="product-title">
+                    <%= product.productname %>
+                </h2>
+                <h4 class="product-title">
+                    <%= product.category.category %>
+                </h4>
+                <div class="product-rating">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star-half-alt"></i>
+                    <span>5(21)</span>
+                </div>
+                <h3>Discount 5%</h3>
+                <div class="product-price">
+                    <% if (product.offer && product.offer.percentage > 0) { %>
+                        <p class="last-price">Old Price: <span>₹<%= product.Price %>.00</span></p>
+                        <p class="offer-price">Offer: <%= product.offer.percentage %>% Off</p>
+                        <p>Discount Amount: ₹<%= product.offer.discountAmount %></p>
+                        <p class="new-price">New Price: ₹<%= product.offer.newPrice %></p>
+                        <!-- Optionally, you can display the total price -->
+                        <p class="total-price">Total Price: ₹<%= product.offer.newPrice %></p>
+                        <% } else { %>
+                            <!-- Display a message if there is no offer -->
+                            <p>No offer available for this product</p>
+                            <!-- Display the original price as total price when there's no offer -->
+                            
+                            <p class="total-price">Total Price: ₹<%= product.price %></p>
+                            <% } %>
+                </div>
+
+                <div class="product-detail">
+                    <h2>About this item:</h2>
+                    <p><%= product.description %></p>
+                    <p>stock:<%= product.stock %></p>
+                </div>
+
+                <div class="purchase-info">
+                    <a href="/addcart/<%= product._id %>" class="btn btn-info float-end">Add To Cart</a>
+             
+                <a href="/Wishlist/<%=product._id%>" class="btn btn-info float-end">wishList</a>
+
+                </div>
+            </div>
+        </div>
+      
+    </div>
+    
+
+
+
+<br>
+<div><h2 style=" text-align: center;">Related Products</h2></div>
+
+    <div class="related d-flex   ">
+        <% relatedProducts.forEach(function(relatedProduct) { %>
+        <div class="row1" >
+           
+       <a href="/admin/getproduct/<%= relatedProduct._id %>">
+        <img src="<%= relatedProduct.image[0] %>" class="card-img" alt="Related Product Image">
+      </a>
+          <div class="cardbody">
+            <h5 class="cardtitle"><%= relatedProduct.productname %></h5>
+            <p class="cardtext">Price: ₹<%= relatedProduct.price %></p>
+            <a href="/admin/getproduct/<%= relatedProduct._id %>" class="btnn btnprimary">view</a>
+          </div>
+        </div>
+        <% }); %>
+      </div>
+
+
+
+    <!-- Footer -->
+		<%- include('sidefooter') %>
+    
+
+    <!-- Scripts -->
+    <script>
+        const imgs = document.querySelectorAll('.img-select a');
+        const imgBtns = [...imgs];
+        let imgId = 1;
+
+        imgBtns.forEach((imgItem) => {
+            imgItem.addEventListener('click', (event) => {
+                event.preventDefault();
+                imgId = imgItem.getAttribute('data-id');
+                slideImage();
+            });
+        });
+
+        function slideImage() {
+            const displayWidth = document.querySelector('.img-showcase img:first-child').clientWidth;
+            document.querySelector('.img-showcase').style.transform = `translateX(${- (imgId - 1) * displayWidth}px)`;
+        }
+
+        window.addEventListener('resize', slideImage);
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.big_img').imagezoomsl({
+                zoomrange: [2, 2]
+            });
+        })
+    </script>
+
+
+
+
+
+
+
+
+
+
+    <script src="/js/zoomsl.js"></script>
+    <script src="/js/zoomsl.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script defer src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

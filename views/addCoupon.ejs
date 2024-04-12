@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <title>Coupon Form</title>
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .container {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    #backButton {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Hover effect */
+  #backButton:hover {
+    background-color: darkred;
+  }
+  </style>
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h2 class="text-center mb-4">Coupon Form</h2>
+    <form id="couponForm" action="/Coupons" method="post">
+      <div class="mb-3">
+        <label for="couponCode" class="form-label">Coupon Code:</label>
+        <input type="text" class="form-control" id="couponCode" placeholder="Enter coupon code" name="couponCode" required>
+      </div>
+     
+      <div class="mb-3">
+        <label for="discount" class="form-label">Discount (%):</label>
+        <input type="number" class="form-control" id="discount" placeholder="Enter discount percentage" name="discount" required>
+      </div>
+      <div class="mb-3">
+        <label for="expiredate" class="form-label">Expire Date:</label>
+        <input type="date" class="form-control" id="expiredate" name="expiredate" required>
+      </div>
+      <div class="mb-3">
+        <label for="purchaseamount" class="form-label">Purchase Amount:</label>
+        <input type="number" class="form-control" id="purchaseamount" placeholder="Enter purchase amount" name="purchaseamount" required>
+      </div>
+      <button id="backButton">Go Back</button>  
+      <button type="submit" class="btn btn-primary" onclick="submitCoupon()">Submit Coupon</button>
+     
+    </form>
+    
+  </div>
+
+  <!-- Bootstrap JS and Popper.js (required for Bootstrap) -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('backButton').addEventListener('click', function() {
+      window.history.back();
+    });
+    </script>
+  <script>
+    function submitCoupon() {
+      var couponCode = document.getElementById("couponCode").value.trim();
+      var amount = document.getElementById("amount").value.trim();
+      var discount = document.getElementById("discount").value.trim();
+
+      if (!couponCode || !amount || !discount) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (isNaN(amount) || isNaN(discount)) {
+        alert("Amount and discount must be numeric values.");
+        return;
+      }
+
+      alert('Coupon submitted!');
+    }
+  </script>
+</body>
+</html>

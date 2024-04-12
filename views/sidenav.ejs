@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+
+    /* General Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: content-box;
+    }
+    
+    body {
+        font-family: 'Poppins', sans-serif;     
+    }
+    
+    .header, .footer {
+        background: radial-gradient(#fff, #ffd6d6);
+        padding: 5;
+    }
+    
+    .navbar {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    nav {
+        flex: 1;
+        text-align: right;
+    }
+    
+    nav ul {
+        display: inline-block;
+        list-style-type: none;
+    }
+    
+    nav ul li {
+        display: inline-block;
+        margin-right: 50px;
+    }
+    
+    a {
+        text-decoration: none;
+        color: #555;
+    }
+    
+    .container {
+        max-width: 1300px;
+        margin: auto;
+        padding-left: 25px;
+        padding-right: 25px;
+    }
+    
+    .row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    
+    .col-2 {
+        flex-basis: 50%;
+        min-width: 300px;
+    }
+    
+    .col-2 img {
+        max-width: 100%;
+        padding: 50px 0;
+    }
+    
+    .col-2 h1 {
+        font-size: 50px;
+        line-height: 60px;
+        margin: 25px 0;
+    }
+    
+    .btn {
+        display: inline-block;
+        background: #ff523b;
+        color: #fff;
+        padding: 8px 30px;
+        margin: 30px 0px;
+        border-radius: 30px;
+        transition: background 0.5s;
+    }
+    
+    .btn:hover {
+        background: #563434;
+    }
+    
+    .menu-icon {
+        width: 28px;
+        margin-left: 20px;
+        display: none;
+    }
+    
+    @media only screen and (max-width: 800px) {
+        nav ul {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            background: #333;
+            width: 100%;
+            overflow: hidden;
+            transition: max-height 0.5s;
+        }
+        nav ul li {
+            display: block;
+            margin-right: 50px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        nav ul li a {
+            color: #fff;
+        }
+        .menu-icon {
+            display: block;
+            cursor: pointer;
+        }
+    }
+    
+    .footer {
+        background: #000;
+        color: #8a8a8a;
+        font-size: 14px;
+        padding: 60px 0 20px;
+    }
+    
+    .footer p {
+        color: #8a8a8a;
+    }
+    
+    .footer h3 {
+        color: #fff;
+        margin-bottom: 20px;
+    }
+    
+    .footer-col-1, .footer-col-2, .footer-col-3, .footer-col-4 {
+        min-width: 250px;
+        margin-bottom: 20px;
+    }
+    
+    .footer-col-1 {
+        flex-basis: 30%;
+    }
+    
+    .footer-col-2 {
+        flex: 1;
+        text-align: center;
+    }
+    
+    .footer-col-2 img {
+        width: 180px;
+        margin-bottom: 20px;
+    }
+    
+    .footer-col-3, .footer-col-4 {
+        flex-basis: 12%;
+        text-align: center;
+    }
+    
+    ul {
+        list-style-type: none;
+    }
+    
+    .app-logo {
+        margin-top: 20px;
+    }
+    
+    .app-logo img {
+        width: 140px;
+    }
+    
+    .footer hr {
+        border: none;
+        background: #b5b5b5;
+        height: 1px;
+        margin: 20px 0;
+    }
+    
+    .copyright {
+        text-align: center;
+    }
+    
+    /* Main Content Layout */
+    .main-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    
+    /* Sidebar Styles */
+    #sidebar {
+        width: 100%;
+        height: auto;
+        /* background-color: #000; */
+        color:#000;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 1000;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        /* order: 1; */
+    }
+
+    .sidebar-content {
+        width: 13%;
+        padding: 30px;
+        background-color: #000;
+        border-radius: 15px;
+    }
+    
+    .sidebar-menu li a {
+        color: #fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: block;
+        padding: 10px 20px;
+        border-left: 3px solid transparent;
+    }
+    
+    .sidebar-menu li a:hover {
+        color: #ff523b;
+        background-color: rgba(255, 82, 59, 0.1);
+    }
+    
+    .sidebar-menu li a.active {
+        color: #ff523b;
+        border-left-color: #ff523b;
+    }
+    
+    /* User Profile Styles */
+    .user-content {
+        width: 85%;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        #sidebar {
+            width: 100%;
+            padding: 20px 0;
+        }
+        .user-profile {
+            margin-left: 0;
+        }
+    }
+</style>
+
+</head>
+<body>
+    <div class ="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <a href="index.html"><img src="/images/logo.png" width="125px"></a>
+                </div>
+                <nav>
+                    <ul id="MenuItems">
+                        <li><a href="/">Home</a></li>
+                         <li><a href="/allProducts">Products</a></li>
+                         <li><a href="">About</a></li>
+                         <li><a href="">Contact</a></li>
+                         <li><a href="/userProfile">Account</a></li>
+                         <li><a href="/logout">Logout</a></li>
+
+
+                    </ul>
+                </nav>
+                <a href="/cart"><img src="/images/cart.png" width="30px" height="30px"></a>
+                <img src="/images/menu.png" class="menu-icon" onClick="menutoggle()" >
+            </div>
+            <div class="row">
+                <div class="col-2">
+                   
+                </div>
+                <div class="col-2">
+                    
+                </div>
+            </div>
+        </div>
+    </div>

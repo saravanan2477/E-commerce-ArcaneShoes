@@ -1,0 +1,85 @@
+const express = require("express");
+const Cart = require("../model/cart");
+const Product = require("../model/product");
+const UserCollection = require("../model/users");
+
+module.exports = {
+
+    // Function to get the cart items for a user
+    getCart: async (req, res) => {
+        try {
+            const sessionId = req.session.userid;
+            if (!sessionId) {
+                return res.status(400).send('Session not found');
+            }
+
+            // Find cart items for the user
+            const cartItems = await Cart.find({ userid: sessionId });
+
+            // Render the cart view with cart items and total sum
+            res.render('cart', { cartfind: cartItems });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server Error11');
+        }
+    },
+
+    // Function to add a product to the cart
+    addToCart: async (req, res) => {
+        try {
+            const sessionId = req.session.userid;
+            const productId = req.params.productId;
+
+            // Fetch product details
+            const product = await Product.findOne({ _id: productId });
+            if (!product) {
+                return res.status(404).send('Product not found');
+            }
+
+            // Check if the product is already in the cart
+            let cartItem = await Cart.findOne({ productid: productId, userid: sessionId });
+            if (cartItem) {
+                // If the product is already in the cart, increase the quantity
+                cartItem.quantity += 1;
+            } else {
+                // If the product is not in the cart, create a new cart item
+                cartItem = new Cart({
+                    productid: productId,
+                    userid: sessionId,
+                    productname: product.productname,
+                    price: product.price,
+                    quantity: 1,
+                    image: product.image
+                });
+            }
+            await cartItem.save();
+            res.redirect('/cart'); // Redirect to the cart page after adding the product
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server Error22');
+        }
+    },
+
+    // Function to update quantity of a product in the cart
+    updateQuantity: async (req, res) => {
+        try {
+            const { productid, action } = req.body;
+            const sessionId = req.session.userid;
+
+            const cartItem = await Cart.findOne({ productid: productid, userid: sessionId });
+            if (!cartItem) {
+                return res.status(404).send('Item not found in cart');
+            }
+
+            // Determine new quantity based on action (increase or decrease)
+            let newQuantity = action === 'decrease' ? Math.max(1, cartItem.quantity - 1) : cartItem.quantity + 1;
+            cartItem.quantity = newQuantity;
+            await cartItem.save();
+
+            res.json({ success: true, updatedCartItem: cartItem });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server Error');
+        }
+    }
+}

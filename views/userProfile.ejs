@@ -1,0 +1,80 @@
+<%- include('sidenav') %>
+<style>
+    .user-content {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #f5f5f5; /* Light grey background */
+    border-radius: 10px; /* Rounded corners */
+    margin-top: 20px; /* Add some space above the user content */
+}
+
+.user-details, .user-address {
+    margin-bottom: 20px; /* Add some space between the sections */
+}
+
+.user-details h2, .user-address h2 {
+    margin-bottom: 10px; /* Add some space below the section titles */
+}
+
+.user-details p, .user-address p {
+    margin-bottom: 5px; /* Add some space between the details */
+}
+
+
+/* //edit buttn css */
+.edit-profile-btn {
+    background: linear-gradient(to right, #0072ff, #00c6ff);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background 0.5s;
+}
+
+.edit-profile-btn:hover {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
+
+
+
+
+</style>
+<div id="sidebar">
+    <div class="sidebar-content">
+        <ul class="sidebar-menu">
+            <li><a href="/userProfile">Profile</a></li>
+            <li><a href="#">Wallet</a></li>
+            <li><a href="/userAddress">Address</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/userOrders">Orders</a></li>
+            <li><a href="/wishList">wishList</a></li>
+
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="user-content">
+        <div class="user-details">
+            <h2>User Details</h2>
+            <p>Name: <%= user.username%></p>
+            <p>Email: <%= user.email%></p>
+            <!-- Add the Edit Profile button here -->
+            <section class="section mb-4 col-md-6 button-section">
+                <a href="/editProfile"><button class="btn btn-primary btn-block">Edit Profile</button></a>
+              </section>
+              <section class="section mb-4 col-md-6 button-section">
+                <a href="/changePassword"><button class="btn btn-primary btn-block">Change
+                    Password</button></a>
+              </section>
+        </div>
+    </div>
+
+</div>
+<%- include('sidefooter') %>

@@ -1,0 +1,287 @@
+<!-- /*
+* Bootstrap 5
+* Template Name: Furni
+* Template Author: Untree.co
+* Template URI: https://untree.co/
+* License: https://creativecommons.org/licenses/by/3.0/
+*/ -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="Untree.co">
+  <link rel="shortcut icon" href="favicon.png">
+
+  <meta name="description" content="" />
+  <meta name="keywords" content="bootstrap, bootstrap4" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-xrR5NqgeqD3Pbe5VZjOxwzrqMCr2w8P1b8r9z6p+8RbGpK3b5k9Rv9Im9Z9R/2c+" crossorigin="anonymous">
+
+
+
+		<!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+		<link href="css/tiny-slider.css" rel="stylesheet">
+		<link href="/css/style.css" rel="stylesheet">
+		<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+	</head>
+
+	<body>
+
+		<!-- Start Header/Navigation -->
+		<style>
+     
+  </style>
+  </head>
+  
+  <body>
+    <%- include('sidenav') %>
+		<!-- End Header/Navigation -->
+
+		<!-- Start Hero Section -->
+			<div class="hero">
+				<div class="container">
+          <br>
+					<div class="row justify-content-center align-items-center">
+						<div class="col-lg-5">
+							<div class="intro-excerpt">
+								<h1>Cart</h1>
+							</div>
+						</div>
+					
+							
+						</div>
+					</div>
+				</div>
+		
+		<!-- End Hero Section -->
+
+		
+
+		<div class="untree_co-section before-footer-section">
+            <div class="container">
+              <div class="row mb-5">
+                <form class="col-md-12" method="post">
+                  <div class="site-blocks-table">
+                    <table class="table">
+                      <% if (cartfind.length > 0) { %>
+                      <thead>
+                        <tr>
+                          <th class="product-thumbnail">Image</th>
+                          <th class="product-name">Product</th>
+                          <th class="product-price">Price</th>
+                          <th class="product-quantity">Quantity</th>
+                          <th class="product-total">Total</th>
+                          <th class="product-remove">Remove</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% cartfind.forEach((product, index) => { %>
+                        <tr>
+                          <td class="product-thumbnail">
+                            <img src="<%= product.image[0] %>" alt="Image" class="img-fluid">
+                          </td>
+                          <td class="product-name">
+                            <h2 class="h5 text-black"><%= product.productname %></h2>
+                          </td>
+                          <td>₹<%= product.price %></td>
+                          <td>
+                        
+                            
+                              <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                <div class="input-group-prepend">
+                                  <button class="btn btn-outline-black decrease" type="button" data-product-id="<%= product._id %>" data-index="<%= index %>">−</button>
+                                </div>
+                                <input type="text" class="form-control text-center quantity-amount" value="<%= product.quantity %>" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" id="quantity<%= index %>">
+                                <div class="input-group-append">
+                                  <button class="btn btn-outline-black increase" type="button" data-product-id="<%= product._id %>" data-index="<%= index %>">+</button>
+                                </div>
+                              </div>
+                              <div id="error<%= index %>" class="text-danger"></div> <!-- Error message element -->
+                             
+                            
+                             
+                              <td><div id="total<%= index %>">₹<%= product.price * product.quantity %></div>
+                                
+                          </td>
+                        
+                          <td><a href="/removecart/<%=product._id %>" class="btn btn-black btn-sm">X</a></td>
+                        </tr>
+        
+                        <% }); %>
+                        <% } else { %>
+                          <div class="alert alert-info" role="alert">
+                              Your cart is empty. Start shopping now!
+                          </div>
+                      <% } %> 
+                      </tbody>
+                    </table>
+                  </div>
+                </form>
+              </div>
+        
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="row mb-5">
+                   
+                    <div class="col-md-6">
+                      <a href="/Home" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
+                    </div>
+                  </div>
+                  
+                </div>
+                <!-- btghghjbgdbsdtgrevryrtggggggggggggggggg -->
+                <div class="col-md-6 pl-5">
+                  <div class="row justify-content-end">
+                    <div class="col-md-7" style="background-color: rgb(248, 232, 231);">
+                      <div class="row">
+                        <div class="col-md-12 text-right border-bottom mb-5">
+                          <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                        </div>
+                      </div>
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <span class="text-black">Subtotal</span>
+                        </div>
+                        <div class="col-md-6 text-right">
+                          <strong class="text-black">₹</strong>
+                        </div>
+                      </div>
+                      <div class="row mb-5">
+                        <div class="col-md-6">
+                          <span class="text-black">Total</span>
+                        </div>
+                        <div class="col-md-6 text-right">
+                          <strong class="text-black">₹</strong>
+                        </div>
+                      </div>
+                    
+                      <div class="row">
+                        <div class="col-md-12">
+                          <a href="/CheckoutPage"><button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        
+		
+
+		<!-- Start Footer Section -->
+		<%- include('sidefooter') %>
+		<!-- End Footer Section -->	
+
+
+		<script src="js/bootstrap.bundle.min.js"></script>
+		<script src="js/tiny-slider.js"></script>
+		<script src="js/custom.js"></script>
+	
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        function updateQuantity(productid, action, index) {
+          const quantityElement = document.getElementById(`quantity${index}`);
+          const currentQuantity = parseInt(quantityElement.value);
+    
+          let newQuantity = action === 'decrease' ? Math.max(1, currentQuantity - 1) : currentQuantity + 1;
+    
+          fetch(`/updateQuantity/${productid}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productid, index, action }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.error) {
+          // Display the error message
+          const errorMessage = data.error;
+          const errorElement = document.getElementById(`error${index}`);
+          if (errorElement) {
+            errorElement.textContent = errorMessage;
+          }
+        } else if (data.success) {
+                quantityElement.value = newQuantity;
+    
+                const totalElement = document.getElementById(`total${index}`);
+                if (totalElement) {
+                  totalElement.innerText = `₹${data.updatedCartItem.itemTotal}`;
+                }
+              } else {
+                console.error(data.error);
+              }
+            })
+            .catch(error => console.log(error));
+        }
+    
+        // Add event listeners for quantity update buttons
+        const decreaseButtons = document.querySelectorAll('.decrease');
+        const increaseButtons = document.querySelectorAll('.increase');
+    
+        decreaseButtons.forEach(button => {
+          button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const index = this.dataset.index;
+            updateQuantity(productId, 'decrease', index);
+          });
+        });
+    
+        increaseButtons.forEach(button => {
+          button.addEventListener('click', function (e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const index = this.dataset.index;
+            updateQuantity(productId, 'increase', index);
+          });
+        });
+      });
+    </script>
+    
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+  ///////////////logout/////////////////////////
+  document.addEventListener("DOMContentLoaded", function () {
+    const logoutButton = document.getElementById("logout-button");
+
+    if (logoutButton) {
+      logoutButton.addEventListener("click", function (e) {
+        e.preventDefault(); // Prevent the default link behavior
+
+        // Use SweetAlert2 for confirmation
+        Swal.fire({
+          title: "Are you sure?",
+          text: "Do you really want to logout?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Yes, logout",
+          cancelButtonText: "No, cancel"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // If the user confirms, redirect to the logout page
+            window.location.href = "/";
+          }
+        });
+      });
+    }
+  });
+</script>
+
+
+</body>
+
+</html>

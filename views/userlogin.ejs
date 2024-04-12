@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Login V4</title>
+	<meta charset="UTF-8">
+	<meta name="google-signin-client_id" content="366409711419-otvusdn9d5h0p01ffqa50381lk6fmb4h.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="/images/icons/favicon.ico" />
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
+	<!--===============================================================================================-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<style>
+		.login100-social-item {
+			text-decoration: none;
+		}
+
+		.input100 {
+			padding-left: 40px;
+			/* Adjust as needed */
+			position: relative;
+		}
+
+		.input-icon {
+			position: absolute;
+			top: 66%;
+			left: 10px;
+			transform: translateY(-50%);
+			font-size: 18px;
+			color: #000000;
+		}
+
+		.error-message {
+			color: red;
+			text-align: center;
+		}
+		
+		.container-login100 {
+    background: linear-gradient(to right, #ee1354, #ffd900, #ff0000);
+    background-size: 200% 200%;
+    animation: gradientAnimation 8s ease infinite;
+    transition: background 0.5s ease; /* Add transition for smooth color change */
+}
+
+.transition-loop {
+    animation: none !important;
+    transition: none !important;
+    animation-delay: 1s; /* Delay the animation start */
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+	</style>
+</head>
+
+<body>
+
+	<div class="limiter">
+		<div class="container-login100" >
+			<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+
+				<form class="login100-form validate-form" action="/userloginpost" method="post" name="loginForm"
+					onsubmit="return validateForm()">
+					<span class="login100-form-title p-b-49">
+						<h5 style="text-align: center; margin-bottom: 30px;">LOGIN</h5>
+					</span>
+
+					<div class="wrap-input100 validate-input m-b-23" data-validate="Email is required">
+						<span class="label-input100">Email</span>
+						<input class="input100" type="text" name="Email" value="saravanan.k1357@gmail.com" placeholder="Type your Email" required>
+						<span class="input-icon"><i class="fa fa-user"></i></span> <!-- Icon -->
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Password is required">
+						<span class="label-input100">Password</span>
+						<input class="input100" type="password" name="password"value="Qwe@123" placeholder="Type your password"
+							required>
+						<span class="input-icon"><i class="fa fa-lock"></i></span> <!-- Icon -->
+					</div>
+					<br>
+
+					<div>
+						<% if (message) { %>
+							<p class="error-message">
+								<%= message %>
+							</p>
+							<% } %>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<div class="wrap-login100-form-btn">
+							<div class="login100-form-bgbtn"></div>
+							<button type="submit" class="login100-form-btn">Login</button>
+						</div>
+					</div>
+
+					<!-- <div class="flex-c-m">
+        <a href="#" class="login100-social-item bg1">
+            <i class="fab fa-facebook"></i>
+        </a>
+        <a href="#" class="login100-social-item bg3">
+            <i class="fab fa-google"></i>
+        </a>
+    </div> -->
+	<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
+
+					<div class="flex-col-c p-t-155">
+						<span class="txt1 p-b-17">Or Sign Up Using</span>
+						<a href="/usersignup" class="txt2">Sign Up</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<div id="dropDownSelect1"></div>
+
+
+<script>
+	function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+</script>
+
+	<script>
+		// Function to validate email using regex
+		function validateEmail(email) {
+			const re = /\S+@\S+\.\S+/;
+			return re.test(email);
+		}
+
+		// Function to perform validation
+		function validateForm() {
+			const email = document.forms["loginForm"]["Email"].value;
+			const password = document.forms["loginForm"]["password"].value;
+
+			// Check if email and password fields are empty
+			if (email == "" || password == "") {
+				aerrorMessage.textContent = ("Email and password must be filled out");
+				return false;
+			}
+
+			// Check if email is valid
+			if (!validateEmail(email)) {
+				errorMessage.textContent = ("Please enter a valid email address");
+				return false;
+			}
+
+			// If all validations pass, return true
+			return true;
+		}
+	</script>
+	<!--===============================================================================================-->
+	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/animsition/js/animsition.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/bootstrap/js/popper.js"></script>
+	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/select2/select2.min.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/daterangepicker/moment.min.js"></script>
+	<script src="vendor/daterangepicker/daterangepicker.js"></script>
+	<!--===============================================================================================-->
+	<script src="vendor/countdowntime/countdowntime.js"></script>
+	<!--===============================================================================================-->
+	<script src="js/main.js"></script>
+
+</body>
+
+</html>

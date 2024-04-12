@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- DataTable HEADER-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+        }
+        
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+        }
+        
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            padding: 15px;
+        }
+        
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .sidebar ul li a:hover {
+            color: #ccc;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+        }
+        
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .user-item button {
+            cursor: pointer;
+        }
+        
+        #example thead th {
+            background-color: #007bff; /* Blue */
+            color: #fff; /* White */
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>  
+            <li><a href="/admin/usermanagement">User Management</a></li>
+          <li><a href="/admin/categorymanagement">Category Management</a></li>
+          <li><a href="/admin/productmanagement">Product Management</a></li>
+          <li><a href="/admin/orderManagement">Order Management</a></li>
+          <li><a href="/couponManagement">Coupon Management</a></li>
+          <li><a href="#">Banner Management</a></li>
+          <li><a href="/admin/adminlogin">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1 style="text-align: center;">product Management</h1>
+        <div style="text-align:left; margin-bottom: 20px;">
+            <a href="/admin/addProduct" class="btn btn-primary">Add Product</a>
+        </div> 
+        
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                 
+                    <th>Product Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Image</th>
+                    <th>Stock</th>
+                    <th>status</th>
+                    <th>List/UnList</th>
+                    <th>Action</th>
+                    <th></th>
+                    
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <% if( products.length > 0) { %>
+                    <% products.forEach( product=> { %>
+                        <tr>
+                            <td>
+                                <%= product.productname %>
+                            </td>
+                            <td>
+                                <% if (product.category) { %>
+                                    <%= product.category.category %>
+                                <% } else { %>
+                                    N/A
+                                <% } %>
+                            </td>
+                            
+                            <td>
+                                <%= product.price %>
+                            </td>
+                           
+                            <td>
+                                <img style="max-height: 50px; max-width: 50px;" src="<%= product.image[0] %>" alt="no img">
+
+                            </td>
+                            <td>
+                                <%= product.stock %>
+                            </td>
+                            <td>
+                                <% if (product.isListed) { %>
+                                    <span class="text-success">Listed</span>
+                                <% } else { %>
+                                    <span class="text-danger">Not Listed</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (product.isListed) { %>
+                                    <a href="/admin/unlistproduct/<%= product._id %>" class="btn btn-danger">UnList</a>
+                                <% } else { %>
+                                    <a href="/admin/unlistproduct/<%= product._id %>" class="btn btn-success">List</a>
+                                <% } %>
+                            </td>
+                            <td>
+                                <!-- Edit Button -->
+                                <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
+                            </td>
+                            <td>
+                                <!-- delete Button -->
+                                <a href="/admin/deleteproduct/<%= product._id %>" class="btn btn-primary">Delete</a>
+                            </td>
+                        </tr>
+                        <% }); %>
+                            <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+    <!-- <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script> -->
+</body>
+</html>

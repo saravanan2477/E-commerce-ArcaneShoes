@@ -1,0 +1,174 @@
+<%- include('sidenav') %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+    .user-content {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background-color: #f5f5f5; /* Light grey background */
+        border-radius: 10px; /* Rounded corners */
+        margin-top: 20px; /* Add some space above the user content */
+    }
+
+    .user-details, .user-address {
+        margin-bottom: 20px; /* Add some space between the sections */
+    }
+
+    .user-details h2, .user-address h2 {
+        margin-bottom: 10px; /* Add some space below the section titles */
+    }
+
+    .user-details p, .user-address p {
+        margin-bottom: 5px; /* Add some space between the details */
+    }
+    .user-details {
+    display: flex;
+    flex-wrap: wrap; /* Allow flex items to wrap to the next row */
+    justify-content: space-between; /* Distribute items evenly along the main axis */
+    margin-bottom: 20px; /* Add some space between the sections */
+}
+   
+
+    /* Ensure the link inside the button does not inherit the button's styles */
+    .add-address-btn a {
+        color: inherit; /* Inherit the button's text color */
+        text-decoration: none; /* Remove underline */
+    }
+
+
+
+
+    .btn-info,
+    .btn-danger {
+        background-color: #21ce11;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        text-decoration: none;
+    }
+
+    .btn-info:hover,
+    .btn-danger:hover {
+        background-color: #d1440c;
+    }
+
+    .add-address-btn {
+        margin-top: -68px;
+    margin-bottom: -17px;
+    margin-left: -1px;
+    }
+
+
+    .address-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.address-card {
+    background-color: #fff; /* Card background color */
+    color: #000; /* Text color */
+    border: 1px solid #ddd; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    padding: 20px;
+    width: calc(50% - 10px); /* Width of each card, minus some space for margins */
+    margin-bottom: 20px; /* Space between rows */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for depth */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .address-card {
+        width: 100%; /* Full width on small screens */
+    }
+}
+
+
+
+/* Base Button Styles */
+.edit-address-btn, .delete-address-btn {
+    background-color: #007bff; /* Primary button color */
+    color: #fff; /* Text color */
+    border: none; /* Remove default border */
+    padding: 5px 10px; /* Smaller padding */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    font-size: 14px; /* Smaller font size */
+    margin-top: 5px; /* Smaller space above the button */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    margin-right: 5px; /* Add some space between the buttons */
+}
+
+/* Icon Styles */
+.edit-address-btn i, .delete-address-btn i {
+    margin-right: 3px; /* Smaller space between the icon and text */
+}
+
+/* Hover Effects */
+.edit-address-btn:hover, .delete-address-btn:hover {
+    background-color: #0056b3; /* Darker background on hover */
+}
+
+/* Ensure the link inside the buttons does not inherit the buttons' styles */
+.edit-address-btn a, .delete-address-btn a {
+    color: inherit; /* Inherit the button's text color */
+    text-decoration: none; /* Remove underline */
+}
+
+/* Container for buttons */
+.button-container {
+    display: flex;
+    flex-direction: row; /* Align buttons in a row */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the start of the container */
+}
+
+
+
+
+
+</style>
+<div id="sidebar">
+    <div class="sidebar-content">
+        <ul class="sidebar-menu">
+            <li><a href="/userProfile">Profile</a></li>
+            <li><a href="#">Wallet</a></li>
+            <li><a href="/userAddress">Address</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/userOrders">Orders</a></li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+    <div class="user-content">
+        <div class="text-left add-address-btn">
+            <a href="/addAddress" class="btn btn-info rounded-pill">Add Address</a>
+        </div>
+        <div class="address-container">
+            <% address.forEach((data,index)=>{%>
+                <div class="address-card">
+                    <h2><%=data.firstname%> <%=data.lastname%></h2>
+                    <p><%=data.address%></p>
+                    <p><%=data.city%> <%=data.pincode%></p>
+                    <p><%=data.email%></p>
+                    <p><%=data.phone%></p>
+                    <p><%=data.state%></p>
+                   
+                    <div class="button-container">
+                        <!-- Edit Address Button -->
+                        <button class="edit-address-btn"><a href="/editAddress/<%=data.id%>"><i class="fas fa-edit"></i> Edit Address</a></button>
+                        <!-- Delete Address Button -->
+                        <button class="delete-address-btn"><a href="/deleteAddress/<%=data.id%>"><i class="fas fa-trash-alt"></i> Delete Address</a></button>
+                    </div>
+                    
+
+                </div>
+            <%})%>
+        </div>
+    </div>
+</div>
+
+<%- include('sidefooter') %>

@@ -1,0 +1,224 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="favicon.png">
+
+	<meta name="description" content="" />
+	<meta name="keywords" content="bootstrap, bootstrap4" />
+
+
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+		integrity="sha384-xrR5NqgeqD3Pbe5VZjOxwzrqMCr2w8P1b8r9z6p+8RbGpK3b5k9Rv9Im9Z9R/2c+" crossorigin="anonymous">
+
+
+
+	<!-- Include jQuery -->
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<link href="css/tiny-slider.css" rel="stylesheet">
+	<link href="/css/style.css" rel="stylesheet">
+
+	<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+	<style>
+.col-md-6{
+	flex: 0 0 47%;
+    max-width: 47%;
+}
+
+#placeOrderButton {
+    display: inline-block;
+    background: #ff523b;
+    color: #fff;
+    padding: 6px 5px;
+    margin: 0px -5px;
+    border-radius: 20px;
+    transition: background 0.5s;
+}
+	</style>
+</head>
+
+<body>
+
+<%- include('sidenav') %>
+	
+	<!-- Start Hero Section -->
+	
+	<!-- End Hero Section -->
+		<div class="hero ">
+			<div class="container ">
+				<div class="row justify-content-between ">
+					<div class="col-lg-5 h-60">
+						<div class="intro-excerpt">
+							<br>
+							<h1>Checkout</h1>
+						</div>
+					</div>
+					<div class="col-lg-7">
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Hero Section -->
+
+		<div class="untree_co-section  ">
+			<div class="container ">
+
+				<div class="row ">
+					<div class="col-md-6 mb-5 mb-md-0  ">
+						<h2 class="h3 mb-3 text-black">Billing Details</h2>
+						<div class="p-3 p-lg-5" style="background-color: #ffffff; border: 1px solid rgb(255, 144, 16);">
+							<!-- billing checkout -->
+
+							<div class="payment__info">
+								<div class="payment__cc">
+									<div class="payment__title personal-info">
+										<i class="icon icon-user"></i>Personal Information
+									</div>
+									<form action="/Checkoutpost" method="POST">
+										<% if (address && Array.isArray(address) && address.length> 0) { %>
+											<div class="payment__shipping">
+												<% address.forEach((product, index)=> { %>
+
+													<div class="details__user">
+														<div class="user__name">
+															<%= product.firstname %>
+																<%= product.lastname %>
+														</div>
+														<div class="user__address">Shipping Address: <%= product.address %>,
+																<%= product.city %>
+														</div>
+
+														<!-- Radio button for shipping option -->
+														<div class="shipping__option">
+															<input type="radio" id="shippingOption" name="shippingOption"
+																value="<%= product._id %>" <%=index===0 ? 'checked' : '' %>>
+															<label for="shippingOption<%= product._id %>">Select this
+																shipping option</label>
+														</div>
+
+
+													</div>
+
+													<% }); %>
+
+											</div>
+
+											
+											
+								</div>
+								<% } else { %>
+									<p>No shipping information available.</p>
+									<% } %>
+							</div>
+
+							<div class="add-address-button">
+								<a href="/orderAddress" class="btn action__add-address">Add Address</a>
+							</div>
+						</div>
+					</div>
+
+
+
+							<!-- Your Order Section -->
+							<div  class="col-md-6">
+								<div class="order-md-2">
+								<div class="row mb-5">
+									<div class="col-md-12">
+										<h2 class="h3 mb-3 text-black">Your Order</h2>
+										<div class="p-3 p-lg-5 " style="background-color: #ffffff;border: 1px solid rgb(255, 144, 16);">
+											<table class="table site-block-order-table mb-5">
+												<thead>
+													<th>Product</th>
+													<th>Total</th>
+												</thead>
+												<% checkout.forEach((product, index)=> { %>
+													<tbody>
+														<tr>
+															<td><%= product.productname %><strong class="mx-2">x</strong><%= product.quantity %></td>
+															<td>₹<%= product.price %></td>
+														</tr>
+													</tbody>
+												<% }); %>
+												<tfoot>
+													<tr>
+														<td colspan="3" class="text-black font-weight-bold"><strong>Order Total:</strong></td>
+														<td>₹<%= totalsum %></td>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
+									</div>
+								</div>
+								</div>
+							</div>
+					
+							<!-- Coupon Code Section -->
+						
+						
+					
+						<!-- Payment Method Section -->
+					<!-- Payment Method Section -->
+<div class="row mb-5 d">
+    <div class="col-md-12 ">
+        <h2 class="h3 mb-3 text-black ">Payment Method</h2>
+        <div class="p-3 p-lg-5 "  style="background-color: #ffffff; border: 1px solid rgb(255, 144, 16);">
+            <form action="/Checkoutpost" method="POST">
+                <!-- Payment method options and form fields here -->
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method:</label>
+                  
+                        <select class="form-control" id="paymentMethod" name="paymentMethod" required>
+						
+							<option selected value="Cash on Delivery">Cash on Delivery</option>
+							
+							<option id="credit-card" value="credit-card">Credit Card</option>
+                        </select>
+                  
+                </div>
+                <br>
+                <br>
+                <div class="form-group">
+					<a href="/placeOrderget" id="placeOrderButton" class="btn btn-black btn-lg py-3 btn-block">Place Order</a>
+
+                </div>
+            </form>
+            <button type="button" class="btn btn-black btn-lg py-3 btn-block" id="rzp-button1" style="display: none;">
+                Razor Pay
+            </button>
+        </div>
+    </div>
+</div>
+			
+	<span id="price" data-totalprice="<%= totalsum %>"></span>
+
+
+
+	
+</div>
+</div>
+
+
+	
+
+
+	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/tiny-slider.js"></script>
+	<script src="js/custom.js"></script>
+
+
+</body>
+
+</html>

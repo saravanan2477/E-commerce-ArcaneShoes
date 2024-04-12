@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #795f5f;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 20px;
+        background: #d3c3c3;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+    h2 {
+        margin-bottom: 20px;
+    }
+    input[type="text"], input[type="password"], input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #0c0b0b;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 480px) {
+        .container {
+            margin: 20px;
+            padding: 10px;
+        }
+    }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <h2>Admin Login</h2>
+      
+            
+        <form id="loginForm" action="/admin/adminloginpost" method="post">
+            <input type="text" id="username" name="username" placeholder="Username">
+            <span class="error-message" id="usernameError"></span> <!-- Error message placeholder -->
+            <input type="password" id="password" name="password" placeholder="Password">
+            <span class="error-message" id="passwordError"></span> <!-- Error message placeholder -->
+            <button type="submit">Login</button>
+           
+                
+        </form>
+        <% if(typeof message !== 'undefined') { %>
+            <div class="alert alert-danger text-center" style="color: #ff0c0c;">
+                <%= message %>
+            </div>
+        <%}%>
+    </div>
+  
+    <div>
+      
+     
+    </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            // Reset previous error messages
+            document.getElementById('usernameError').textContent = '';
+            document.getElementById('passwordError').textContent = '';
+    
+            // Perform validation
+            var isValid = true;
+    
+            if (document.getElementById('username').value.trim() === '') {
+                document.getElementById('usernameError').textContent = 'Username is required.';
+                isValid = false;
+            }
+    
+            if (document.getElementById('password').value.trim() === '') {
+                document.getElementById('passwordError').textContent = 'Password is required.';
+                isValid = false;
+            }
+    
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                event.preventDefault(); // Prevent form submission
+            }
+    
+            return isValid;
+        });
+    </script>
+    
+    
+
+</body>
+</html>

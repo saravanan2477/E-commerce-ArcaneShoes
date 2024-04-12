@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="Stylesheet" href="/static/style.css">
+    <style>
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+
+<body style="background: #f0f0f0;">
+
+    <div class="container" style="padding: 2%;">
+        <div class="row justify-content-center">
+
+            <div class="col-md-4">
+                <% if(typeof message !== 'undefined') { %>
+                <div class="alert alert-danger text-center">
+                    <%= message %>
+                </div>
+                <% } %>
+            <!-- <% if(typeof loginmessage !== 'undefined') { %>
+                <div class="alert alert-success text-center">
+                    <%= loginmessage %>
+                </div>
+                <% } %> -->
+                <div class="card">
+
+                    <div class="card-body">
+                        <!-- enctype="multipart/form-data" -->
+                        <h1 class="text-center text-primary">Add Product</h1>
+                        <form action="/admin/addproduct" method="POST"  onsubmit="return validateForm()" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="productname" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="productname" name="productname" required>
+                                <div id="productnameError" class="error-message"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <% if(categories.length> 0) { %>
+                                        <% categories.forEach( categorie=> { %>
+                                            <option value="<%= categorie._id %>"><%= categorie.category %></option>
+                                            <% }); %>
+                                                <% } %>
+                                </select>
+                                <div id="categoryError" class="error-message"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price</label>
+                                <input type="number" class="form-control" id="price" name="price" required>
+                                <div id="priceError" class="error-message"></div>
+                            </div>
+                           
+                            <div class="mb-3">
+                                <label for="discription" class="form-label">Discription</label>
+                                <input type="text" class="form-control" id="discription" name="discription" required>
+                                <div id="discriptionError" class="error-message"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="img" class="form-label">Product Image</label>
+                                <input type="file" class="form-control" id="img" name="img" accept="image/*" multiple required>
+                                <div id="imgError" class="error-message"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="stock" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="stock" name="stock" min="1" required>
+                                <div id="stockError" class="error-message"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="isListed" class="form-label">IsListed</label>
+                                <select class="form-select" id="isListed" name="isListed" required>
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
+                            </div> 
+                            <div class="text-center login-button mb-4">
+                                <button type="submit" class="btn btn-primary w-100">Add</button>
+                                <a href="/admin/productmanagement" class="btn btn-primary w-100 mt-2">Go Back</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function validateForm() {
+            var productname = document.getElementById('productname').value.trim();
+            var category = document.getElementById('category').value.trim();
+            var price = document.getElementById('price').value.trim();
+            var discription = document.getElementById('discription').value.trim();
+            var stock = document.getElementById('stock').value.trim();
+            var isValid = true;
+    
+            // Product name validation
+            if (productname === '') {
+                document.getElementById('productnameError').innerText = 'Please enter the product name';
+                isValid = false;
+            } else if (productname.split(/\s+/).length > 50) {
+                document.getElementById('productnameError').innerText = 'Product name should be below 50 words';
+                isValid = false;
+            } else {
+                document.getElementById('productnameError').innerText = '';
+            }
+    
+            // Category validation
+            if (category === '') {
+                document.getElementById('categoryError').innerText = 'Please enter the category';
+                isValid = false;
+            } else {
+                document.getElementById('categoryError').innerText = '';
+            }
+    
+            // Price validation
+            if (price === '') {
+                document.getElementById('priceError').innerText = 'Please enter the price';
+                isValid = false;
+            } else if (isNaN(price)) {
+                document.getElementById('priceError').innerText = 'Price should only contain numbers';
+                isValid = false;
+            } else {
+                document.getElementById('priceError').innerText = '';
+            }
+    
+            // Description validation
+            if (discription === '') {
+                document.getElementById('discriptionError').innerText = 'Please enter the description';
+                isValid = false;
+            } else if (discription.split(/\s+/).length > 50) {
+                document.getElementById('discriptionError').innerText = 'Description should be below 50 words';
+                isValid = false;
+            } else {
+                document.getElementById('discriptionError').innerText = '';
+            }
+    
+            // Stock validation
+            if (stock === '') {
+                document.getElementById('stockError').innerText = 'Please enter the stock';
+                isValid = false;
+            } else if (isNaN(stock)) {
+                document.getElementById('stockError').innerText = 'Stock should only contain numbers';
+                isValid = false;
+            } else {
+                document.getElementById('stockError').innerText = '';
+            }
+    
+            return isValid;
+        }
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

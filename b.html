@@ -1,0 +1,36 @@
+function isWhitespace(str) {
+    return !str || str.trim().length === 0;
+}
+
+// Attach event listener to form submit event
+$('#editProductForm').on('submit', function(e) {
+    var productName = $('#productname').val();
+    var description = $('#description').val();
+
+    // Check for whitespace in product name
+    if (isWhitespace(productName)) {
+        e.preventDefault(); // Prevent form submission
+        alert('Product name cannot be only whitespace.');
+        return;
+    }
+
+    // Check for whitespace in description
+    if (isWhitespace(description)) {
+        e.preventDefault(); // Prevent form submission
+        alert('Description cannot be only whitespace.');
+        return;
+    }
+
+    // Check for length in product name and description
+    if (productName.length > 20) {
+        e.preventDefault(); // Prevent form submission
+        alert('Product name must be under 20 characters.');
+        return;
+    }
+
+    if (description.length > 20) {
+        e.preventDefault(); // Prevent form submission
+        alert('Description must be under 20 characters.');
+        return;
+    }
+});

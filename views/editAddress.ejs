@@ -1,0 +1,170 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Address Form</title>
+  <meta name="viewport" content="initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<style>
+  #backButton {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Hover effect */
+  #backButton:hover {
+    background-color: darkred;
+  }
+</style>
+<body class="container">
+  <form action="/editAddress/<%=address.id%>" method="post" id="addressForm" onsubmit="return validateForm()">
+
+    <h2>Address</h2>
+    
+    <div class="row">
+
+      <form class="col s12">
+
+        <div class="row">
+          <div class="input-field col s12 m12 l6">
+            <input id="firstname" type="text" required class="validate" pattern="^\S.{1,23}\S$" title="Please enter a first Name between 3-25 characters" length="25" name="firstname"value="<%= address.firstname %>">
+            <label for="first_name">First Name</label>
+            <div class="error-message red-text"></div>
+          </div>
+          <div class="input-field col s12 m12 l6">
+            <input id="lastname" type="text" required class="validate" pattern="^\S.{1,23}\S$" title="Please enter a last Name between 3-25 characters" length="25" name="lastname"value="<%= address.lastname %>">
+            <label for="last_name" >Last Name</label>
+    
+            <div class="error-message red-text"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m12 l6">
+            <input id="address" type="text" required class="validate" pattern="^\S.+" title="Please enter a valid address" name="address"value="<%= address.address %>">
+            <label for="address">Address</label>
+            <div class="error-message red-text"></div>
+          </div>
+          <div class="input-field col s12 m12 l6">
+            <input id="city" type="text" required class="validate" title="Please enter a valid City/Town" pattern="^\S.+" name="city"value="<%= address.city %>">
+            <label for="city">City/Town</label>
+            <div class="error-message red-text"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12 m12 l6">
+            <label for="state">State</label>
+            <select id="state" class="browser-default" required title="Please select a state" name="state"value="<%= address.state %>">
+              <option value="" disabled selected>Select a state</option>
+              <option value="kerala">Kerala</option>
+              <option value="tamil nadu">Tamil Nadu</option>
+              <option value="karnataka">Karnataka</option>
+              <option value="ar-us">Rajasthan</option>
+              <option value="ar-us">Gujarat</option>
+            </select>
+            <div class="error-message red-text"></div>
+          </div>
+          <div class="input-field col s12 m12 l6">
+            <input id="pincode" type="text" required title="Please enter a valid post code (e.g., 12345)" pattern="^\d{6}$" class="validate" name="pincode"value="<%= address.pincode %>">
+            <label for="zip-code">Pincode</label>
+            <div class="error-message red-text"></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">email</i>
+            <input id="email" type="email" required class="validate" title="Please enter a valid email" name="email"value="<%= address.email %>">
+            <label for="email">Email</label>
+            <div class="error-message red-text"></div>
+          </div>
+          <div class="input-field col s12 m12 l6">
+            <i class="material-icons prefix">contact_phone</i>
+            <input id="phone" type="tel" required title="Please enter a valid phone number (e.g., (123) 456-7890)" pattern="^[0-9]{10}$" class="validate" name="phone"value="<%= address.phone %>">
+            <label for="phone">Phone Number</label>
+            <div class="error-message red-text"></div>
+          </div>
+        </div>
+        <div class="text-center login-button mb-4">
+          <button type="submit" class="btn btn-primary w-100">Update</button>
+          <a href="/userAddress" class="btn btn-primary w-100 mt-2">Go Back</a>
+      </div>
+        
+       
+      </form>
+      
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      document.getElementById('backButton').addEventListener('click', function() {
+        window.history.back();
+      });
+      </script>
+    <script>
+      function validateForm() {
+        let isValid = true;
+
+        // Reset previous error messages
+        $(".error-message").text("");
+
+        // Validate First Name and Last Name (no whitespace)
+        const nameRegex = /^\S.{1,23}\S$/;
+        $(".validate").each(function () {
+          const input = $(this);
+          const fieldName = input.attr("name");
+          const value = input.val();
+
+          if (fieldName === "firstname" || fieldName === "lastname") {
+            if (!nameRegex.test(value)) {
+              isValid = false;
+              input.siblings(".error-message").text("Please enter a valid name without leading or trailing spaces");
+            }
+          }
+
+          // Other validation rules go here for email, phone, etc.
+
+          // Example: Validate email
+          if (fieldName === "email" && !isValidEmail(value)) {
+            isValid = false;
+            input.siblings(".error-message").text("Please enter a valid email address");
+          }
+
+          // Example: Validate phone number
+          if (fieldName === "phone" && !isValidPhoneNumber(value)) {
+            isValid = false;
+            input.siblings(".error-message").text("Please enter a valid 10-digit phone number");
+          }
+
+          // Example: Validate state
+          if (fieldName === "state" && value === "") {
+            isValid = false;
+            input.siblings(".error-message").text("Please select a state");
+          }
+        });
+
+        return isValid;
+      }
+
+      // Example email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      // Example phone number validation function
+      function isValidPhoneNumber(phone) {
+        const phoneRegex = /^\d{10}$/;
+        return phoneRegex.test(phone);
+      }
+    </script>
+  </form>
+</body>
+
+</html>

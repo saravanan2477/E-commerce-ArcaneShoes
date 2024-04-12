@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="Stylesheet" href="/static/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <style>
+        .error-message {
+            color: red;
+        }
+    </style>
+</head>
+
+<body style="background: #f0f0f0;">
+
+    <div class="container" style="padding: 2%;">
+        <div class="row justify-content-center">
+
+            <div class="col-md-4">
+                <% if(typeof message !== 'undefined') { %>
+                <div class="alert alert-danger text-center">
+                    <%= message %>
+                </div>
+                <% } %>
+            <!-- <% if(typeof loginmessage !== 'undefined') { %>
+                <div class="alert alert-success text-center">
+                    <%= loginmessage %>
+                </div>
+                <% } %> -->
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <h1 class="text-center text-primary">Edit Product</h1>
+                        <form action="/admin/editproduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="productname" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="productname" name="productname" value="<%= product.productname %>" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <% if (product.category) { %>
+                                        <option value="<%= product.category._id %>"><%= product.category.category %></option>
+                                    <% } else { %>
+                                        <option value="">No Category</option>
+                                    <% } %>
+                                    <% if(categories.length > 0) { %>
+                                        <% categories.forEach(categorie => { %>
+                                            <option value="<%= categorie._id %>"><%= categorie.category %></option>
+                                        <% }) %>
+                                    <% } %>
+                                </select>
+                                
+                            </div>
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Price</label>
+                                <input type="text" class="form-control" id="price" name="price" value="<%= product.price %>" required>
+                            </div>
+                            
+                         
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <input type="text" class="form-control" id="description" name="description" value="<%= product.description %>" required>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                        
+                            <div class="mb-3">   
+                                <label for="stock" class="form-label">Stock</label>
+                                <input type="number" class="form-control" id="stock" name="stock" value="<%= product.stock %>"  required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="isListed" class="form-label">IsListed</label>
+                                <select class="form-select" id="isListed" name="isListed" required>
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
+                            </div>
+                                <div class="mb-3">
+                                <label for="existingImages" class="form-label">Existing Images</label>
+                                <% if (product.image && product.image.length> 0) { %>
+                                    <p style="color: white;">Previous Image(s):</p>
+                                    <% product.image.forEach((img, index)=> { %>
+                                        <img src="<%= img %>" alt="Previous Image"
+                                            style="max-width: 100px; max-height: 100px; margin-right: 10px;">
+                                        <button class="remove-image btn btn-danger" data-image="<%= index %>"
+                                            data-id="<%= product._id %>" type="button">Remove</button>
+                                        <% }); %>
+                                            <% } %>
+                            </div>
+                            <div class="mb-3">
+                                <label for="img" class="form-label">Product Image</label>
+                                <input type="file" class="form-control" id="img" name="img" accept="image/*" multiple  alt="no img">
+                            </div>
+                            <div class="text-center login-button mb-4">
+                                <button type="submit" class="btn btn-primary w-100" id="submit-button">Update</button>
+
+                                <a href="/admin/productmanagement" class="btn btn-primary w-100 mt-2">Go Back</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // Handle the click event for the "Remove" button
+            $('.remove-image').on('click', function () {
+                var button = $(this); // Store reference to the button
+                console.log('remove');
+                var productId = button.data('id');
+                var imageIndex = button.data('image');
+
+                // Make an AJAX request to remove the image from the database
+                $.ajax({
+                    url: '/admin/deleteimage', // Replace with the actual endpoint on your server
+                    method: 'POST', // Use the appropriate HTTP method
+                    data: {
+                        productId: productId,
+                        imageIndex: imageIndex
+                    },
+                    success: function (response) {
+                        // Handle the success response (e.g., update the UI)
+                        console.log(response);
+                        // You may want to remove the image from the UI as well
+                        button.prev('img').remove();
+                        button.remove();
+                    },
+                    error: function (error) {
+                        // Handle the error response
+                        console.error(error);
+                    }
+                    
+                });
+            });
+        });
+    </script>
+
+
+
+   
+<script>
+    $(document).ready(function () {
+        // Function to validate the length of the input and check for whitespace
+        function validateInputLength(inputId, maxLength, errorMessage) {
+            var input = $('#' + inputId);
+            input.on('input', function () {
+                var inputValue = $(this).val().trim(); // Trim whitespace
+                var inputLength = inputValue.length;
+                if (inputLength > maxLength || inputLength === 0) {
+                    // If the input exceeds the max length or is empty, show an error message
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').text(errorMessage);
+                    // Disable the submit button
+                    $('#submit-button').prop('disabled', true);
+                } else {
+                    // If the input is within the max length and not empty, remove the error message
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').text('');
+                    // Check if all inputs are valid to enable the submit button
+                    if ($('.is-invalid').length === 0) {
+                        $('#submit-button').prop('disabled', false);
+                    }
+                }
+            });
+        }
+
+        // Function to ensure only numbers are entered in the price field
+        function validateNumericInput(inputId) {
+            var input = $('#' + inputId);
+            input.on('input', function () {
+                // Use a regular expression to match only numeric characters
+                var numericValue = $(this).val().replace(/[^0-9]/g, '');
+                $(this).val(numericValue);
+            });
+        }
+
+        // Call the function for each input field
+        validateInputLength('productname', 50, 'Product name cannot exceed 50 characters and cannot be empty.');
+        validateInputLength('description', 200, 'Description cannot exceed 200 characters and cannot be empty.');
+        validateNumericInput('price'); // Ensure only numbers are entered in the price field
+
+        // Initially disable the submit button
+        $('#submit-button').prop('disabled', true);
+    });
+</script>
+
+
+
+
+
+</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

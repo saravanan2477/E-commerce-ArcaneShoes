@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- DataTable HEADER-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+        }
+        
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+        }
+        
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            padding: 15px;
+        }
+        
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .sidebar ul li a:hover {
+            color: #ccc;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+        }
+        
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .user-item button {
+            cursor: pointer;
+        }
+        
+        /* Styling for table headings */
+        #example thead th {
+            background-color: #007bff; /* Blue */
+            color: #fff; /* White */
+        }
+      
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>  
+            <li><a href="/admin/usermanagement">User Management</a></li>
+          <li><a href="/admin/categorymanagement">Category Management</a></li>
+          <li><a href="/admin/productmanagement">Product Management</a></li>
+          <li><a href="/admin/orderManagement">Order Management</a></li>
+          <li><a href="/couponManagement">Coupon Management</a></li>
+          <li><a href="#">Banner Management</a></li>
+          <li><a href="/admin/adminlogin">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1 style="text-align: center;">Order Management</h1>
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    
+                    <th>User Name</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>Total Prices</th>
+                    <th>Order Date</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    
+                    <th>Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+               
+                <% orderdetalist.forEach((order, index) => { %>
+                    <% order.productCollection.forEach((product, productIndex) => { %>
+
+                        <tr>
+                            <td data-label="User Name"><%= order.address.firstname %></td>
+                            <td data-label="Product Name"><%= product.productName %></td>
+                            <td data-label="Quantity"><%= product.quantity %></td>
+                            <td data-label="Quantity"><%= order.Discount %></td>
+                            <td data-label="Total Prices">₹<%= product.price * product.quantity - order.Discount%></td>
+                            <td data-label="Order Date"><%= order.orderDate %></td>
+                            <td data-label="Payment Method"><%= order.paymentMethod %></td>
+                            <td data-label="Status">
+                                <% if (product.status === 'Delivered' && product.status !== 'Cancelled') { %>
+                                    <%= product.status %>
+                                <% } else { %>
+                                    <form action="/update-status/<%= product._id %>/<%= order._id %>" method="post">
+                                        <div class="dropdown">
+                                            <select name="status" class="form-select" aria-label="Select Status">
+                                                <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                                <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                                <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                            </select>
+                                        </div>
+                                        <input type="hidden" name="productid" value="<%= product._id %>">
+                                        <td data-label="Action">
+                                            <% if (product.status !== 'Cancelled') { %>
+                                                <button type="submit" class="cancel-btn">Update</button>
+                                            <% } %>
+                                        </td>
+                                    </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                <% }); %>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable();
+        });
+    </script>
+</body>
+</html>

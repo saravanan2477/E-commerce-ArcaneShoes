@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Category</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="Stylesheet" href="/static/style.css">
+</head>
+
+<body style="background: #f0f0f0;">
+
+    <div class="container" style="padding: 8%;">
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <% if(typeof message !== 'undefined') { %>
+                <div class="alert alert-danger text-center">
+                    <%= message %>
+                </div>
+                <% } %>
+
+                <div class="card neumorphic">
+                    <div class="card-body">
+                        <h1 class="text-center text-primary">Add Category</h1>
+                        <form id="categoryForm" action="/admin/addcategory" method="POST">
+                            <div class="mb-3 mt-4">
+                                <label for="categoryname" class="form-label">Category Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="text-center login-button mb-4">
+                                <button type="submit" class="btn btn-primary w-100">Add</button>
+                                <a href="/admin/categorymanagement" class="btn btn-primary w-100 mt-2">Go Back</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('categoryForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const categoryNameInput = document.getElementById('name');
+            const categoryName = categoryNameInput.value.trim();
+            const maxLength = 15; // Set a maximum length for the category name
+            const isAllCaps = /^[A-Z\s]+$/.test(categoryName); // Check if the name is in all capital letters
+            const isUrl = /^(ftp|http|https):\/\/[^ "]+$/.test(categoryName); // Check if the name looks like a URL
+
+            // Check if category name is already added and only the first letter is capitalized
+            const existingCategories = Array.from(document.querySelectorAll('.existing-category')).map(category => category.textContent.trim());
+            const firstLetterCapitalized = categoryName.charAt(0) === categoryName.charAt(0).toUpperCase();
+            const categoryExists = existingCategories.includes(categoryName.toLowerCase());
+
+            if (!categoryName) {
+                alert('Please enter a category name.');
+            } else if (categoryName.length > maxLength) {
+                alert('Category name cannot be longer than ' + maxLength + ' characters.');
+            } else if (isAllCaps) {
+                alert('Category name cannot be in all capital letters.');
+            } else if (isUrl) {
+                alert('Category name cannot be a URL.');
+            } else if (categoryExists && firstLetterCapitalized) {
+                alert('Category name cannot be entered again if only the first letter is capitalized.');
+            } else {
+                // Proceed with form submission
+                this.submit();
+            }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
