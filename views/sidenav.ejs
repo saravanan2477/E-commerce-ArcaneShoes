@@ -52,7 +52,7 @@
         color: #555;
     }
     
-    .container {
+    .containerr {
         max-width: 1300px;
         margin: auto;
         padding-left: 25px;
@@ -254,12 +254,28 @@
             margin-left: 0;
         }
     }
+
+/* /wishlist */
+.heart-button {
+    font-size: 1.5em; /* Adjust the size as needed */
+    display: inline-block;
+    text-decoration: none;
+    border-color: black;
+    color: rgb(83, 78, 78); /* Change the color as needed */
+    margin-right: 20px; /* Adjust the margin to move it to the right */
+}
+
+.heart-button:hover {
+    color: rgb(211, 41, 41); /* Change the color as needed */
+}
+
+
 </style>
 
 </head>
 <body>
     <div class ="header">
-        <div class="container">
+        <div class="containerr">
             <div class="navbar">
                 <div class="logo">
                     <a href="index.html"><img src="/images/logo.png" width="125px"></a>
@@ -276,6 +292,14 @@
 
                     </ul>
                 </nav>
+
+                <!-- /WIishlist  -->
+                <a class="heart-button" href="/wishList">
+                    <i class="fa fa-heart"></i>
+                </a>
+                <!-- /WIishlist close -->
+
+
                 <a href="/cart"><img src="/images/cart.png" width="30px" height="30px"></a>
                 <img src="/images/menu.png" class="menu-icon" onClick="menutoggle()" >
             </div>

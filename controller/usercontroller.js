@@ -236,16 +236,7 @@ const productDetails = async (req, res) => {
   }
 }
 
-//!all products page get
-// const allProducts = async (req, res) => {
-//   try {
 
-//     res.render('allProducts');
-//   } catch (error) {
-//     console.log("Error:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// }
 const allProducts = async (req, res) => {
   try {
     const PAGE_SIZE = 4; // Number of products per page
@@ -261,8 +252,8 @@ const allProducts = async (req, res) => {
         .sort(buildSortOption(sortprice, sortAlphabetically))
         .skip((page - 1) * PAGE_SIZE) // Skip products based on current page
         .limit(PAGE_SIZE); // Limit number of products per page
-      
-      res.render('allProducts', { productcollection, totalPages, currentPage: page, sortprice, sortAlphabetically, category, priceRange });
+        const categories = await Category.find();
+      res.render('allProducts', {categories, productcollection, totalPages, currentPage: page, sortprice, sortAlphabetically, category, priceRange });
     } else {
       res.redirect('/allProducts');
     }
@@ -365,7 +356,7 @@ const addToWishlist = async (req, res) => {
     await WishList.create(newWishlistItem);
 
     console.log("Wishlist item added:", newWishlistItem);
-    res.redirect('/Homepage');
+    res.redirect('/wishList');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');

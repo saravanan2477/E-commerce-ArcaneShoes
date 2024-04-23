@@ -3,6 +3,7 @@ const adminCollections = require("../model/admin");
 const UserCollection=require("../model/users")
 const Category = require("../model/category");
 const Ordercollection = require("../model/order")
+const Product = require("../model/product");
 
 //adminlogin get
 const adminlogin = async (req, res) => {
@@ -34,7 +35,7 @@ const adminloginpost = async (req, res) => {
             res.redirect("/admin/dashboard");
         } else {
            res.redirect('/admin/adminlogin/?message=InvalidEntry')
-            res.render('adminlogin');
+            
         }
     } catch (error) {
         console.log("Error:", error);
@@ -318,12 +319,12 @@ const getLogout = (req, res) => {
   }
 
 
-
+//!order page
 
 const orderget = async(req,res)=>{
   try{
   const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
-
+console.log(orderdetalist,"orders are here");
     res.render("orderManagement",{orderdetalist});
   }
   catch(err){
@@ -333,7 +334,9 @@ const orderget = async(req,res)=>{
   }
 }
 
-const updateUserOrder = async (req, res) => {
+
+const updateOrderpost = async (req, res) => {
+  console.log(" tyhe product entered update page");
   const orderid = req.params.productid;
   const productid = req.params.orderid;
   const newstatus = req.body.status;
@@ -349,7 +352,7 @@ const updateUserOrder = async (req, res) => {
     }
 
     console.log("Updated Product Collection for Order ID:", order._id);
-        console.log(orderget.productcollection);
+        console.log(order.productcollection);
         console.log("-----------------------------");
         if (newstatus === 'Delivered') {
           // Update the database to track that the order has been delivered
@@ -358,7 +361,7 @@ const updateUserOrder = async (req, res) => {
               { $set: { 'delivered': true } }
           );
       }
-        res.redirect('/adminOrder');
+        res.redirect('/orderManagement');
   } catch (error) {
     console.error(error);
     return res.status(500).send("Internal Server Error");
@@ -386,7 +389,7 @@ module.exports = {
     productmanagement,
 
     orderget,
-    updateUserOrder,
+    updateOrderpost,
    
     
 }

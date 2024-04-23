@@ -1,17 +1,108 @@
-<%- include('sidenav') %>
-<div id="sidebar">
-    <div class="sidebar-content">
-        <ul class="sidebar-menu">
-            <li><a href="/userProfile">Profile</a></li>
-            <li><a href="#">Wallet</a></li>
-            <li><a href="/userAddress">Address</a></li>
-            <li><a href="cart">Cart</a></li>
-            <li><a href="/userOrders">Orders</a></li>
-            <li><a href="/logout">Logout</a></li>
-        </ul>
-    </div>
-    <div class="user-content">
-        <h2>hello world this is orders pagez</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <link rel="stylesheet" href="/public/css/app.css">
+    <link rel="stylesheet" href="/public/css/utility.css">
+    <style>
+.product-name {
+    white-space: normal; /* Allow wrapping to new lines */
+    display: inline-block; /* Ensure inline block display for proper wrapping */
+    max-width: 230px; /* Adjust as needed */
+}
+
+    </style>
+</head>
+<body>
+    <%- include('sidenav') %>
+
+
+<h4 style="text-align: center; font-size: 24px; color: #333;">Orders</h4>
+
+
+
+<div class="section__content" >
+    <div class="container" >
+        <div class="row">
+            <% if (orders.length === 0) { %>
+                <div class="col-md-12 text-center">
+                    <br>
+                    <p style="color: red;">No Orders are placed</p>
+                </div>
+            <% } else { %>
+                <% orders.forEach(order => { %>
+                    <% order.productcollection.forEach(product => { %>
+                        <!--====== ORDERED Product ======-->
+                        <div class="w-r u-s-m-b-30">
+                            <div class="w-r__container">
+                                <div class="w-r__wrap-1">
+                                    <div class="w-r__img-wrap">
+                                        <img class="u-img-fluid" src="<%= product.image[0] %>" alt="<%= product.productName %>"> 
+                                    </div>
+                                    <div class="w-r__info">
+                                        <span class="w-r__name">
+                                            <a href="#">
+                                                <span class="product-name">
+                                                    <h4><%= product.productName %></h4> <!-- Display product name -->
+                                                </span>
+                                            </a>
+                                        </span>
+                                        <span class="w-r__price">
+                                            <label class="w-r__price">₹<%= product.price * product.quantity  %></label>
+                                        </span>
+                                        <!-- Display the quantity -->
+                    <span class="w-r__quantity">
+                        <label class="w-r__quantity">Quantity: <%= product.quantity %></label>
+                    </span>
+                                    </div>
+                                    <div class="w-r__wrap-2">
+                                        <a class="w-r__link btn--e-brand-b-2" href="/getproduct/<%= product.productid %>">VIEW</a>
+                                        <a class="w-r__link btn--e-transparent-platinum-b-2" href="/orderDetails/<%= order._id %>">ORDER DETAILS</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--====== End -  Product ======-->
+                    <% }) %>
+                <% }) %>
+            <% } %>
+        </div>
     </div>
 </div>
-<%- include('sidefooter') %>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+  
+</div>
+
+
+
+
+    <%- include('sidefooter') %>
+
+
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+    <script>
+         new DataTable('#example');
+
+
+    </script>
+
+
+</body>
+</html>

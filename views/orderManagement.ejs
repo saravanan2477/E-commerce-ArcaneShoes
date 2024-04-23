@@ -90,6 +90,21 @@
             background-color: #007bff; /* Blue */
             color: #fff; /* White */
         }
+        .cancel-btn {
+  background-color: #3dcf38; /* Coral color */
+  color: #fff; /* White text color */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-btn:hover {
+  background-color: #f54b08; /* Darker coral color on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adding a subtle shadow on hover */
+}
+
       
     </style>
 </head>
@@ -100,7 +115,7 @@
             <li><a href="/admin/dashboard">Dashboard</a></li>  
             <li><a href="/admin/usermanagement">User Management</a></li>
           <li><a href="/admin/categorymanagement">Category Management</a></li>
-          <li><a href="/admin/productmanagement">Product Management</a></li>
+          <li><a href="/productmanagement">Product Management</a></li>
           <li><a href="/admin/orderManagement">Order Management</a></li>
           <li><a href="/couponManagement">Coupon Management</a></li>
           <li><a href="#">Banner Management</a></li>
@@ -113,13 +128,13 @@
         <table id="example" class="table table-striped" style="width:100%">
             <thead>
                 <tr>
-                    
+                    <th>ID</th>
                     <th>User Name</th>
                     <th>Product Name</th>
                     <th>Quantity</th>
-                    <th>Discount</th>
+                    <!-- <th>Discount</th> -->
                     <th>Total Prices</th>
-                    <th>Order Date</th>
+                    <!-- <th>Order Date</th> -->
                     <th>Payment Method</th>
                     <th>Status</th>
                     
@@ -128,44 +143,47 @@
                 </tr>
             </thead>
             <tbody>
-               
-                <% orderdetalist.forEach((order, index) => { %>
-                    <% order.productCollection.forEach((product, productIndex) => { %>
-
-                        <tr>
-                            <td data-label="User Name"><%= order.address.firstname %></td>
-                            <td data-label="Product Name"><%= product.productName %></td>
-                            <td data-label="Quantity"><%= product.quantity %></td>
-                            <td data-label="Quantity"><%= order.Discount %></td>
-                            <td data-label="Total Prices">₹<%= product.price * product.quantity - order.Discount%></td>
-                            <td data-label="Order Date"><%= order.orderDate %></td>
-                            <td data-label="Payment Method"><%= order.paymentMethod %></td>
-                            <td data-label="Status">
-                                <% if (product.status === 'Delivered' && product.status !== 'Cancelled') { %>
-                                    <%= product.status %>
-                                <% } else { %>
-                                    <form action="/update-status/<%= product._id %>/<%= order._id %>" method="post">
-                                        <div class="dropdown">
-                                            <select name="status" class="form-select" aria-label="Select Status">
-                                                <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                                <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                                <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                                <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                            </select>
-                                        </div>
-                                        <input type="hidden" name="productid" value="<%= product._id %>">
-                                        <td data-label="Action">
-                                            <% if (product.status !== 'Cancelled') { %>
-                                                <button type="submit" class="cancel-btn">Update</button>
-                                            <% } %>
-                                        </td>
-                                    </form>
-                                <% } %>
-                            </td>
-                        </tr>
-                <% }); %>
-                <% }); %>
-            </tbody>
+              <% let productIndex = 1; %> <!-- Initialize the counter before the loop -->
+              <% if (orderdetalist && Array.isArray(orderdetalist)) { %>
+                 <% orderdetalist.forEach((order) => { %>
+                   <% if (order.productcollection && Array.isArray(order.productcollection)) { %>
+                     <% order.productcollection.forEach((product) => { %>
+                       <tr>
+                         <td><%= productIndex %></td> <!-- Use the counter here -->
+                         <td data-label="User Name"><%= order.Username %></td>
+                         <td data-label="Product Name"><%= product.productName %></td>
+                         <td data-label="Quantity"><%= product.quantity %></td>
+                         <td data-label="Total Prices">₹<%= product.price * product.quantity %></td>
+                         <td data-label="Payment Method"><%= order.paymentMethod %></td>
+                         <td data-label="Status">
+                           <% if (product.status === 'Delivered' && product.status !== 'Cancelled') { %>
+                             <%= product.status %>
+                           <% } else { %>
+                             <form action="/update-status/<%= order._id %>/<%= product.productid %>" method="post">
+                              <div class="dropdown">
+                                 <select name="status" class="form-select" aria-label="Select Status">
+                                   <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                   <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                   <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                   <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                 </select>
+                              </div>
+                              <input type="hidden" name="productid" value="<%= product.productid %>">
+                              <td data-label="Action">
+                                 <% if (product.status !== 'Cancelled') { %>
+                                   <button type="submit" class="cancel-btn">Update</button>
+                                 <% } %>
+                              </td>
+                             </form>
+                           <% } %>
+                         </td>
+                       </tr>
+                       <% productIndex++; %> <!-- Increment the counter after displaying each product -->
+                     <% }); %>
+                   <% } %>
+                 <% }); %>
+              <% } %>
+             </tbody>
         </table>
     </div>
 

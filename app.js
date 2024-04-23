@@ -11,6 +11,8 @@ const orderrouter= require("./routes/orderRouter")
 const productController = require('./routes/productrouter');
 const userProfilerouter = require("./routes/userProfilerouter")
 const Coupondetails = require('./routes/couponRouter');
+const paymentRoute = require('./routes/paymentRouter');
+
 const app = express();
 
 app.use('/public/', express.static('./public'));
@@ -44,11 +46,12 @@ app.set("view engine", "ejs");
 // Routes setup
 app.use("/", userrouter);
 app.use("/admin", adminrouter);
-app.use("/admin", productController);
+app.use("/", productController);
 app.use("/",userProfilerouter)
 app.use("/",cartrouter)
 app.use("/",orderrouter)
 app.use('/',Coupondetails);
+app.use('/',paymentRoute);
 
 
 

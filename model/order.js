@@ -30,7 +30,10 @@ const OrderSchema = new mongoose.Schema({
             status:{
                 type:String,
                 required:true
-            }
+            },
+            image: {
+                type: [String],
+              }
         
         }
     ],
@@ -45,7 +48,10 @@ const OrderSchema = new mongoose.Schema({
 totalPrice:{
     type: Number
 },   
-    
+orderDate:{
+    type: Date
+},
+
 });
 
 const order=mongoose.model('order',OrderSchema)

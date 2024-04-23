@@ -36,6 +36,68 @@
   background-color: #ddd;
 }
 
+.product-container {
+    margin-bottom: 20px; /* Add margin-bottom to create space between products */
+    margin-right: 20px; /* Add margin-right to create space between products */
+    padding: 20px; /* Add padding to create space within the product container */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+.wishlist-container {
+    margin-bottom: 30px;
+}
+
+.wishlist-icon {
+    color: #888;
+}
+
+.wishlist-icon:hover {
+    color: #f00;
+}
+
+.col-6 {
+    width: 100%;
+    float: left;
+}
+
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+/* /wishlist */
+.heart-button {
+    font-size: 1.5em; /* Adjust the size as needed */
+    display: inline-block;
+    text-decoration: none;
+    border-color: black;
+    color: rgb(83, 78, 78); /* Change the color as needed */
+    margin-right: 20px; /* Adjust the margin to move it to the right */
+}
+
+.heart-button:hover {
+    color: rgb(211, 41, 41); /* Change the color as needed */
+}
+
+.col-6 img {
+    width: 250px; /* Set the width to 575px */
+    height: 250px; /* Set the height to 575px */
+    object-fit: scale-down; /* Maintain aspect ratio and cover the container */
+}
+
+#product-container{
+    max-width: 1270px;
+    margin: auto;
+    padding-left: 30px;
+    padding-right: 0px;
+}
+
+#product-item{
+    margin-bottom: 10px;
+    margin-right: -25px;
+    padding: 0px;
+    box-sizing: border-box;
+}
 </style>
     </head>
     <body>
@@ -55,6 +117,14 @@
 
                     </ul>
                 </nav>
+
+                    <!-- /WIishlist  -->
+                    <a class="heart-button" href="/wishList">
+                        <i class="fa fa-heart"></i>
+                    </a>
+                    <!-- /WIishlist close -->   
+
+
                 <a href="/cart"><img src="images/cart.png" width="30px" height="30px"></a>
                 <img src="images/menu.png" class="menu-icon" onClick="menutoggle()" >
             </div>
@@ -64,8 +134,8 @@
     
         
         <!------------------------------ Products------------------------------>
-        <div class="small-container">
-
+        <div class="small-container" id="product-container">
+           
 
 
             <form action="/filter" method="post" class="my-4">
@@ -73,10 +143,11 @@
                     <div class="list-group-item">
                         <label for="category" class="form-label">Select Category:</label>
                         <select name="category" id="category" class="form-select">
-                            <option value="">All Categories</option>
-                            <option value="">Casual</option>
-                            <option value="">Sports</option>
-                            <option value="">Formals</option>
+                            <option value="All Categories">All Categories</option>
+            <!-- Add your category options dynamically here -->
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.category %></option>
+            <% }); %>
                             
                             <!-- Add your category options here -->
                         </select>
@@ -124,30 +195,39 @@
 
             <!--<h2 class="title" >Featured Products</h2>-->
              <!------------------------------ featured Products------------------------------>
-        <div class="small-container">
-            
-            <h2 class="title">All Products</h2>
-            <div class="row">
-                
-                <% if (productcollection) { %>
-                    <% productcollection.forEach(product => { %>
-                        <div class="col-4">
-                            <a href="/admin/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
-                            <a href="/admin/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
-                            <div class="rating">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-half-o"></i>
-                                <i class="fa fa-star-o"></i>
+             <div class="small-container" id="product-container">
+                <h2 class="title">All Products</h2>
+                <div class="row">
+                    <% if (productcollection) { %>
+                        <% productcollection.forEach(product => { %>
+                            <div class="col-4 product-container" id="product-item">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="wishlist-container">
+                                            <a href="/wishlist/<%=product._id%>"><i class="fa fa-heart wishlist-icon"></i></a>
+                                        </div>
+                                        <a href="/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
+                                    </div>
+                                    <div class="col-6">
+                                        <a href="/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star-half-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                        <p>₹<%= product.price %></p>
+                                        <a href="/getproduct/<%= product._id %>" class="btn">View</a> 
+                                    </div>
+                                </div>
                             </div>
-                            <p>₹<%= product.price %></p>
-                            <a href="/admin/getproduct/<%= product._id %>" class="btn">View</a> 
-                        </div>
-                    <% }) %>
-                <% } %>
+                        <% }) %>
+                    <% } %>
+                </div>
             </div>
-        </div>
+            
+            
             
         <!-- Pagination Controls -->
 <div class="pagination">
@@ -230,47 +310,6 @@
         </script>
 
 
-
-<!-- <script>
-    // Get the select element for sorting prices
-    var sortPriceSelect = document.getElementById('sortprice');
-    
-    // Add event listener to detect changes in the select element
-    sortPriceSelect.addEventListener('change', function() {
-        // Get the selected sorting option
-        var selectedOption = this.value;
-        
-        // Get all product elements
-        var productElements = document.querySelectorAll('.col-4');
-        
-        // Convert product elements to an array
-        var productsArray = Array.from(productElements);
-        
-        // Sort products based on the selected option
-        if (selectedOption === 'lowToHigh') {
-            productsArray.sort(function(a, b) {
-                var priceA = parseFloat(a.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
-                var priceB = parseFloat(b.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
-                return priceA - priceB; // Sort in ascending order
-            });
-        } else if (selectedOption === 'highToLow') {
-            productsArray.sort(function(a, b) {
-                var priceA = parseFloat(a.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
-                var priceB = parseFloat(b.querySelector('p').innerText.slice(1)); // Extract and parse price from the product element
-                return priceB - priceA; // Sort in descending order
-            });
-        }
-        
-        // Remove existing product elements from the container
-        var productContainer = document.querySelector('.row');
-        productContainer.innerHTML = '';
-        
-        // Append sorted product elements to the container
-        productsArray.forEach(function(product) {
-            productContainer.appendChild(product);
-        });
-    });
-</script> -->
 
     </body>
 </html>

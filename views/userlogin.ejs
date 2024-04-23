@@ -4,8 +4,8 @@
 <head>
 	<title>Login V4</title>
 	<meta charset="UTF-8">
-	<meta name="google-signin-client_id" content="366409711419-otvusdn9d5h0p01ffqa50381lk6fmb4h.apps.googleusercontent.com">
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+	
+    
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
 	<link rel="icon" type="image/png" href="/images/icons/favicon.ico" />
@@ -59,7 +59,9 @@
     background: linear-gradient(to right, #ee1354, #ffd900, #ff0000);
     background-size: 200% 200%;
     animation: gradientAnimation 8s ease infinite;
-    transition: background 0.5s ease; /* Add transition for smooth color change */
+    transition: background 0.5s ease;
+	background-image: url(/public/images/bg-01.jpg);
+
 }
 
 .transition-loop {
@@ -102,7 +104,7 @@
 
 					<div class="wrap-input100 validate-input" data-validate="Password is required">
 						<span class="label-input100">Password</span>
-						<input class="input100" type="password" name="password"value="Qwe@123" placeholder="Type your password"
+						<input class="input100" type="password" name="password"value="11111" placeholder="Type your password"
 							required>
 						<span class="input-icon"><i class="fa fa-lock"></i></span> <!-- Icon -->
 					</div>
@@ -123,14 +125,14 @@
 						</div>
 					</div>
 
-					<!-- <div class="flex-c-m">
-        <a href="#" class="login100-social-item bg1">
+					<div class="flex-c-m">
+        <!-- <a href="#" class="login100-social-item bg1">
             <i class="fab fa-facebook"></i>
         </a>
         <a href="#" class="login100-social-item bg3">
             <i class="fab fa-google"></i>
-        </a>
-    </div> -->
+        </a> -->
+    </div>
 	<div class="g-signin2" data-onsuccess="onSignIn"></div>
 
 

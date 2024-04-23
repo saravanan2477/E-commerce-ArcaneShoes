@@ -51,7 +51,7 @@ module.exports = {
     newProduct.save()
     .then(c=>{
       console.log('inserted',c);
-       res.redirect("/admin/productmanagement");
+       res.redirect("/productmanagement");
     })
     .catch(c=>{
       console.log('error',c);
@@ -98,7 +98,7 @@ module.exports = {
       await value.save()
       .then(s=>{
         console.log('updated',s);
-        res.redirect("/admin/productmanagement");
+        res.redirect("/productmanagement");
 
       })
        .catch(c=>{
@@ -119,7 +119,7 @@ module.exports = {
       const deleteproduct=await Product.findByIdAndDelete(pid)
       .then(x=>{
         console.log('product deleted',x)
-        res.redirect('/admin/productmanagement')
+        res.redirect('/productmanagement')
       })
       .catch(x=>{
         console.log('error in deletion');
@@ -138,14 +138,31 @@ module.exports = {
       console.error(err);
       return res.status(500).send("Error changing product status");
     }
-    res.redirect("/admin/productmanagement");
+    res.redirect("/productmanagement");
   },
   getproduct: async (req, res) => {
     const pid = req.params.id;
-    const product = await Product.findById(pid).populate('category');
-    // Fetch related products
-    const relatedProducts = await Product.find({ category: product.category._id }).limit(5);
-    res.render('productDetails', { product, relatedProducts });
+    try {
+        const product = await Product.findById(pid).populate('category');
+        if (!product) {
+            return res.status(404).send('Product not found');
+        }
+
+        // Check if the product has a category before accessing its _id property
+        if (!product.category) {
+            // Handle the case when the product doesn't have a category
+            // You may want to render an error message or redirect to another page
+            return res.status(404).send('Product category not found');
+        }
+
+        // Fetch related products
+        const relatedProducts = await Product.find({ category: product.category._id }).limit(5).populate('category');
+
+        res.render('productDetails', { product, relatedProducts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
 },
 
   deleteimage: async (req, res) => {
@@ -182,6 +199,8 @@ module.exports = {
 
    productfilter : async (req, res) => {
     try {
+      const categories = await Category.find();
+      console.log(categories,"this is the categories");
       // Retrieve filtering parameters from the form submission
       const { category, sortprice, priceRange, sortAlphabetically, page = 1 } = req.body;
   
@@ -219,7 +238,8 @@ module.exports = {
           sortprice,
           sortAlphabetically,
           category,
-          priceRange
+          priceRange,
+          categories: categories 
         });
       } else {
         // Handle the case when user is not authenticated

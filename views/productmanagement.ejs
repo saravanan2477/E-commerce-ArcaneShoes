@@ -99,7 +99,7 @@
             <li><a href="/admin/dashboard">Dashboard</a></li>  
             <li><a href="/admin/usermanagement">User Management</a></li>
           <li><a href="/admin/categorymanagement">Category Management</a></li>
-          <li><a href="/admin/productmanagement">Product Management</a></li>
+          <li><a href="/productmanagement">Product Management</a></li>
           <li><a href="/admin/orderManagement">Order Management</a></li>
           <li><a href="/couponManagement">Coupon Management</a></li>
           <li><a href="#">Banner Management</a></li>
@@ -110,13 +110,13 @@
     <div class="content">
         <h1 style="text-align: center;">product Management</h1>
         <div style="text-align:left; margin-bottom: 20px;">
-            <a href="/admin/addProduct" class="btn btn-primary">Add Product</a>
+            <a href="/addProduct" class="btn btn-primary">Add Product</a>
         </div> 
         
         <table id="example" class="table table-striped" style="width:100%">
             <thead>
                 <tr>
-                 
+                    <th>ID</th>
                     <th>Product Name</th>
                     <th>Category</th>
                     <th>Price</th>
@@ -131,8 +131,11 @@
             </thead>
             <tbody id="userTableBody">
                 <% if( products.length > 0) { %>
-                    <% products.forEach( product=> { %>
+                    <% products.forEach( (product,index)=> { %>
                         <tr>
+                            <td><%= index + 1 %></td>
+
+
                             <td>
                                 <%= product.productname %>
                             </td>
@@ -164,18 +167,18 @@
                             </td>
                             <td>
                                 <% if (product.isListed) { %>
-                                    <a href="/admin/unlistproduct/<%= product._id %>" class="btn btn-danger">UnList</a>
+                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-danger">UnList</a>
                                 <% } else { %>
-                                    <a href="/admin/unlistproduct/<%= product._id %>" class="btn btn-success">List</a>
+                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-success">List</a>
                                 <% } %>
                             </td>
                             <td>
                                 <!-- Edit Button -->
-                                <a href="/admin/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
+                                <a href="/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
                             </td>
                             <td>
                                 <!-- delete Button -->
-                                <a href="/admin/deleteproduct/<%= product._id %>" class="btn btn-primary">Delete</a>
+                                <a href="/deleteproduct/<%= product._id %>" class="btn btn-primary">Delete</a>
                             </td>
                         </tr>
                         <% }); %>

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const couponCollection= require('../model/coupon');
+const Product = require("../model/product");
 
 
 

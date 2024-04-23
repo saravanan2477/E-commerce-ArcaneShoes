@@ -19,7 +19,11 @@ const wishlist=new mongoose.Schema({
     },
     image:{
         type:String
+    },
+    category: {
+        type: String,
     }
+    
 })
 const wishliststructure = mongoose.model('wishlist',wishlist)
 

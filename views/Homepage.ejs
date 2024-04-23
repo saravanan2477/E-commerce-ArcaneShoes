@@ -27,6 +27,18 @@
 }
 
 
+.heart-button {
+    font-size: 1.5em; /* Adjust the size as needed */
+    display: inline-block;
+    text-decoration: none;
+    border-color: black;
+    color: rgb(83, 78, 78); /* Change the color as needed */
+    margin-right: 20px; /* Adjust the margin to move it to the right */
+}
+
+.heart-button:hover {
+    color: rgb(211, 41, 41); /* Change the color as needed */
+}
 
 
 
@@ -51,8 +63,21 @@
 
                     </ul>
                 </nav>
+              <!-- /WIishlist  -->
+                <a class="heart-button" href="/wishList">
+                    <i class="fa fa-heart"></i>
+                </a>
+              <!-- /WIishlist close -->
+
+
+              <!-- cart image  -->
+
                 <a href="/cart"><img src="images/cart.png" width="30px" height="30px"></a>
+
+              <!-- cart image close  -->
+
                 <img src="images/menu.png" class="menu-icon" onClick="menutoggle()" >
+                
             </div>
             <div class="row">
                 <div class="col-2">
@@ -74,19 +99,19 @@
                     <div class="col-3">
                         <div class="image-container">
                             <img src="images/category-1.jpg" alt="Category 1">
-                            <div class="text">CASUAL </div>
+                            <div class="text"> </div>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="image-container">
                             <img src="images/category-2.jpg" alt="Category 2">
-                            <div class="text">SPORTS</div>
+                            <div class="text"></div>
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="image-container">
                             <img src="images/category-3 (2).jpg" alt="Category 3">
-                            <div class="text">FORMALS</div>
+                            <div class="text"></div>
                         </div>
                     </div>
                 </div>
@@ -102,8 +127,8 @@
                 <% if (productcollection) { %>
                     <% productcollection.forEach(product => { %>
                         <div class="col-4">
-                            <a href="/admin/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
-                            <a href="/admin/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
+                            <a href="/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
+                            <a href="/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
                             <div class="rating">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -112,7 +137,7 @@
                                 <i class="fa fa-star-o"></i>
                             </div>
                             <p>₹<%= product.price %></p>
-                            <a href="/admin/getproduct/<%= product._id %>" class="btn">View</a> 
+                            <a href="/getproduct/<%= product._id %>" class="btn">View</a> 
                         </div>
                     <% }) %>
                 <% } %>
@@ -121,13 +146,13 @@
         
             
             
-             <h2 class="title" >Latest Products</h2>
+             <!-- <h2 class="title" >Latest Products</h2>
                 <div class="row">
                     <div class="col-4">
                         <a href="products-details.html"><img src="images/product-5.jpg"></a>
                         <h4>Flat Heel gray hoes</h4>
                         <div class="rating">
-                            <!--(before this added awesome4 cdn font link to the head)added a cdn link by searching font awesome4 icon and from the site  search the star entering the first option and getting a link of this fa-star*-->
+                            
                             <i class="fa fa-star" ></i>
                             <i class="fa fa-star" ></i>
                             <i class="fa fa-star" ></i>
@@ -172,7 +197,7 @@
                         </div>
                         <p>₹3500</p>
                     </div>  
-                </div>
+                </div> -->
             <!--new row for the latest product-->
                 <div class="row">
                

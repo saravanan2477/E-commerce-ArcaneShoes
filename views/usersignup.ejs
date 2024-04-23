@@ -41,7 +41,7 @@
             left: 10px;
             transform: translateY(-50%); 
             font-size: 18px;
-            color: #aaa;
+            color: #302727;
         }
         .error-message{
             color: red; /* Set text color to red */
@@ -51,7 +51,8 @@
             background: linear-gradient(to right, #ee1354, #ffd900, #ff0000);
             background-size: 200% 200%;
             animation: gradientAnimation 10s ease infinite;
-            transition: background 1s ease; /* Add transition for smooth color change */
+            transition: background 1s ease;
+            background-image: url(/public/images/bg-01.jpg);
         }
     
         .transition-loop {
@@ -77,7 +78,7 @@
 <body>
 
 
-   <div class="limiter" >
+   <div class="limiter">
         <div class="container-login100" >
             <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
                 <form id="signupForm" class="login100-form validate-form" action="/usersignuppost" method="post" onsubmit="return validateForm()">
@@ -118,9 +119,9 @@
                         <!-- <a href="#" class="login100-social-item bg1">
                             <i class="fab fa-facebook"></i>
                         </a> -->
-                        <a href="#" class="login100-social-item bg3">
+                        <!-- <a href="#" class="login100-social-item bg3">
                             <i class="fab fa-google"></i>
-                        </a>
+                        </a> -->
                     </div>
                     <div class="flex-col-c p-t-155">
                         <span class="txt1 p-b-17">

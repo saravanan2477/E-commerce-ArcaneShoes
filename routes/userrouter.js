@@ -58,7 +58,7 @@ router.get("/removeFromWishlist/:id",checkSessionBlocked,usercontroller.removewi
 
 //!google
 
-// router.post("/googleLogin",usercontroller.googleloginpost )
+//router.post("/googleLogin",usercontroller.googleloginpost )
 
 
 

@@ -47,7 +47,7 @@
 
                     </ul>  
                 </nav>
-                <a href="cart.html"><img src="images/cart.png" width="30px" height="30px"></a>
+               
                 <img src="images/menu.png" class="menu-icon" onClick="menutoggle()" >
             </div>
             <div class="row">
@@ -97,8 +97,8 @@
                     <% if (productcollection) { %>
                         <% productcollection.forEach(product => { %>
                             <div class="col-4">
-                                <a href="/admin/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
-                                <a href="/admin/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
+                                <a href="/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
+                                <a href="/getproduct/<%= product._id %>"><h4><%= product.productname %></h4></a>
                                 <div class="rating">
                                     <!--(before this added awesome4 cdn font link to the head)added a cdn link by searching font awesome4 icon and from the site  search the star entering the first option and getting a link of this fa-star*-->
                                     <i class="fa fa-star"></i>

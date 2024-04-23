@@ -64,8 +64,7 @@ router.post("/updateProfile",profilecontroller.editProfilePost)
 router.get("/changePassword",profilecontroller.changePasswordGet)
 router.post("/changePassword",profilecontroller.changePasswordPost)
 
-  //! user order get
-  router.get("/userOrders",checkSessionBlocked,profilecontroller.showUserOrders);
+
 
 //! user address
 

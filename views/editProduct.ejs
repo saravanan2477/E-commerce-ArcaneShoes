@@ -38,7 +38,7 @@
                     <div class="card-body">
 
                         <h1 class="text-center text-primary">Edit Product</h1>
-                        <form action="/admin/editproduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
+                        <form action="/editproduct/<%= product._id %>" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="productname" class="form-label">Product Name</label>
                                 <input type="text" class="form-control" id="productname" name="productname" value="<%= product.productname %>" required>
@@ -102,7 +102,7 @@
                             <div class="text-center login-button mb-4">
                                 <button type="submit" class="btn btn-primary w-100" id="submit-button">Update</button>
 
-                                <a href="/admin/productmanagement" class="btn btn-primary w-100 mt-2">Go Back</a>
+                                <a href="/productmanagement" class="btn btn-primary w-100 mt-2">Go Back</a>
                             </div>
                         </form>
                     </div>
@@ -121,7 +121,7 @@
 
                 // Make an AJAX request to remove the image from the database
                 $.ajax({
-                    url: '/admin/deleteimage', // Replace with the actual endpoint on your server
+                    url: '/deleteimage', // Replace with the actual endpoint on your server
                     method: 'POST', // Use the appropriate HTTP method
                     data: {
                         productId: productId,
@@ -184,12 +184,12 @@
         }
 
         // Call the function for each input field
-        validateInputLength('productname', 50, 'Product name cannot exceed 50 characters and cannot be empty.');
-        validateInputLength('description', 200, 'Description cannot exceed 200 characters and cannot be empty.');
+        validateInputLength('productname', 60, 'Product name cannot exceed 60 characters and cannot be empty.');
+        validateInputLength('description', 400, 'Description cannot exceed 400 characters and cannot be empty.');
         validateNumericInput('price'); // Ensure only numbers are entered in the price field
 
         // Initially disable the submit button
-        $('#submit-button').prop('disabled', true);
+        // $('#submit-button').prop('disabled', true);
     });
 </script>
 

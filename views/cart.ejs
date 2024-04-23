@@ -22,7 +22,7 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 		<!-- <link href="css/tiny-slider.css" rel="stylesheet"> -->
 		<!-- <link href="/css/style.css" rel="stylesheet"> -->
-		<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+		<title>Cart</title>
 	</head>
 
 	<body>
@@ -50,6 +50,25 @@ height: auto;
   transition: background 0.5s;
 }
 
+#checkoutBtn{
+  display: inline-block;
+    background: #ff523b;
+    color: #fff;
+    padding: 0px 0px;
+    margin: 2px -4px;
+    border-radius: -1px;
+    transition: background 0.5s;
+}
+
+#continueShoppingBtn {
+    display: inline-block;
+    background: #ff523b;
+    color: #fff;
+    padding: 5px 10px; /* Adjust padding to make the button smaller */
+    margin: -5px -10px; /* Adjust margin to move the button a little to the top and left */
+    border-radius: 3px; /* Corrected border-radius value */
+    transition: background 0.5s;
+}
   </style>
   </head>
   
@@ -144,15 +163,11 @@ height: auto;
               </div>
         
               <div class="row">
-                <div class="col-md-3">
-                  <div class="row mb-3">
-                   
-                    <div class="col-md-3">
-                      <a href="/Homepage" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
-                    </div>
-                  </div>
                   
+                  <div class="col-md-3 d-flex w-100">
+                    <a href="/Homepage" id="continueShoppingBtn" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
                 </div>
+                
                 <!-- btghghjbgdbsdtgrevryrtggggggggggggggggg -->
                 <div class="col-md-5 pl-1">
                   <div class="row justify-content-end">
@@ -162,6 +177,7 @@ height: auto;
                                   <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
                               </div>
                           </div>
+                          
                           <div class="row mb-3">
                               <div class="col-md-6">
                                   <span class="text-black">Subtotal</span>
@@ -179,16 +195,22 @@ height: auto;
                               </div>
                           </div>
                           <div class="row">
-                              <div class="col-md-7">
-                                  <a href="/CheckoutPage"><button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button></a>
-                              </div>
+                            <div class="col-md-7">
+                              <a href="/CheckoutPage"><button id="checkoutBtn" class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button></a>
                           </div>
+                          
+                          </div>
+                          
                       </div>
+                      
                   </div>
+                  
               </div>
               
               </div>
+             
             </div>
+           
           </div>
         
 		
@@ -196,6 +218,7 @@ height: auto;
 		<!-- Start Footer Section -->
 		<%- include('sidefooter') %>
 		<!-- End Footer Section -->	
+
 
 
 		<script src="js/bootstrap.bundle.min.js"></script>

@@ -329,7 +329,7 @@
 /* Styles for the button */
 .btnn.btnprimary {
  padding: 10px 20px;
- background-color: #007bff;
+ background-color: #ff523b;
  color: white;
  text-decoration: none;
  border-radius: 5px;
@@ -425,7 +425,7 @@
                 <div class="purchase-info">
                     <a href="/addcart/<%= product._id %>" class="btn btn-info float-end">Add To Cart</a>
              
-                <a href="/Wishlist/<%=product._id%>" class="btn btn-info float-end">wishList</a>
+                <a href="/Wishlist/<%=product._id%>" class="btn btn-info float-end">Add To wishList</a>
 
                 </div>
             </div>
@@ -440,18 +440,17 @@
 <div><h2 style=" text-align: center;">Related Products</h2></div>
 
     <div class="related d-flex   ">
-        <% relatedProducts.forEach(function(relatedProduct) { %>
-        <div class="row1" >
-           
-       <a href="/admin/getproduct/<%= relatedProduct._id %>">
-        <img src="<%= relatedProduct.image[0] %>" class="card-img" alt="Related Product Image">
-      </a>
-          <div class="cardbody">
-            <h5 class="cardtitle"><%= relatedProduct.productname %></h5>
-            <p class="cardtext">Price: ₹<%= relatedProduct.price %></p>
-            <a href="/admin/getproduct/<%= relatedProduct._id %>" class="btnn btnprimary">view</a>
-          </div>
-        </div>
+        <% relatedProducts.slice(0, 3).forEach(function(relatedProduct) { %>
+            <div class="row1">
+                <a href="/getproduct/<%= relatedProduct._id %>">
+                    <img src="<%= relatedProduct.image[0] %>" class="card-img" alt="Related Product Image">
+                </a>
+                <div class="cardbody">
+                    <h5 class="cardtitle"><%= relatedProduct.productname %></h5>
+                    <p class="cardtext">Price: ₹<%= relatedProduct.price %></p>
+                    <a href="/getproduct/<%= relatedProduct._id %>" class="btnn btnprimary">view</a>
+                </div>
+            </div>
         <% }); %>
       </div>
 
