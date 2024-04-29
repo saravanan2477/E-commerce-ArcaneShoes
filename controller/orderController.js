@@ -102,21 +102,21 @@ module.exports={
           price: item.price,
           quantity: item.quantity,
           image:item.image,
-         // Ensure that the image URLs are correctly assigned here
-          status: 'pending' // or any other default status
-      }));
-
+          status: 'pending' 
+      }));                        
+        let product
         // Update stock for each product in the order
+        console.log('size',orderProducts);
         for (const item of orderProducts) {
-            const product = await Product.findById(item.productid);
+          console.log('here the for of loop');
+             product = await Product.findById(item.productid);
             if (!product) {
                 return res.status(404).send(`Product with ID ${item.productid} not found.`);
             }
             // Reduce the stock by the quantity ordered
             product.stock -= item.quantity;
-            await product.save();
         }
-
+        await product.save();
         // Construct order object
         const order = new Ordercollection({
             userid: userId,
@@ -135,12 +135,11 @@ module.exports={
             paymentMethod: paymentMethod,
             totalPrice: totalPrice,
             orderDate: currentdate,
-      
-
         });
 
         // Save the order to the database
         await order.save();
+        console.log("entered save ");
 
         // Clear the user's cart
         await Cart.deleteMany({ userid: userId });
@@ -151,10 +150,10 @@ module.exports={
         console.log(error);
         res.status(500).send('Error placing order');
     }
-}
+},  
 
 
-      ,
+      
        
 
 
@@ -163,8 +162,8 @@ module.exports={
       Placeorder : async (req, res) => {
         try {
           // Process the order and save it to the database
-          const newOrder = new Ordercollection({ /* Your order data */ });
-          await newOrder.save();
+          // const newOrder = new Ordercollection({ /* Your order data */ });
+          // await newOrder.save();
       
           // Optionally, you can retrieve the newly created order ID and send it back as a response
          res.render("placeOrder")

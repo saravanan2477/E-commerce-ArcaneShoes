@@ -98,6 +98,86 @@
     padding: 0px;
     box-sizing: border-box;
 }
+
+/* Sorting options CSS */
+.sort-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 70px; /* Add some margin at the bottom */
+            padding: 0px 41px; /* Add padding to create space */
+            border-bottom: 0px solid #ddd; /* Add a bottom border for separation */
+        }
+
+        .sort-options select {
+            flex: 1; /* Allow each select element to grow to take up available space */
+            margin-right: 20px; /* Add some right margin between select elements */
+        }
+
+        .sort-options select:last-child {
+            margin-right: 0; /* Remove right margin for the last select element */
+        }
+
+
+
+
+   /* Button Animation */
+   .animated-button {
+        display: inline-block;
+        padding: 9px 15px;
+        color: #fff;
+        font-size: 15px;
+        background-color: #ff523b;
+        border: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+     
+    }
+
+    .animated-button:hover {
+        animation: pulse 1s infinite;
+    }
+
+   
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .search-input {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ff523b;
+        border-radius: 5px;
+        transition: border-color 0.3s ease-in-out;
+        width: 150px; 
+        position: relative;
+        top: 0;
+        right: -425px;
+        padding: 10px;
+    }
+    .product-container {
+    display: block;
+}
+/* Add styles for search results */
+#searchResults {
+    margin-top: 20px;
+}
+
+#searchResults div {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+
 </style>
     </head>
     <body>
@@ -132,18 +212,18 @@
         </div>
     </div>
     
+    <h2 class="title">All Products</h2>
         
         <!------------------------------ Products------------------------------>
         <div class="small-container" id="product-container">
-           
-
-
-            <form action="/filter" method="post" class="my-4">
-                <div class="list-group">
-                    <div class="list-group-item">
-                        <label for="category" class="form-label">Select Category:</label>
-                        <select name="category" id="category" class="form-select">
-                            <option value="All Categories">All Categories</option>
+            <div class="sort-options">
+            <form action="/filter" method="post" >
+                <select name="category" id="category" class="form-select">
+                    <option value="All Categories">All Categories</option>
+                    
+                        
+                       
+                           
             <!-- Add your category options dynamically here -->
             <% categories.forEach(category => { %>
                 <option value="<%= category._id %>"><%= category.category %></option>
@@ -151,54 +231,47 @@
                             
                             <!-- Add your category options here -->
                         </select>
-                    </div>
-                </div>
+                 
             
-                <div class="list-group mt-3">
-                    <div class="list-group-item">
-                        <label for="sortprice" class="form-label">Sort Price:</label>
+                
                         <select name="sortprice" id="sortprice" class="form-select">
                             <option value="">All Prices</option>
                             <option value="lowToHigh">Low to High</option>
                             <option value="highToLow">High to Low</option>
                         </select>
-                    </div>
-                </div>
-            
-                <div class="list-group mt-3">
-                    <div class="list-group-item">
-                        <label for="priceRange" class="form-label">Select Price Range:</label>
+                  
+               
                         <select name="priceRange" id="priceRange" class="form-select">
-                            <option value="">All Prices</option>
+                            <option value="">Price Range</option>
                             <option value="100-1000">100 - 1000</option>
                             <option value="1000-1500">1000 - 1500</option>
                             <option value="1500-2000">1500 - 2000</option>
                         </select>
-                    </div>
-                </div>
+                  
             
                 <!-- Add the alphabetical sorting option -->
-                <div class="list-group mt-3">
-                    <div class="list-group-item">
-                        <label for="sortAlphabetically" class="form-label">Sort Alphabetically:</label>
+               
                         <select name="sortAlphabetically" id="sortAlphabetically" class="form-select">
                             <option value="">Alphabetical Order</option>
                             <option value="ascending">Ascending (A to Z)</option>
                             <option value="descending">Descending (Z to A)</option>
                         </select>
-                    </div>
-                </div>
-                <button type="submit">Filter</button>
+                  
+                        <button type="submit" class="animated-button">Filter</button>
+                        
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search" oninput="searchProducts()">
+
+                        
             </form>
             
-           
+        </div>
 
             <!--<h2 class="title" >Featured Products</h2>-->
              <!------------------------------ featured Products------------------------------>
              <div class="small-container" id="product-container">
-                <h2 class="title">All Products</h2>
+                
                 <div class="row">
-                    <% if (productcollection) { %>
+                    <% if (productcollection && productcollection.length > 0) { %> <!-- Check if there are products to display -->
                         <% productcollection.forEach(product => { %>
                             <div class="col-4 product-container" id="product-item">
                                 <div class="row">
@@ -223,6 +296,11 @@
                                 </div>
                             </div>
                         <% }) %>
+                    <% } else { %> <!-- If no products are found, display a message -->
+                        <div class="col-12">
+                            <h3 style="color: red;">No products found.</h3>
+                        </div>
+
                     <% } %>
                 </div>
             </div>
@@ -309,6 +387,21 @@
             }
         </script>
 
+<script>
+    function searchProducts() {
+        var input = document.getElementById('searchInput').value.toLowerCase();
+        var productItems = document.querySelectorAll('.product-container');
+
+        productItems.forEach(function(item) {
+            var productName = item.querySelector('h4').innerText.toLowerCase();
+            if (productName.includes(input)) {
+                item.style.display = 'block'; // Show matching products
+            } else {
+                item.style.display = 'none'; // Hide non-matching products
+            }
+        });
+    }
+</script>
 
 
     </body>

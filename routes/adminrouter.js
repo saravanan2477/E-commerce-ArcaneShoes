@@ -64,7 +64,9 @@ router.get("/unListcategory/:id", admincontroller.UnList);
 //route to render admin order page
 
 router.get("/orderManagement",admincontroller.orderget)
-router.post('/update-status/:orderid/:productid', admincontroller. updateOrderpost);
+
+router.post("/update-status/:orderId/:productId", admincontroller.updateOrderpost);
+
 
 
 

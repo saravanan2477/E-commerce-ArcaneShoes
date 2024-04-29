@@ -35,29 +35,38 @@ module.exports = {
   
   
   postAddProduct: async (req, res) => {
-    const { productname, category, price, model, discription, stock } =
-      req.body;
-      console.log("form data",req.body)
-     const newProduct = new Product({
-      productname: productname,
-      category: category,
-      price: price,
-      model: model,
-      description: discription,
-      image: req.files.map((file) => file.path.substring(6)),
-      stock: stock,
-      isListed: true,
-    });
-    newProduct.save()
-    .then(c=>{
-      console.log('inserted',c);
-       res.redirect("/productmanagement");
-    })
-    .catch(c=>{
-      console.log('error',c);
-    })
-   
-  },
+    const { productname, category, price, model, description, stock } = req.body;
+
+    try {
+        const newProduct = new Product({
+            productname: productname,
+            category: category,
+            price: price,
+            model: model,
+            description: description,
+            image: req.files.map((file) => file.path.substring(6)),
+            stock: stock,
+            isListed: true,
+        });
+
+        // Save the new product
+        await newProduct.save();
+
+        // Update the isListed status of the associated category
+        if (category) {
+            const associatedCategory = await Category.findById(category);
+            if (associatedCategory) {
+                associatedCategory.islisted = true; // Update based on your logic
+                await associatedCategory.save();
+            }
+        }
+
+        res.redirect("/productmanagement");
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Error adding product");
+    }
+},
 
   getEditProduct: async (req, res) => {
     try {
@@ -75,42 +84,48 @@ module.exports = {
 
   postEditProduct: async (req, res) => {
     const id = req.params.id;
-    console.log('enter here',req.files);
-    const value = await Product.findByIdAndUpdate(id, {
-      productname: req.body.productname,
-        category: req.body.category,
-        price: req.body.price,
-        model: req.body.model,
-        description: req.body.description,
-        stock: req.body.stock,
-        isListed: req.body.isListed
-    }, { new: true })
+    const { productname, category, price, model, description, stock, isListed } = req.body;
+
     try {
-      if (req.files && req.files.length > 0) {
-        const newImages = req.files.map(file => file.path.substring(6))
-        value.image = value.image.concat(newImages);
-      }
-      if (!value) {
-        console.log("Product not found");
-        res.status(404).send("Product not found");
-        return;
-      }
-      await value.save()
-      .then(s=>{
-        console.log('updated',s);
+        const updatedProduct = await Product.findByIdAndUpdate(id, {
+            productname: productname,
+            category: category,
+            price: price,
+            model: model,
+            description: description,
+            stock: stock,
+            isListed: isListed,
+        }, { new: true });
+
+        if (!updatedProduct) {
+            return res.status(404).send("Product not found");
+        }
+
+        // Update the isListed status of the old category if it's changed
+        if (updatedProduct.category) {
+            const oldCategory = await Category.findById(updatedProduct.category);
+            if (oldCategory) {
+                oldCategory.islisted = true; // Update based on your logic
+                await oldCategory.save();
+            }
+        }
+
+        // Update the isListed status of the new category
+        if (category) {
+            const newCategory = await Category.findById(category);
+            if (newCategory) {
+                newCategory.islisted = true; // Update based on your logic
+                await newCategory.save();
+            }
+        }
+
         res.redirect("/productmanagement");
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send("Error updating product");
+    }
+},
 
-      })
-       .catch(c=>{
-         res.status(404).send(c);
-
-       })
-        
-    } catch (error) {
-        console.error("Error updating product:", error);
-        res.status(500).send("Error updating product. Please try again later.");
-        }    }
-,
   getproductdelete: async (req, res) => {
     const pid=req.params.id
     console.log(
@@ -129,17 +144,35 @@ module.exports = {
     }
 ,
 
-  getUnlistProduct: async (req, res) => {
-    const product = await Product.findOne({ _id: req.params.id });
-    try {
-      product.isListed = !product.isListed;
-      product.save();
-    } catch (err) {
-      console.error(err);
-      return res.status(500).send("Error changing product status");
+getUnlistProduct: async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).send("Product not found");
     }
-    res.redirect("/productmanagement");
-  },
+
+    // Toggle the isListed status of the product
+    product.isListed = !product.isListed;
+
+    // Save the updated product
+    await product.save();
+
+    // If the product has a category, find all products with the same category and update their isListed status
+    if (product.category) {
+      await Product.updateOne({ category: product.category }, { isListed: product.isListed });
+    }
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send("Error changing product status");
+  }
+  res.redirect("/productmanagement");
+},
+
+
   getproduct: async (req, res) => {
     const pid = req.params.id;
     try {
@@ -250,7 +283,10 @@ module.exports = {
       console.error('Error fetching products:', error);
       res.status(500).send('Internal Server Error');
     }
-  }
+  },
+
+
+
   
 }
 

@@ -32,7 +32,7 @@
 
         <div class="section__content">
             <div class="container">
-                <div class="breadcrumb">
+                <!-- <div class="breadcrumb">
                     <div class="breadcrumb__wrap">
                         <ul class="breadcrumb__list">
                             <li class="has-separator">
@@ -40,10 +40,13 @@
                                 <a href="/Homepage">Home</a></li>
                             <li class="is-marked">
 
-                                <a href="wishlist.html">Wishlist</a></li>
+                                <a href="/wishList">Wishlist</a></li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
+                <h1 class="section__heading u-c-secondary" style="text-align: center;">Wishlist</h1>
+
+
             </div>
         </div>
     </div>
@@ -56,10 +59,10 @@
         <!--====== Section Intro ======-->
         <div class="section__intro u-s-m-b-60">
             <div class="container">
+                
                 <div class="roww">
                     <div class="col-lg-12">
                         <div class="section__text-wrap">
-                            <h1 class="section__heading u-c-secondary">Wishlist</h1>
                         </div>
                     </div>
                 </div>
@@ -77,7 +80,8 @@
                             <div class="roww">
                                 <div class="col-md-12 text-center">
                                   <br>
-                                  <p style="color: red;">Your wishlist is empty. Start adding products now!</p>
+                                  <h3 style="color: red; margin-top: -50px;">Your wishlist is empty. Start adding products now!</h3>
+
                                 </div>
                               </div>
                               <% } else { %>
@@ -99,9 +103,7 @@
                                             </a>
                                         </span>
 
-                                        <span class="w-r__category">
-                                            <a href="/Category/<%= item.Category %>"><%= item.Category %></a>
-                                        </span>
+                                       
 
                                         <span class="w-r__price">
 
@@ -109,9 +111,11 @@
                                 </div>
                                 <div class="w-r__wrap-2">
 
-                                    <a class="w-r__link btn--e-brand-b-2" href="/addcart/<%= item.productid %>">TO CART</a>
+                                    
 
-                                    <a class="w-r__link btn--e-transparent-platinum-b-2" href="/getproduct/<%= item.productid %>">VIEW</a>
+
+
+                                    <a class="w-r__link  btn--e-brand-b-2" href="/getproduct/<%= item.productid %>">VIEW</a>
 
                                     <a class="w-r__link btn--e-transparent-platinum-b-2" href="/removeFromWishlist/<%=item._id %>">REMOVE</a></div>
                             </div>
@@ -135,14 +139,14 @@
                         <div class="route-box">
                             <div class="route-box__g">
 
-                                <a class="route-box__link" href="shop-side-version-2.html"><i class="fas fa-long-arrow-alt-left"></i>
+                                <a class="route-box__link" href="/allProducts"><i class="fas fa-long-arrow-alt-left"></i>
 
                                     <span>CONTINUE SHOPPING</span></a></div>
-                            <div class="route-box__g">
+                            <!-- <div class="route-box__g">
 
-                                <a class="route-box__link" href="wishlist.html"><i class="fas fa-trash"></i>
+                                <a class="route-box__link" href="wishlist.html"><i class="fas fa-trash"></i> -->
 
-                                    <span>CLEAR WISHLIST</span></a></div>
+                                    <!-- <span>CLEAR WISHLIST</span></a></div> -->
                         </div>
                     </div>
 

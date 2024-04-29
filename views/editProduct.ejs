@@ -144,7 +144,39 @@
         });
     </script>
 
+<script>
+    $(document).ready(function () {
+        // Function to validate the file type
+        function validateFileType(inputId) {
+            var input = $('#' + inputId);
+            input.on('change', function () {
+                var file = this.files[0];
+                var fileType = file.type.split('/')[0]; // Get the file type (e.g., 'image', 'video', 'audio')
 
+                // Check if the file type is not an image
+                if (fileType !== 'image') {
+                    // Show error message
+                    $(this).addClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').text('Only image files are allowed.');
+                    // Disable the submit button
+                    $('#submit-button').prop('disabled', true);
+                } else {
+                    // Remove error message
+                    $(this).removeClass('is-invalid');
+                    $(this).siblings('.invalid-feedback').text('');
+                    // Enable the submit button
+                    $('#submit-button').prop('disabled', false);
+                }
+            });
+        }
+
+        // Call the function for the file input field
+        validateFileType('img');
+
+        // Other validation functions...
+
+    });
+</script>
 
    
 <script>

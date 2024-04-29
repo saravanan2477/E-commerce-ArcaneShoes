@@ -47,16 +47,23 @@
                                                 <span class="product-name">
                                                     <h4><%= product.productName %></h4> <!-- Display product name -->
                                                 </span>
+                                                
                                             </a>
                                         </span>
                                         <span class="w-r__price">
                                             <label class="w-r__price">₹<%= product.price * product.quantity  %></label>
                                         </span>
+                                        
                                         <!-- Display the quantity -->
                     <span class="w-r__quantity">
                         <label class="w-r__quantity">Quantity: <%= product.quantity %></label>
                     </span>
+                    <br>
+                    <span class="w-r__status">
+                        <label class="w-r__status"><strong style="font-weight: bold;text-shadow: seagreen;">Status:</strong><span style="color: red;"> <%= product.status %></span></label>
+                    </span>
                                     </div>
+                                    
                                     <div class="w-r__wrap-2">
                                         <a class="w-r__link btn--e-brand-b-2" href="/getproduct/<%= product.productid %>">VIEW</a>
                                         <a class="w-r__link btn--e-transparent-platinum-b-2" href="/orderDetails/<%= order._id %>">ORDER DETAILS</a>
@@ -64,6 +71,7 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <!--====== End -  Product ======-->
                     <% }) %>
                 <% }) %>

@@ -83,7 +83,8 @@ height: auto;
 					<div class="row justify-content-center align-items-center">
 						<div class="col-lg-5">
 							<div class="intro-excerpt">
-								<h1>Cart</h1>
+								<h1 class="text-center">Cart</h1>
+
 							</div>
 						</div>
 					
@@ -163,6 +164,7 @@ height: auto;
               </div>
         
               <div class="row">
+                <% if (cartfind.length > 0) { %>
                   
                   <div class="col-md-3 d-flex w-100">
                     <a href="/Homepage" id="continueShoppingBtn" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
@@ -170,6 +172,7 @@ height: auto;
                 
                 <!-- btghghjbgdbsdtgrevryrtggggggggggggggggg -->
                 <div class="col-md-5 pl-1">
+
                   <div class="row justify-content-end">
                       <div class="col-md-7" style="background-color: rgb(248, 232, 231);">
                           <div class="row">
@@ -197,6 +200,7 @@ height: auto;
                           <div class="row">
                             <div class="col-md-7">
                               <a href="/CheckoutPage"><button id="checkoutBtn" class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button></a>
+                              <% } %>
                           </div>
                           
                           </div>
@@ -215,7 +219,10 @@ height: auto;
         
 		
 
-		<!-- Start Footer Section -->
+		<!-- Start Footer Section -->\
+    <br>
+    <br>
+  
 		<%- include('sidefooter') %>
 		<!-- End Footer Section -->	
 

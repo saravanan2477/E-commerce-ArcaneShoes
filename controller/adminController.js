@@ -184,7 +184,7 @@ const addCategoryGet = async(req,res)=>{
 
 const addCategoryPost= async (req, res) => {
     console.log("reached post category")
-    const name = req.body.name;  
+    const name = req.body.name.trim();  
     console.log(name);
     const newCategory = await Category.findOne({
         category: { $regex: new RegExp("^" + name + "$", "i") },
@@ -222,37 +222,40 @@ const addCategoryPost= async (req, res) => {
 
   
 
-  const editCategorypost = async (req, res) => {
-    const id = req.params.id;
-    const categoryname = req.body.categoryname;
-    console.log(`this is the id ${id} and this is the categoryname ${categoryname}`);
-
-    // Fetch the category details from the database
-    const category = await Category.findById(id);
-
-    // Check if there's already a category with the new name
-    const existingCategory = await Category.findOne({
-        category: { $regex: new RegExp("^" + categoryname + "$", "i") },
-        _id: { $ne: id } // Ensure the category being checked is not the one being edited
-    });
-
-    if (existingCategory) {
-        // If a category with the new name exists, render the same page with an error message
-        return res.render('editcategory', { message: "Category already exists!", category: category });
-    }
-
+ const editCategorypost = async (req, res) => {
     try {
+        const id = req.params.id;
+        const categoryname = req.body.categoryname.trim();
+        console.log(`this is the id ${id} and this is the categoryname ${categoryname}`);
+
+        // Fetch the category details from the database
+        const category = await Category.findById(id);
+
+        // Check if there's already a category with the new name
+        const existingCategory = await Category.findOne({
+            category: { $regex: new RegExp("^" + categoryname + "$", "i") },
+            _id: { $ne: id } // Ensure the category being checked is not the one being edited
+        });
+
+        if (existingCategory) {
+            // If a category with the new name exists, render the same page with an error message
+            return res.render('editcategory', { message: "Category already exists!", category: category });
+        }
+
+        // Update the category name
         await Category.updateOne(
             { _id: id },
             { $set: { category: categoryname } }
         );
+
+        // Redirect to category management page upon successful update
+        return res.redirect("/admin/categorymanagement");
     } catch (err) {
-        console.error(err);
+        console.error("Error editing category:", err);
         return res.status(500).send("Failed to edit category.");
     }
-    // Assuming you have a success message or redirect logic here
-    res.redirect("/admin/categorymanagement");
 }
+
 
 
 
@@ -267,14 +270,17 @@ const addCategoryPost= async (req, res) => {
       const category = await Category.findOne({ _id: req.params.id });
   
       if (!category) {
-       // return res.status(404).send("Category not found.");
+        // return res.status(404).send("Category not found.");
       }
   
-      // Update the 'block' field to its opposite value
+      // Update the 'islisted' field to its opposite value
       category.islisted = !category.islisted;
   
       // Save the updated category
       await category.save();
+
+      // Find all products with the same category and update their isListed status
+      await Product.updateMany({ category: category._id }, { isListed: category.islisted });
   
       console.log("Updated category:", category);
   
@@ -283,7 +289,8 @@ const addCategoryPost= async (req, res) => {
       console.error(err);
       return res.status(500).send("Failed to toggle category block status.");
     }
-  }
+}
+
   
 
 
@@ -324,7 +331,7 @@ const getLogout = (req, res) => {
 const orderget = async(req,res)=>{
   try{
   const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
-console.log(orderdetalist,"orders are here");
+// console.log(orderdetalist,"orders are here");
     res.render("orderManagement",{orderdetalist});
   }
   catch(err){
@@ -336,38 +343,38 @@ console.log(orderdetalist,"orders are here");
 
 
 const updateOrderpost = async (req, res) => {
-  console.log(" tyhe product entered update page");
-  const orderid = req.params.productid;
-  const productid = req.params.orderid;
-  const newstatus = req.body.status;
+  const { orderId, productId } = req.params;
+  const { status } = req.body;
+  console.log(orderId,productId,status);
   try {
-    const order = await Ordercollection.findOneAndUpdate(
-      { _id: orderid, 'productcollection._id': productid },
-      { $set: { 'productcollection.$.status': newstatus } },
-      { new: true }
-  );
-
-    if (!order) {
-        return res.status(404).send("Order or product not found");
-    }
-
-    console.log("Updated Product Collection for Order ID:", order._id);
-        console.log(order.productcollection);
-        console.log("-----------------------------");
-        if (newstatus === 'Delivered') {
-          // Update the database to track that the order has been delivered
-          await Ordercollection.findOneAndUpdate(
-              { _id: orderid },
-              { $set: { 'delivered': true } }
-          );
+      // Update the status of the product in the order
+      const orders = await Ordercollection.findById(orderId);
+      if (!orders) {
+          return res.status(404).send(`Order with ID ${orderId} not found.`);
       }
-        res.redirect('/orderManagement');
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send("Internal Server Error");
-  }
- };
+      
+  
 
+        await Ordercollection.findOneAndUpdate(
+              { _id:orderId ,'productcollection.productid': productId },
+              { $set: { 'productcollection.$.status': status } },
+              { new: true }
+            )
+      .then((success)=>{     
+        console.log('updataed',success);
+        res.redirect('/admin/ordermanagement'); // Redirect to the page where orders are displayed
+      })
+      .catch(error=>{
+        console.log('error',error);
+        res.status(400).send('Error updating status');
+
+      })
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal server error');
+  }
+};
 
 
 

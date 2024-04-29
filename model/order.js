@@ -27,12 +27,12 @@ const OrderSchema = new mongoose.Schema({
                 type: Number,
                 required: true
             },
-            status:{
-                type:String,
-                required:true
-            },
+            
             image: {
-                type: [String],
+                type: [String]
+              },
+              status:{
+                type:String
               }
         
         }
@@ -50,8 +50,8 @@ totalPrice:{
 },   
 orderDate:{
     type: Date
-},
-
+    
+}
 });
 
 const order=mongoose.model('order',OrderSchema)

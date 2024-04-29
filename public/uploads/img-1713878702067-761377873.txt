@@ -1,0 +1,2 @@
+data> db.students.aggregate([{$group:{_id:null,total:{$sum:"$score"},count:{$sum:1}}},{$project:{_id:0,average:{$divide:["$total","$count"]}}}])
+[ { average: 70.2 } ]

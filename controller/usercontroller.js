@@ -38,11 +38,12 @@ const userlogin = (req, res) => {
 
 //!userloginpost
 const userloginpost = async (req, res) => {
+ 
   const { Email, password } = req.body;
 
   try {
     const user = await UserCollection.findOne({ email: Email });
-
+   
     if (!user) {
       console.log('User not found');
       // Handle case where user is not found (e.g., show error message)
@@ -78,7 +79,7 @@ const userloginpost = async (req, res) => {
 
 //!user signiup render
 const usersignup = (req, res) => {
-  res.render("usersignup")
+  res.render("usersignup",{ errorMessage: null });
 }
 
 
@@ -239,7 +240,7 @@ const productDetails = async (req, res) => {
 
 const allProducts = async (req, res) => {
   try {
-    const PAGE_SIZE = 4; // Number of products per page
+    const PAGE_SIZE = 10; // Number of products per page
     let { page, sortprice, sortAlphabetically, category, priceRange } = req.query;
     page = parseInt(page) || 1; // Get current page from query parameters, default to 1 if not provided
 
@@ -248,11 +249,15 @@ const allProducts = async (req, res) => {
       const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
       // Fetch products with sorting and pagination
-      const productcollection = await Product.find(buildQuery(category, priceRange))
+      const productcollection = await Product.find({
+        ...buildQuery(category, priceRange),
+        stock: { $gte: 0 } // Filter out products with stock 0
+      })
         .sort(buildSortOption(sortprice, sortAlphabetically))
         .skip((page - 1) * PAGE_SIZE) // Skip products based on current page
         .limit(PAGE_SIZE); // Limit number of products per page
-        const categories = await Category.find();
+
+      const categories = await Category.find();
       res.render('allProducts', {categories, productcollection, totalPages, currentPage: page, sortprice, sortAlphabetically, category, priceRange });
     } else {
       res.redirect('/allProducts');
@@ -262,6 +267,7 @@ const allProducts = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 }
+
 
 // Helper function to build query based on filter parameters
 const buildQuery = (category, priceRange) => {

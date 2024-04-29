@@ -108,37 +108,58 @@ addToCart: async (req, res) => {
 
 updateQuantity: async (req, res) => {
   try {
-      const { productid, index, action } = req.body;
-      const cartItem = await Cart.findById(productid);
-      const product = await Product.findById(cartItem.productid);
-      if (!cartItem) {
-          return res.status(404).json({ error: 'CartItem not found' });
-      }
-      if (action === 'increase') {
-          cartItem.quantity += 1;
-      } else if (action === 'decrease' && cartItem.quantity > 1) {
-          cartItem.quantity -= 1;
-      }
-      const itemTotal = cartItem.price * cartItem.quantity;
-      await cartItem.save();
+    const { productid, index, action } = req.body;
+    const cartItem = await Cart.findById(productid);
+    const product = await Product.findById(cartItem.productid);
+    
+    if (!cartItem) {
+      return res.status(404).json({ error: 'CartItem not found' });
+    }
 
-      const cartItems = await Cart.find({ userid: req.session.userid });
-      let subtotal = 0;
-      cartItems.forEach((cartItem) => {
-          subtotal += cartItem.price * cartItem.quantity;
-      });
+    // Determine the maximum quantity allowed for the product
+    const maxQuantity = product.stock;
 
-      res.status(200).json({
-          success: true,
-          updatedCartItem: { ...cartItem.toObject(), itemTotal },
-          subtotal,
-          total: subtotal // You may adjust this based on your calculation
-      });
+    // Update the quantity based on the action (increase or decrease)
+    if (action === 'increase') {
+      // Check if the quantity is already at the maximum allowed
+      if (cartItem.quantity < maxQuantity) {
+        cartItem.quantity += 1;
+      } else {
+        // If quantity is already at the maximum, send an alert message
+        return res.status(400).json({ error: 'Maximum quantity reached' });
+      }
+    } else if (action === 'decrease' && cartItem.quantity > 1) {
+      cartItem.quantity -= 1;
+    }
+
+    // Calculate the total price for the cart item
+    const itemTotal = cartItem.price * cartItem.quantity;
+
+    // Save the updated cart item
+    await cartItem.save();
+
+    // Fetch all cart items for the user
+    const cartItems = await Cart.find({ userid: req.session.userid });
+
+    // Calculate subtotal
+    let subtotal = 0;
+    cartItems.forEach((cartItem) => {
+      subtotal += cartItem.price * cartItem.quantity;
+    });
+
+    // Send response with updated cart item, subtotal, and total
+    res.status(200).json({
+      success: true,
+      updatedCartItem: { ...cartItem.toObject(), itemTotal },
+      subtotal,
+      total: subtotal // You may adjust this based on your calculation
+    });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 
 
 

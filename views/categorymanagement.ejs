@@ -92,6 +92,11 @@
             color: #ffffff; /* White */
         }
       
+
+
+  
+
+
     </style>
 </head>
 <body>
@@ -104,7 +109,6 @@
             <li><a href="/productManagement">Product Management</a></li>
             <li><a href="/admin/orderManagement">Order Management</a></li>
             <li><a href="/couponManagement">Coupon Management</a></li>
-            <li><a href="#">Banner Management</a></li>
             <li><a href="/admin/adminlogin">Logout</a></li>
         </ul>
     </div>
@@ -131,16 +135,18 @@
                             <td><%= category.category %></td>
                             <td>
                                 <% if (category.islisted) { %>
-                                    <span class="text-danger">Listed</span>
+                                    <span class="status" style="color:green;">Listed</span>
                                 <% } else { %>
-                                    <span class="text-success">Not Listed</span>
+                                    <span class="status" style="color: red;">Not Listed</span>
                                 <% } %>
-                            </td>
+                                
+                                
+                            </td>   
                             <td>
                                 <% if (category.islisted) { %>
-                                    <a href="/admin/unListcategory/<%= category._id %>" class="btn btn-success">UnList</a>
+                                    <a href="/admin/unListcategory/<%= category._id %>" class="btn btn-success" style="background-color: red;">UnList</a>
                                 <% } else { %>
-                                    <a href="/admin/unListcategory/<%= category._id %>" class="btn btn-danger">List</a>
+                                    <a href="/admin/unListcategory/<%= category._id %>" class="btn btn-danger" style="background-color: green;">List</a>
                                 <% } %>
                                 <a href="/admin/editcategory/<%= category._id %>" class="btn btn-primary">Edit</a>
                             </td>
@@ -149,13 +155,9 @@
 
                 </tbody>
             </table>
-     
-        <% } else { %>
-              <tr>
-                <br>
-                  <td colspan="9"><h3 style="color:red">No catogory found</h3></td>
-              </tr>
-          <% } %>
+            <% } else { %>
+                <h3 style="color:red; text-align:center;">No categories found</h3>
+            <% } %>
                 
                 
 

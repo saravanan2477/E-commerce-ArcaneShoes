@@ -118,7 +118,6 @@
           <li><a href="/productmanagement">Product Management</a></li>
           <li><a href="/admin/orderManagement">Order Management</a></li>
           <li><a href="/couponManagement">Coupon Management</a></li>
-          <li><a href="#">Banner Management</a></li>
           <li><a href="/admin/adminlogin">Logout</a></li>
         </ul>
     </div>
@@ -156,10 +155,8 @@
                          <td data-label="Total Prices">₹<%= product.price * product.quantity %></td>
                          <td data-label="Payment Method"><%= order.paymentMethod %></td>
                          <td data-label="Status">
-                           <% if (product.status === 'Delivered' && product.status !== 'Cancelled') { %>
-                             <%= product.status %>
-                           <% } else { %>
-                             <form action="/update-status/<%= order._id %>/<%= product.productid %>" method="post">
+                           
+                             <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
                               <div class="dropdown">
                                  <select name="status" class="form-select" aria-label="Select Status">
                                    <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
@@ -169,13 +166,17 @@
                                  </select>
                               </div>
                               <input type="hidden" name="productid" value="<%= product.productid %>">
-                              <td data-label="Action">
-                                 <% if (product.status !== 'Cancelled') { %>
-                                   <button type="submit" class="cancel-btn">Update</button>
-                                 <% } %>
-                              </td>
+                              <td data-label="Action" style="display: flex;">
+                                <% if (product.status !== 'Cancelled') { %>
+                                    <% if (product.status !== 'Delivered') { %>
+                    
+                                        <button type="submit" class="cancel-btn">Update</button>
+                                    <% } %>
+                                <% } %>
+                            </td>
+                            
                              </form>
-                           <% } %>
+                         
                          </td>
                        </tr>
                        <% productIndex++; %> <!-- Increment the counter after displaying each product -->

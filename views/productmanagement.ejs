@@ -102,7 +102,6 @@
           <li><a href="/productmanagement">Product Management</a></li>
           <li><a href="/admin/orderManagement">Order Management</a></li>
           <li><a href="/couponManagement">Coupon Management</a></li>
-          <li><a href="#">Banner Management</a></li>
           <li><a href="/admin/adminlogin">Logout</a></li>
         </ul>
     </div>
@@ -130,7 +129,7 @@
                 </tr>
             </thead>
             <tbody id="userTableBody">
-                <% if( products.length > 0) { %>
+                
                     <% products.forEach( (product,index)=> { %>
                         <tr>
                             <td><%= index + 1 %></td>
@@ -142,9 +141,7 @@
                             <td>
                                 <% if (product.category) { %>
                                     <%= product.category.category %>
-                                <% } else { %>
-                                    N/A
-                                <% } %>
+                                <% }%>
                             </td>
                             
                             <td>
@@ -167,11 +164,12 @@
                             </td>
                             <td>
                                 <% if (product.isListed) { %>
-                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-danger">UnList</a>
+                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-danger" style="background-color: red;">UnList</a>
                                 <% } else { %>
-                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-success">List</a>
+                                    <a href="/unlistproduct/<%= product._id %>" class="btn btn-success" style="background-color: green;">List</a>
                                 <% } %>
                             </td>
+                            
                             <td>
                                 <!-- Edit Button -->
                                 <a href="/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
@@ -182,7 +180,7 @@
                             </td>
                         </tr>
                         <% }); %>
-                            <% } %>
+                            
             </tbody>
         </table>
     </div>

@@ -41,4 +41,6 @@ router.get("/unlistproduct/:id", productController.getUnlistProduct);
 router.get("/getproduct/:id", productController.getproduct);
 router.post("/deleteimage", productController.deleteimage);
 
+
+
 module.exports=router ; 
