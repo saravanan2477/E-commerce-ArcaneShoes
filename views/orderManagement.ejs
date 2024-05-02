@@ -136,6 +136,7 @@
                     <!-- <th>Order Date</th> -->
                     <th>Payment Method</th>
                     <th>Status</th>
+                    <th>Status</th>
                     
                     <th>Action</th>
 
@@ -154,6 +155,7 @@
                          <td data-label="Quantity"><%= product.quantity %></td>
                          <td data-label="Total Prices">₹<%= product.price * product.quantity %></td>
                          <td data-label="Payment Method"><%= order.paymentMethod %></td>
+                         <td data-label="Payment Method"><%= product.status %></td>
                          <td data-label="Status">
                            
                              <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
@@ -165,7 +167,9 @@
                                    <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
                                  </select>
                               </div>
+                             
                               <input type="hidden" name="productid" value="<%= product.productid %>">
+                             
                               <td data-label="Action" style="display: flex;">
                                 <% if (product.status !== 'Cancelled') { %>
                                     <% if (product.status !== 'Delivered') { %>

@@ -27,7 +27,7 @@
                         <form id="categoryForm" action="/admin/addcategory" method="POST">
                             <div class="mb-3 mt-4">
                                 <label for="categoryname" class="form-label">Category Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
+                                <input type="text" class="form-control" id="name" name="name" >
                             </div>
                             <div class="text-center login-button mb-4">
                                 <button type="submit" class="btn btn-primary w-100">Add</button>
@@ -41,9 +41,9 @@
     </div>
 
     <script>
-        document.getElementById('categoryForm').addEventListener('submit', function(event) {
+              document.getElementById('CategoryForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const categoryNameInput = document.getElementById('name');
+            const categoryNameInput = document.getElementById('categoryname');
             const categoryName = categoryNameInput.value.trim();
             const maxLength = 15; // Set a maximum length for the category name
             const isAllCaps = /^[A-Z\s]+$/.test(categoryName); // Check if the name is in all capital letters
@@ -54,16 +54,19 @@
             const firstLetterCapitalized = categoryName.charAt(0) === categoryName.charAt(0).toUpperCase();
             const categoryExists = existingCategories.includes(categoryName.toLowerCase());
 
+            // Clear previous error messages
+            document.getElementById('categorynameError').textContent = '';
+
             if (!categoryName) {
-                alert('Please enter a category name.');
+                document.getElementById('categorynameError').textContent = 'Please enter a category name.';
             } else if (categoryName.length > maxLength) {
-                alert('Category name cannot be longer than ' + maxLength + ' characters.');
+                document.getElementById('categorynameError').textContent = 'Category name cannot be longer than ' + maxLength + ' characters.';
             } else if (isAllCaps) {
-                alert('Category name cannot be in all capital letters.');
+                document.getElementById('categorynameError').textContent = 'Category name cannot be in all capital letters.';
             } else if (isUrl) {
-                alert('Category name cannot be a URL.');
+                document.getElementById('categorynameError').textContent = 'Category name cannot be a URL.';
             } else if (categoryExists && firstLetterCapitalized) {
-                alert('Category name cannot be entered again if only the first letter is capitalized.');
+                document.getElementById('categorynameError').textContent = 'Category name cannot be entered again if only the first letter is capitalized.';
             } else {
                 // Proceed with form submission
                 this.submit();

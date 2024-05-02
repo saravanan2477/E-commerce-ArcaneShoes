@@ -17,8 +17,10 @@ const showUserUi = async(req, res) => {
   console.log(req.session.userid)
   try {
     const user = await UserCollection.findOne({_id:req.session.userid})
+    const addresses = await Address.findOne({ userid: req.session.userid });
+
     console.log(user);
-    res.render('userProfile',{user});
+    res.render('userProfile',{user,addresses});
   } catch (error) {
     console.log(error.message)
   }
@@ -27,29 +29,41 @@ const showUserUi = async(req, res) => {
 //! edit profile Get 
 
 
-const editProfileGet=async(req,res)=>{
-    
+const editProfileGet = async (req, res) => {
   try {
-    res.render('editProfile')
+    // Fetch additional data related to the user (for example, address)
+    const user = await UserCollection.findOne({ _id: req.session.userid });
+    const addresses = await Address.findOne({ userid: req.session.userid });
+
+    // Render the editProfile view and pass the additional data to it
+    res.render('editProfile', { user, addresses });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
+
 
 //!post
 
 const editProfilePost = async (req, res) => {
   try {
     const userId = req.session.userid;
-
+      console.log("user",userId);
+      console.log("values",req.body.username);
+      console.log("values2",req.body.mobile);
     // Update User data
-    await UserCollection.findOneAndUpdate(
+    const updatedUser = await UserCollection.findOneAndUpdate(
       { _id: userId }, 
-      { username: req.body.username, email: req.body.email }
+      { 
+        username: req.body.username,
+        phone: req.body.mobile
+      },
+      { new: true } // Add this if you want to get the updated document returned
     );
+    
+    console.log("aqwedswa",updatedUser);
 
-    // If you want to update address as well, you need to handle it here
-    // For example, fetch the address and update it in a similar way as user data
 
     res.redirect('/userProfile');
   } catch (error) {

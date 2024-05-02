@@ -43,10 +43,10 @@
                     <div class="card mb-4">
                         <div class="card-body">
                             <div class="mb-3 d-flex justify-content-between">
-                                <% order.productcollection.forEach(product => { %>
+                                <!-- Displaying only the first product -->
                                 <div>
+                               
                                     <span class="me-3"><%= new Date(order.orderDate).toLocaleDateString() %></span>
-                                   
                                     <span class="me-3"><%= order.paymentMethod %></span>
                                     <span class="badge rounded-pill bg-info"><%= product.status %></span>
                                 </div>
@@ -64,45 +64,41 @@
                                 </div>
                             </div>
                             <table class="table table-borderless">
-
                                 <tbody>
-                                
-                                   
                                     <tr>
                                         <td>
                                             <div class="d-flex mb-2">
-                                                
                                                 <div class="flex-shrink-0">
-                                                    <img src="<%= product.image[0] %>" alt="<%= product.productName %>" width="150" class="img-fluid">
+                                                    <img src="<%= product.image[0] %>" alt="product.productName %>" width="150" class="img-fluid">
                                                 </div>
                                                 <div class="flex-lg-grow-1 ms-3">
-                                                    <h6 class="small mb-0"><a href="#" class="text-reset"><%= product.productName %></a></h6>
-                                                    
+                                                    <h6 class="small mb-0"><a href="#" class="text-reset"><%= product.productName%></a></h6>
                                                 </div>
-                                               
                                             </div>
                                         </td>
                                         <td><%= product.quantity %> Qty</td>
-                                        <td class="text-end">₹<%= product.price %></td></td>
+                                        <td class="text-end">₹<%= product.price %></td>
                                     </tr>
-                                    <% }) %>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="2">Subtotal</td>
-                                        <td class="text-end">₹<%= order.totalPrice %></td>
+                                        <td colspan="2" class="text-end">₹<%= product.price * product.quantity %></td> <!-- Total Price -->
+
                                     </tr>
-                                    <tr>
+                                    <!-- <tr>
                                         <td colspan="2">Coupon</td>
                                         <td class="text-end">$20.00</td>
                                     </tr>
                                     <tr>
                                         <td colspan="2">Discount (Code: NEWYEAR)</td>
                                         <td class="text-danger text-end">-$10.00</td>
-                                    </tr>
+                                    </tr> -->
                                     <tr class="fw-bold">
                                         <td colspan="2">TOTAL</td>
-                                        <td class="text-end">₹<%= order.totalPrice %></td>
+                                        <td colspan="2" class="text-end">₹<%= product.price * product.quantity %></td> <!-- Total Price -->
+
+                                        
                                     </tr>
                                 </tfoot>
                             </table>
@@ -112,30 +108,31 @@
                         <div class="card-body">
                             <div class="row">
                                 <!-- Inside the Payment Method section -->
-<div class="col-lg-6">
-    <h3 class="h5">Payment Method</h3>
-    <p><%= order.paymentMethod %></p>
-    <% if (order.paymentMethod !== 'Cash on Delivery') { %>
-        <p>Total Price ₹<%= order.totalPrice %> <span class="badge bg-success rounded-pill">PAID</span>
-    <% } %>
-</div>
-
                                 <div class="col-lg-6">
+                                    <h3 class="h5">Payment Method</h3>
+                                    <p><%= order.paymentMethod %></p>
                                     
-
+                                    <% if (order.paymentMethod !== 'Cash on Delivery') { %>
+                                        <p>Total Price ₹<%= order.totalPrice %> <span class="badge bg-success rounded-pill">PAID</span>
+                                    <% } %>
+                                </div>
+                                <div class="col-lg-6">
                                     <h4 class="h4" style="color: rgb(250, 8, 8); font-size: 30px; font-family: Arial, sans-serif;">BILLING ADDRESS</h4>
-
-                                    <h3><%= address.firstname %> <%= address.lastname %></h3>
-                                    <%= address.address %>,<br>
-                                    <%= address.city %> , <%= address.pincode %> <br>
-                                    <%= address.email %> <br>
-                                    <%= address.phone %> <br>
-                                    <%= address.state %>
-                                   
+                                    <p></p><%= order.addresscollection[0].firstname %>
+                                    <%= order.addresscollection[0].lastname %> <br>
+                                    <%= order.addresscollection[0].address %> ,                                  
+                                    <%= order.addresscollection[0].city %>
+                                    <%= order.addresscollection[0].pincode %>, <br>
+                                   Ph:<%= order.addresscollection[0].phone%>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                   
+
+                    
                 </div>
                 <div class="col-lg-4">
                     <div class="card mb-4">

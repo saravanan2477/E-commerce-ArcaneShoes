@@ -63,11 +63,18 @@
                         <label class="w-r__status"><strong style="font-weight: bold;text-shadow: seagreen;">Status:</strong><span style="color: red;"> <%= product.status %></span></label>
                     </span>
                                     </div>
+                                  
+                                    
                                     
                                     <div class="w-r__wrap-2">
                                         <a class="w-r__link btn--e-brand-b-2" href="/getproduct/<%= product.productid %>">VIEW</a>
-                                        <a class="w-r__link btn--e-transparent-platinum-b-2" href="/orderDetails/<%= order._id %>">ORDER DETAILS</a>
+                                        <% if ((product.status !== 'Cancelled')&& (product.status !=='Delivered')) { %>
+                                            <a class="w-r__link btn--e-brand-b-2 cancel-order-link" href="/cancelOrder/<%= order._id %>/<%= product.productid %>" data-order-id="<%= order._id %>" data-product-id="<%= product.productid %>">Cancel Order</a>
+                                        <% } %>
+
+                                        <a class="w-r__link btn--e-transparent-platinum-b-2" href="/orderDetails/<%= order._id %>/<%= product.productid %>">ORDER DETAILS</a>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -92,6 +99,10 @@
 
 
 
+<br>
+<br>
+
+
 
     <%- include('sidefooter') %>
 
@@ -110,7 +121,43 @@
 
 
     </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Find all elements with the class 'cancel-order-link'
+        const cancelOrderLinks = document.querySelectorAll(".cancel-order-link");
+    
+        // Loop through each cancel order link
+        cancelOrderLinks.forEach(link => {
+            // Add a click event listener to each cancel order link
+            link.addEventListener("click", function (e) {
+                // Prevent the default action (following the link)
+                e.preventDefault();
+    
+                // Get the order ID and product ID from the data attributes
+                const orderId = this.getAttribute("data-order-id");
+                const productId = this.getAttribute("data-product-id");
+    
+                // Show the SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Cancel Order",
+                    text: "Are you sure you want to cancel this order?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, cancel",
+                    cancelButtonText: "No, keep it"
+                }).then((result) => {
+                    // If the user confirms cancelling the order
+                    if (result.isConfirmed) {
+                        // Redirect to the cancel order page with the order ID and product ID
+                        window.location.href = "/cancelOrder/" + orderId + "/" + productId;
+                    }
+                });
+            });
+        });
+    });
+    </script>
 
 </body>
 </html>

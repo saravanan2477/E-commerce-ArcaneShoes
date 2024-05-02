@@ -58,7 +58,10 @@
                          <li><a href="">About</a></li>
                          <li><a href="">Contact</a></li>
                          <li><a href="/userProfile">Account</a></li>
-                         <li><a href="/logout">Logout</a></li>
+                         <li>
+                            <a href="/logout" id="logout-button" class="logout-link">Logout</a>
+                        </li>
+                        
 
 
                     </ul>
@@ -145,60 +148,6 @@
         </div>
         
             
-            
-             <!-- <h2 class="title" >Latest Products</h2>
-                <div class="row">
-                    <div class="col-4">
-                        <a href="products-details.html"><img src="images/product-5.jpg"></a>
-                        <h4>Flat Heel gray hoes</h4>
-                        <div class="rating">
-                            
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star-half-o" ></i>
-                            <i class="fa fa-star-o" ></i>
-                        </div>
-                        <p>₹5000</p>
-                    </div>
-                    <div class="col-4">
-                        <a href="products-details.html"><img src="images/product-3.jpg"></a>
-                        <h4>Lace-Fastening black Shoes</h4>
-                        <div class="rating">
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star-half-o" ></i>
-                        </div>
-                        <p>₹2100</p>
-                    </div>
-                    <div class="col-4">
-                        <a href="products-details.html"><img src="images/product-7.jpg"></a>
-                        <h4>HRX Men's cotton socks</h4>
-                        <div class="rating">
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star-o" ></i>
-                        </div>
-                        <p>₹900</p>
-                    </div>
-                    <div class="col-4">
-                        <a href="products-details.html"><img src="images/product-2.jpg"></a>
-                        <h4>Lace-Up Running Shoes</h4>
-                        <div class="rating">
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star" ></i>
-                            <i class="fa fa-star-o" ></i>
-                            <i class="fa fa-star-o" ></i>
-                        </div>
-                        <p>₹3500</p>
-                    </div>  
-                </div> -->
-            <!--new row for the latest product-->
                 <div class="row">
                
                     
@@ -355,5 +304,35 @@
                 }
             }
         </script>
+        <script>
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/logout";
+                        }
+                    });
+                });
+            });
+            </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>

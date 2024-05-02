@@ -12,7 +12,7 @@ const productController = require('./routes/productrouter');
 const userProfilerouter = require("./routes/userProfilerouter")
 const Coupondetails = require('./routes/couponRouter');
 const paymentRoute = require('./routes/paymentRouter');
-
+const Swal = require('sweetalert2')
 const app = express();
 
 app.use('/public/', express.static('./public'));

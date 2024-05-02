@@ -35,7 +35,7 @@ module.exports = {
   
   
   postAddProduct: async (req, res) => {
-    const { productname, category, price, model, description, stock } = req.body;
+    const { productname, category, price, model, description, stock,croppedImages } = req.body;
 
     try {
         const newProduct = new Product({
@@ -44,7 +44,7 @@ module.exports = {
             price: price,
             model: model,
             description: description,
-            image: req.files.map((file) => file.path.substring(6)),
+            image: croppedImages || [], 
             stock: stock,
             isListed: true,
         });
@@ -85,14 +85,24 @@ module.exports = {
   postEditProduct: async (req, res) => {
     const id = req.params.id;
     const { productname, category, price, model, description, stock, isListed } = req.body;
-
     try {
+      let updatedImagePaths = [];
+      if (req.files && req.files.length > 0) {
+        updatedImagePaths = req.files.map((file) => file.path.substring(6));
+    } else {
+      let existingImage = await Product.findById(id);
+      let  imageArray = existingImage.image
+        updatedImagePaths = imageArray;
+    }
+
         const updatedProduct = await Product.findByIdAndUpdate(id, {
             productname: productname,
             category: category,
             price: price,
             model: model,
             description: description,
+            image:updatedImagePaths,
+
             stock: stock,
             isListed: isListed,
         }, { new: true });

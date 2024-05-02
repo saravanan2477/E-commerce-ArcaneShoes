@@ -3,12 +3,12 @@ const bcryptjs = require("bcryptjs")
 const Product = require("../model/product");
 const WishList= require("../model/wishlist")
 const Category = require("../model/category");
-
 const crypto = require("crypto")
 const nodemailer = require('nodemailer')
 
 const UserCollection = require("../model/users");
-
+const wallet=require("../model/wallet");
+const Wallet = require("../model/wallet");
 
 
 //!guest homepage
@@ -108,7 +108,9 @@ const usersignuppost = async (req, res) => {
     signupdata = {
       username: req.body.username,
       email: req.body.email,
+      phone:req.body.phone,
       password: hashedPassword
+      
     };
     email = req.body.email;
     otp = generateRandomString(6);
@@ -180,6 +182,16 @@ const otppost = async (req, res) => {
     if (otp === otpnumber) {
       const newUser = new UserCollection(signupdata);
       await newUser.save();
+
+      
+const wallet = new Wallet({
+  userid: newUser._id, // Assign the newly created user's _id to the userid field
+  date: new Date(), // Assign the current date
+  amount: 0, // Default amount
+  creditordebit: '', // Default creditordebit
+});
+
+await wallet.save()
 
 
       res.status(200).json({ success: true, redirect: '/' });
@@ -404,6 +416,21 @@ const getLogout = (req, res) => {
 }
 
 
+  const getwallet= async (req, res) => {
+  try {
+    const userid = req.session.userid;
+    const userdet = await UserCollection.findById(userid);
+    const walletdetails = await wallet.find({userid:userid}).sort({ date: -1 });
+
+    console.log("wallet of the user is ", walletdetails);
+
+    res.render("wallet", { userdet,walletdetails });
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({ error: "Failed to cancel order by user." });
+  }
+}
 
 
 
@@ -455,6 +482,6 @@ module.exports = {
   getLogout,
   wishList,
   addToWishlist,
-  removewishlist
+  removewishlist,getwallet
   // googleloginpost
 }

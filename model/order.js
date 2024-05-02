@@ -38,9 +38,36 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
  
-    address: {
-        type: Object
-    },
+    addresscollection: [ // Corrected typo here from 'addrescollection' to 'addresscollection'
+    {
+        firstname: {
+            type: String
+        },
+        lastname: {
+            type: String,
+        },
+        city:{
+            type:String
+        },
+        address:{
+            type:String
+        },
+        pincode: {
+            type: Number,
+        },
+        state: {
+            type: String,
+        },
+        phone: {
+            type: Number
+        },
+        email:{
+            type:String
+        }
+    }
+],
+
+
     paymentMethod: {
         type: String
     },

@@ -5,6 +5,7 @@ const Product = require("../model/product");
 const UserCollection=require("../model/users")
 const Address= require('../model/address')
 const Category = require("../model/category");
+const wallet = require("../model/wallet")
 
 
 
@@ -122,7 +123,7 @@ module.exports={
             userid: userId,
             Username: user.username,
             productcollection: orderProducts,
-            address: {
+            addresscollection: {
                 firstname: address.firstname,
                 lastname: address.lastname,
                 address: address.address,
@@ -193,28 +194,73 @@ module.exports={
 
 
   // Assuming you have a route to fetch all products
-  orderDetailsget: async (req, res) => {
+ orderDetailsget: async (req, res) => {
     console.log("entered order detail page");
     try {
         const orderid = req.params.orderid;
-        const order = await Ordercollection.findById(orderid);
+        const productid = req.params.productid;
+
+        // Find the order that matches the order id and contains the product with the specified product id
+        const order = await Ordercollection.findOne({
+            _id: orderid,
+            "productcollection.productid": productid
+        });
 
         if (!order) {
             return res.status(404).send('Order not found');
         }
- // Fetch the billing address associated with the order
- const address = await Address.findOne({ userid: order.userid });
-        // Render the order details using the EJS template and pass the order object
 
-         // Determine payment status based on your logic, for example, checking if the paymentMethod is 'paid'
-         const paymentStatus = order.paymentMethod === 'paid' ? 'paid' : 'unpaid';
+        // Find the specific product within the order
+        const product = order.productcollection.find(product => product.productid.toString() === productid);
+    console.log(product,'fall')
+        if (!product) {
+            return res.status(404).send('Product not found in the order');
+        }
 
-        res.render('orderDetails', { order,address , orderid, paymentStatus});
+        // Fetch the billing address associated with the order
+        const address = await Address.findOne({ userid: order.userid });
+
+        // Determine payment status based on your logic
+        const paymentStatus = order.paymentMethod === 'paid' ? 'paid' : 'unpaid';
+        console.log(order,"this is ior");
+
+        res.render('orderDetails', { product, order, address, orderid, paymentStatus });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
+},
+
+cancelOrder : async (req, res) => {
+    const { orderId, productId } = req.params;
+    const { status } = req.body;
+
+    try {
+        // Find the order by ID
+        const order = await Ordercollection.findById(orderId);
+        if (!order) {
+            return res.status(404).send(`Order with ID ${orderId} not found.`);
+        }
+
+        // Find the product within the order and update its status to "cancelled"
+        const productIndex = order.productcollection.findIndex(product => product.productid == productId);
+        if (productIndex === -1) {
+            return res.status(404).send(`Product with ID ${productId} not found in order.`);
+        }
+
+        order.productcollection[productIndex].status = 'Cancelled';
+
+        // Save the updated order
+        await order.save();
+
+        // Redirect to the page where orders are displayed
+        res.redirect('/userOrders');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
 }
+  
 
 
 

@@ -113,22 +113,23 @@
                     <div class="form-group">
                         <label for="username">User Name</label>
                         <input type="text" class="form-control" id="username" placeholder="Enter User Name"
-                               name="username">
+                               name="username" value="<%= user.username %>">
+
                         <div id="username-error" class="error-message"></div>
                     </div>
 
-                    <!-- <div class="form-group">
-                        <label for="mobile">Mobile Number</label>
-                        <input type="text" class="form-control" id="mobile" placeholder="Enter Mobile Number"
-                               name="mobile">
-                        <div id="mobile-error" class="error-message"></div>
-                    </div> -->
-
                     <div class="form-group">
+                        <label for="mobile">Mobile Number</label>
+                        <input type="number" class="form-control" id="mobile" placeholder="Enter Mobile Number"
+                               name="mobile" value="<%= user.phone %>">
+                        <div id="mobile-error" class="error-message"></div>
+                    </div>
+
+                    <!-- <div class="form-group">
                         <label for="email">Mail ID</label>
                         <input type="email" class="form-control" id="email" placeholder="Enter Mail" name="email">
                         <div id="email-error" class="error-message"></div>
-                    </div>
+                    </div> -->
 
                     <button type="submit" class="btn btn-update" id="updateBtn">Update Profile</button>
 
@@ -139,54 +140,41 @@
 </div>
 
 <script>
-   function validateForm() {
-    // Reset error messages
-    document.getElementById("username-error").innerHTML = "";
-    document.getElementById("mobile-error").innerHTML = "";
-    document.getElementById("email-error").innerHTML = "";
+    function validateForm() {
+        // Reset error messages
+        document.getElementById("username-error").innerHTML = "";
+        document.getElementById("email-error").innerHTML = "";
 
-    // Get form values
-    var username = document.getElementById("username").value.trim();
-    var mobile = document.getElementById("mobile").value.trim();
-    var email = document.getElementById("email").value.trim();
+        // Get form values
+        var username = document.getElementById("username").value.trim();
+        var email = document.getElementById("email").value.trim();
 
-    // Null validation
-    if (username === null || mobile === null || email === null) {
-        alert("Null values are not allowed.");
-        return false;
+        // Null validation
+        if (username === null || email === null) {
+            alert("Null values are not allowed.");
+            return false;
+        }
+
+        // Validate username
+        if (username === "") {
+            document.getElementById("username-error").innerHTML = "Please enter a username.";
+            return false;
+        }
+
+      
+
+        // Validate email
+        if (email === "") {
+            document.getElementById("email-error").innerHTML = "Please enter an email address.";
+            return false;
+        } else if (!/^\S+@\S+\.\S+$/.test(email)) {
+            document.getElementById("email-error").innerHTML = "Please enter a valid email address.";
+            return false;
+        }
+
+        // If all validations pass, the form is valid
+        return true;
     }
-
-    // Validate username
-    if (username === "") {
-        document.getElementById("username-error").innerHTML = "Please enter a username.";
-        return false;
-    } else if (username.replace(/\s/g, "") === "") {
-        document.getElementById("username-error").innerHTML = "Username cannot be only spaces.";
-        return false;
-    }
-
-    // Validate mobile number
-    if (mobile === "") {
-        document.getElementById("mobile-error").innerHTML = "Please enter a mobile number.";
-        return false;
-    } else if (!/^\d{10}$/.test(mobile)) {
-        document.getElementById("mobile-error").innerHTML = "Mobile number must be 10 digits.";
-        return false;
-    }
-
-    // Validate email
-    if (email === "") {
-        document.getElementById("email-error").innerHTML = "Please enter an email address.";
-        return false;
-    } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-        document.getElementById("email-error").innerHTML = "Please enter a valid email address.";
-        return false;
-    }
-
-    // If all validations pass, the form is valid
-    return true;
-}
-
 </script>
 
 </body>

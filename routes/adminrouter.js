@@ -36,34 +36,34 @@ router.get("/dashboard",checkSession,admincontroller.dashboard)
 
 
 //user management
-router.get("/usermanagement",admincontroller.usermanagement)
+router.get("/usermanagement",checkSession,admincontroller.usermanagement)
 router.post("/usermanagement",admincontroller.usermanagementpost)
 
 ///  block and Unblock in User Management
-router.get('/blockuser/:id', admincontroller.block);
+router.get('/blockuser/:id', checkSession,admincontroller.block);
 router.get('/unblockuser/:id',  admincontroller.unblock);
 // 
 
 //catogory management
-router.get("/categorymanagement",admincontroller.categorymanagement)
+router.get("/categorymanagement",checkSession,admincontroller.categorymanagement)
 
 
-router.get("/addcategory",admincontroller.addCategoryGet)
+router.get("/addcategory",checkSession,admincontroller.addCategoryGet)
 // Route to add a category
 router.post('/addcategory', admincontroller.addCategoryPost);
 
 // Route to edit a category
-router.get('/editcategory/:id', admincontroller.editCategoryget);
+router.get('/editcategory/:id', checkSession,admincontroller.editCategoryget);
 router.post('/editcategory/:id', admincontroller.editCategorypost);
 
 // Route to list and unlist category a category
 
 
-router.get("/unListcategory/:id", admincontroller.UnList);
+router.get("/unListcategory/:id", checkSession,admincontroller.UnList);
 
 //route to render admin order page
 
-router.get("/orderManagement",admincontroller.orderget)
+router.get("/orderManagement",checkSession,admincontroller.orderget)
 
 router.post("/update-status/:orderId/:productId", admincontroller.updateOrderpost);
 

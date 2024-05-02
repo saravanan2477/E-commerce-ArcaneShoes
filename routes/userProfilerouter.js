@@ -79,7 +79,7 @@ router.post("/addAddress",profilecontroller.addAddresspost)
 // //!edit address get
 //  router.get('/editAddress',profilecontroller.editAddressget)
 //  router.post('/editAddress/:id', profilecontroller.editAddressPost);
-router.get('/editAddress/:id',profilecontroller.editAddressget)
+router.get('/editAddress/:id',checkSessionBlocked,profilecontroller.editAddressget)
 router.post('/editAddress/:id',profilecontroller.editAddresspost)
 
 

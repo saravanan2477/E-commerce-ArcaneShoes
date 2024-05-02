@@ -51,20 +51,20 @@
     <div class="sidebar-content">
         <ul class="sidebar-menu">
             <li><a href="/userProfile">Profile</a></li>
-            <li><a href="#">Wallet</a></li>
+            <li><a href="/wallet">Wallet</a></li>
             <li><a href="/userAddress">Address</a></li>
             <li><a href="/cart">Cart</a></li>
             <li><a href="/userOrders">Orders</a></li>
             <li><a href="/wishList">wishList</a></li>
 
-            <li><a href="/logout">Logout</a></li>
         </ul>
     </div>
     <div class="user-content">
         <div class="user-details">
             <h2>User Details</h2>
             <p>Name: <%= user.username%></p>
-            <p>Email: <%= user.email%></p>
+            <p>Phone: <%= user.phone%></p>
+           
             <!-- Add the Edit Profile button here -->
             <section class="section mb-4 col-md-6 button-section">
                 <a href="/editProfile"><button class="btn btn-primary btn-block">Edit Profile</button></a>
@@ -77,4 +77,39 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/logout";
+                        }
+                    });
+                });
+            });
+            
+</script>
+
 <%- include('sidefooter') %>

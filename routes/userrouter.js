@@ -45,15 +45,17 @@ router.get('/resendotp', usercontroller.resendotp)
 
 router.get("/homepage",checkSessionBlocked,usercontroller.Homepage)
 
-router.get("/productcollection/:id",usercontroller.Homepage)
+router.get("/productcollection/:id",checkSessionBlocked,usercontroller.Homepage)
 
 
 //!wishlist page
 
-router.get("/wishlist",usercontroller.wishList)
+router.get("/wishlist",checkSessionBlocked,usercontroller.wishList)
 router.get("/Wishlist/:id",checkSessionBlocked,usercontroller.addToWishlist);
 router.get("/removeFromWishlist/:id",checkSessionBlocked,usercontroller.removewishlist);
 
+//!wallet
+router.get("/wallet",checkSessionBlocked,usercontroller.getwallet);
 
 
 //!google

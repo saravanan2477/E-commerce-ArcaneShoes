@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+ /* Styles for Wallet Section */
+.wallet-section {
+    margin: 0;
+}
+
+/* Styles for Wallet Heading */
+.wallet-heading {
+    margin: 0;
+}
+
+.wallet-title {
+    color: #007bff; /* Primary color */
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Styles for Wallet Balance */
+.wallet-balance {
+    margin: 0;
+}
+
+.balance-text {
+    color: #6c757d; /* Secondary color */
+    font-size: 1rem;
+}
+
+/* Styles for Transaction Container */
+.transaction-container {
+    margin-top: 1.5rem;
+}
+
+/* Styles for Transaction List */
+.transaction-list {
+    padding: 0.5rem;
+}
+
+/* Styles for Transaction Table */
+.transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transaction-table th,
+.transaction-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6; /* Light gray */
+}
+
+/* Styles for No Transaction Text */
+.no-transaction-text {
+    text-align: center;
+    color: #6c757d; /* Secondary color */
+}
+/* Styles for Wallet Container */
+.wallet-container {
+    width: 60%; /* Adjust width as needed */
+    margin: 0 auto; /* Center horizontally */
+}
+
+/* Rest of the CSS remains the same */
+
+
+  </style>
+</head>
+<body>
+  
+
+  <%- include('sidenav') %>
+
+
+  <div id="sidebar">
+  <div class="sidebar-content">
+    <ul class="sidebar-menu">
+        <li><a href="/userProfile">Profile</a></li>
+        <li><a href="/wallet">Wallet</a></li>
+        <li><a href="/userAddress">Address</a></li>
+        <li><a href="/cart">Cart</a></li>
+        <li><a href="/userOrders">Orders</a></li>
+        <li><a href="/wishList">wishList</a></li>
+
+    </ul>
+</div>
+  
+   
+        
+  <div class="wallet-container">
+    <div class="wallet-section">
+        <div class="wallet-heading">
+            <h3 class="wallet-title">Wallet</h3>
+        </div>
+        <div class="wallet-balance">
+          <% if(walletdetails.length > 0){ %>
+            <% walletdetails.forEach((val, index)=> { %>
+            <h5 class="balance-text">Balance: <%- val.amount %></h5>
+        </div>
+        <% }) %>
+        <% } %>
+        <div class="transaction-container mt-3">
+            <div class="transaction-list p-1 overflow-scroll" style="max-height: 80vh; overflow-y: auto;">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(walletdetails.length > 0){ %>
+                            <% walletdetails.forEach((val, index)=> { %>
+                                <tr>
+                                    <td><%- val.amount %></td>
+                                    <% 
+                                    const formattedDate = new Date(val.date).toLocaleDateString('en-US', {
+                                      weekday: 'short' , month: 'short' , day: 'numeric' , year: 'numeric'
+                                    });
+                                  
+                                    const formattedTimeIST = new Date(val.date).toLocaleString('en-IN', {
+                                      timeZone: 'Asia/Kolkata',
+                                      hour: 'numeric' , minute: 'numeric' , hour12: true
+                                    });
+                                  %>
+                                    <td><%- formattedDate %> - <%- formattedTimeIST %></td>
+                                    <td><%- val.status %></td>
+                                </tr>
+                                <% }) %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="3" class="no-transaction-text">No wallet details available.</td>
+                                        </tr>
+                                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+     
+
+
+
+
+</div>
+
+<%- include('sidefooter') %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

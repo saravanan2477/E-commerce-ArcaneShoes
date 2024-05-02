@@ -16,7 +16,9 @@ const loginschema = new mongoose.Schema({
     otp: {
         type: String,
     },
-    
+    phone: {
+        type: Number,
+    },
     
 });
 

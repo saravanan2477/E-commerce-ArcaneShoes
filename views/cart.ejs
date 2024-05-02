@@ -128,12 +128,15 @@ height: auto;
                         
                             
                           <!-- HTML code -->
-<div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                          <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                            <!-- Your input group content here -->
   <div class="input-group-prepend">
     <button class="btn_inc decrease" type="button" data-product-id="<%= product._id %>" data-index="<%= index %>">−</button>
 
   </div>
-  <input id="quantity<%= index %>" type="text" class="form-control text-center quantity-amount" value="<%= product.quantity %>" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+  <input id="quantity<%= index %>" type="text" class="form-control text-center quantity-amount" value="<%= product.quantity %>" 
+  placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" style="border: 1px solid #ced4da; border-radius: .25rem; height: 18px;">
+
   <div class="input-group-append">
     <button class="btn_inc increase" type="button" data-product-id="<%= product._id %>" data-index="<%= index %>">+</button>
   </div>
@@ -145,10 +148,12 @@ height: auto;
                              
                              
                               <td><div id="total<%= index %>">₹<%= product.price * product.quantity %></div>
-
+                                
                           </td>
                         
-                          <td><a href="/removecart/<%=product._id %>" class="btn btn-black bt                                                                                                                                                                                                                                                                         n-sm mt-1">X</a></td>
+                         <td>  <a href="/removecart/<%= product._id %>" class="btn btn-black btn-remove-from-cart" data-product-id="<%= product._id %>" 
+                          style="padding: 8px 12px; display: inline-block; height: 20px; margin: 1px;">X</a></td>
+                                                                                                                                                                                                                                                                                        n-sm mt-1">X</a></td>
                         </tr>
         
                         <% }); %>
@@ -202,11 +207,15 @@ height: auto;
                               <a href="/CheckoutPage"><button id="checkoutBtn" class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button></a>
                               <% } %>
                           </div>
-                          
+                          <div class="col-md-3 d-flex w-100">
+                            <a href="/Homepage" id="continueShoppingBtn" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
+                        </div>
+                        
+                       
                           </div>
                           
                       </div>
-                      
+                    
                   </div>
                   
               </div>
@@ -219,7 +228,7 @@ height: auto;
         
 		
 
-		<!-- Start Footer Section -->\
+		<!-- Start Footer Section -->
     <br>
     <br>
   
@@ -297,7 +306,43 @@ height: auto;
   });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Find all elements with the class 'btn-remove-from-cart'
+      const removeFromCartButtons = document.querySelectorAll(".btn-remove-from-cart");
+  
+      // Loop through each remove from cart button
+      removeFromCartButtons.forEach(button => {
+          // Add a click event listener to each remove from cart button
+          button.addEventListener("click", function (e) {
+              // Prevent the default action (following the link)
+              e.preventDefault();
+  
+              // Get the product ID from the data attribute
+              const productId = this.getAttribute("data-product-id");
+  
+              // Show the SweetAlert confirmation dialog
+              Swal.fire({
+                  title: "Remove from Cart",
+                  text: "Are you sure you want to remove this product from your cart?",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonText: "Yes, remove",
+                  cancelButtonText: "No, cancel"
+              }).then((result) => {
+                  // If the user confirms removing from cart
+                  if (result.isConfirmed) {
+                      // Redirect to the remove from cart page with the product ID
+                      window.location.href = "/removecart/" + productId;
+                  }
+              });
+          });
+      });
+  });
+  </script>
 
 </body>
 

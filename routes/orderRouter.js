@@ -8,23 +8,25 @@ const checkSessionBlocked= require("../Middleware/user");
 
 
 
- router.get("/checkoutpage",orderController.getcheckout)
+ router.get("/checkoutpage",checkSessionBlocked,orderController.getcheckout)
 
 
 
  //! add address 
 
-router.get("/orderAddress",orderController.addAddresscheckout)
+router.get("/orderAddress",checkSessionBlocked,orderController.addAddresscheckout)
 router.post("/orderAddresspost",orderController.addAddresspostcheckout)
 router.post("/Checkoutpost",orderController.postcheckout)
 
-router.get("/placeOrder",orderController.Placeorder)
+router.get("/placeOrder",checkSessionBlocked,orderController.Placeorder)
 
-router.get('/orderDetails/:orderid', orderController.orderDetailsget);
+router.get('/orderDetails/:orderid/:productid', checkSessionBlocked,orderController.orderDetailsget);
 
 
 
   //! user order get
   router.get("/userOrders",checkSessionBlocked,orderController.showUserOrders);
+
+router.get('/cancelOrder/:orderId/:productId', orderController.cancelOrder);
 
 module.exports= router;

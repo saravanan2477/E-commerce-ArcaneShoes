@@ -24,17 +24,17 @@ const checkSession = async (req, res, next) => {
       next();
     } else {
       // No userId in session, redirect to the default page
-      res.redirect("/admin/login");
+      res.redirect("/admin/adminlogin");
     }
   };
 
-router.get("/productmanagement",  productController.getProductManagement);
+router.get("/productmanagement", checkSession, productController.getProductManagement);
 
-router.get("/addProduct",  productController.getAddProduct);
+router.get("/addProduct",checkSession,   productController.getAddProduct);
  
 
 router.post("/addproduct", upload, productController.postAddProduct);
-router.get("/editproduct/:id",  productController.getEditProduct);
+router.get("/editproduct/:id", checkSession,  productController.getEditProduct);
 router.post("/editproduct/:id",upload,  productController.postEditProduct);
 router.get("/deleteproduct/:id",  productController.getproductdelete);
 router.get("/unlistproduct/:id", productController.getUnlistProduct);

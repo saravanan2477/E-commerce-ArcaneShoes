@@ -151,7 +151,7 @@
             <td><%= val.expiredate %></td>
             <td><%= val.purchaseamount %></td>
             <td>
-              <a href="/deletecoupon/<%=val.id %>" class="delete-button">Delete</a>
+              <a href="/deletecoupon/<%=val.id %>"  class="btn bg-gradient-primary mb-0 delete-button" data-product-id="<%=val.id %>" style="background-color: rgb(240, 66, 127); color: white;">Delete</a>
             </td>
           </tr>
           
@@ -173,5 +173,41 @@
   new DataTable('#example');
 
 </script>  
+
+<script>
+    // Wait for the document to be fully loaded
+    document.addEventListener("DOMContentLoaded", function () {
+        // Find all elements with the class 'delete-button'
+        const deleteButtons = document.querySelectorAll(".delete-button");
+    
+        // Loop through each delete button
+        deleteButtons.forEach(button => {
+            // Add a click event listener to each delete button
+            button.addEventListener("click", function (e) {
+                // Prevent the default action (following the link)
+                e.preventDefault();
+    
+                // Get the product ID from the data attribute
+                const productId = this.getAttribute("data-product-id");
+    
+                // Show the SweetAlert confirmation dialog
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "Do you really want to delete this product?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete",
+                    cancelButtonText: "No, cancel"
+                }).then((result) => {
+                    // If the user confirms the deletion
+                    if (result.isConfirmed) {
+                        // Redirect to the delete product page with the product ID
+                        window.location.href = "/deletecoupon/" + productId;
+                    }
+                });
+            });
+        });
+    });
+    </script>
 </body>
 </html>
