@@ -38,7 +38,7 @@ const OrderSchema = new mongoose.Schema({
         }
     ],
  
-    addresscollection: [ // Corrected typo here from 'addrescollection' to 'addresscollection'
+    addresscollection:  // Corrected typo here from 'addrescollection' to 'addresscollection'
     {
         firstname: {
             type: String
@@ -64,8 +64,7 @@ const OrderSchema = new mongoose.Schema({
         email:{
             type:String
         }
-    }
-],
+    },
 
 
     paymentMethod: {
@@ -78,7 +77,18 @@ totalPrice:{
 orderDate:{
     type: Date
     
-}
+},
+totalPrice:{
+    type: Number
+},   
+    Discount:{
+        type:Number
+    },
+    intDiscount:{
+        type:Number
+    },
+
+
 });
 
 const order=mongoose.model('order',OrderSchema)

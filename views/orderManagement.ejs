@@ -118,7 +118,8 @@
           <li><a href="/productmanagement">Product Management</a></li>
           <li><a href="/admin/orderManagement">Order Management</a></li>
           <li><a href="/couponManagement">Coupon Management</a></li>
-          <li><a href="/admin/adminlogin">Logout</a></li>
+          <li><a href="/sales">Sales</a></li>
+          <li><a href="/admin/Logoutget">Logout</a></li>
         </ul>
     </div>
 
@@ -155,7 +156,7 @@
                          <td data-label="Quantity"><%= product.quantity %></td>
                          <td data-label="Total Prices">₹<%= product.price * product.quantity %></td>
                          <td data-label="Payment Method"><%= order.paymentMethod %></td>
-                         <td data-label="Payment Method"><%= product.status %></td>
+                         <td data-label="status"><%= product.status %></td>
                          <td data-label="Status">
                            
                              <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
@@ -165,6 +166,7 @@
                                    <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
                                    <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
                                    <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                   <option value="Returned" <%= product.status === 'Returned' ? 'selected' : '' %>>Returned</option>
                                  </select>
                               </div>
                              
@@ -173,10 +175,12 @@
                               <td data-label="Action" style="display: flex;">
                                 <% if (product.status !== 'Cancelled') { %>
                                     <% if (product.status !== 'Delivered') { %>
+                                      <% if (product.status !== 'Returned') { %>
                     
                                         <button type="submit" class="cancel-btn">Update</button>
                                     <% } %>
                                 <% } %>
+                            <% } %>
                             </td>
                             
                              </form>

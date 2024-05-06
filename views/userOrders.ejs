@@ -68,12 +68,17 @@
                                     
                                     <div class="w-r__wrap-2">
                                         <a class="w-r__link btn--e-brand-b-2" href="/getproduct/<%= product.productid %>">VIEW</a>
-                                        <% if ((product.status !== 'Cancelled')&& (product.status !=='Delivered')) { %>
+                                    
+                                        <% if ((product.status !== 'Cancelled') && (product.status !== 'Delivered') && (product.status !== 'Returned')) { %>
                                             <a class="w-r__link btn--e-brand-b-2 cancel-order-link" href="/cancelOrder/<%= order._id %>/<%= product.productid %>" data-order-id="<%= order._id %>" data-product-id="<%= product.productid %>">Cancel Order</a>
                                         <% } %>
-
+                                        <% if ((product.status === 'Delivered') && (product.status !== 'Returned')) { %>
+                                            <a class="w-r__link btn--e-brand-b-2 return-order-link" href="/return/<%= order._id %>/<%= product.productid %>" data-order-id="<%= order._id %>" data-product-id="<%= product.productid %>">Return Product</a>
+                                        <% } %>
+                                    
                                         <a class="w-r__link btn--e-transparent-platinum-b-2" href="/orderDetails/<%= order._id %>/<%= product.productid %>">ORDER DETAILS</a>
                                     </div>
+                                    
 
                                 </div>
                             </div>
@@ -82,6 +87,7 @@
                         <!--====== End -  Product ======-->
                     <% }) %>
                 <% }) %>
+                
             <% } %>
         </div>
     </div>

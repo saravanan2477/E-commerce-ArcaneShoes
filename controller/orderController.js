@@ -88,7 +88,7 @@ module.exports={
 
         // Fetch items from the cart for the current session user
         const cartItems = await Cart.find({ userid: userId });
-
+console.log("CartItems",cartItems);
         // Calculate total price
         let totalPrice = 0;
         cartItems.forEach(item => {
@@ -99,7 +99,7 @@ module.exports={
         const orderProducts = cartItems.map(item => ({
           productid: item.productid,
           productName: item.productname,
-          Category: item.Category,
+          //Category: item.Category,
           price: item.price,
           quantity: item.quantity,
           image:item.image,
@@ -117,6 +117,7 @@ module.exports={
             // Reduce the stock by the quantity ordered
             product.stock -= item.quantity;
         }
+   
         await product.save();
         // Construct order object
         const order = new Ordercollection({
@@ -179,6 +180,7 @@ module.exports={
       showUserOrders  : async (req, res) => {
         try {
             const userid = req.session.userid;
+           
             const orders = await Ordercollection.find({ userid: userid }).sort({ orderDate: -1 });
             const Categorie = await Category.find();
      
@@ -199,7 +201,7 @@ module.exports={
     try {
         const orderid = req.params.orderid;
         const productid = req.params.productid;
-
+        
         // Find the order that matches the order id and contains the product with the specified product id
         const order = await Ordercollection.findOne({
             _id: orderid,
@@ -231,11 +233,10 @@ module.exports={
     }
 },
 
-cancelOrder : async (req, res) => {
-    const { orderId, productId } = req.params;
-    const { status } = req.body;
-
+cancelOrder: async (req, res) => {
     try {
+        const { orderId, productId } = req.params;
+
         // Find the order by ID
         const order = await Ordercollection.findById(orderId);
         if (!order) {
@@ -248,7 +249,31 @@ cancelOrder : async (req, res) => {
             return res.status(404).send(`Product with ID ${productId} not found in order.`);
         }
 
-        order.productcollection[productIndex].status = 'Cancelled';
+        const cancelledProduct = order.productcollection[productIndex];
+
+        // Check if the payment has been made for the order
+        if (order.paymentMethod === 'Net Banking') {
+            // Refund the user
+            const totalRefund = cancelledProduct.price * cancelledProduct.quantity;
+
+            // Update user's wallet
+            const user = await UserCollection.findById(order.userid);
+            user.wallet += totalRefund;
+            await user.save();
+
+            // Create a refund entry in the wallet collection
+            await wallet.create({
+                userid: order.userid,
+                date: new Date(),
+                amount: totalRefund,
+                creditordebit: 'credit',
+            });
+
+            console.log('Refund processed successfully:', totalRefund);
+        }
+
+        // Update product status to "Cancelled"
+        cancelledProduct.status = 'Cancelled';
 
         // Save the updated order
         await order.save();
@@ -259,9 +284,91 @@ cancelOrder : async (req, res) => {
         console.error(error);
         res.status(500).send('Internal server error');
     }
-}
+},
+
   
 
+
+
+
+
+
+orderReturn: async (req, res) => {
+    try {
+        console.log("entered 'return order'");
+        const userid = req.params.userid;
+        const productid = req.params.productid;
+        const selectedstatus = 'Returned';
+        const idofuser = req.session.userid
+        console.log(userid, productid, selectedstatus);
+
+        // Retrieve order details
+        const order = await Ordercollection.findOne({
+            _id: userid,
+            "productcollection.productid": productid
+        });
+        console.log(order, "this is the order");
+
+        if (!order) {
+            return res.status(404).send("Order not found");
+        }
+
+        const product = order.productcollection.find(product => product.productid.toString() === productid);
+        if (!product) {
+            return res.status(404).send("Product not found in the order");
+        }
+
+        const { price, quantity } = product;
+
+        // Update order status to 'Returned'
+        await Ordercollection.updateOne(
+            { 'userid': userid, 'productcollection.productid': productid },
+            { $set: { 'productcollection.$.status': selectedstatus } }
+        );
+      
+        // Add stock back to the Product database
+        await Product.findOneAndUpdate(
+            { _id: productid },
+            { $inc: { Stock: quantity } }
+        );
+
+
+        if (order.paymentMethod == 'Net Banking') {
+            console.log("inside net banking");
+            const totalAmount = price * quantity ;
+            console.log(totalAmount)
+           let userorder =  await UserCollection.findOneAndUpdate(
+                { _id: idofuser },
+                { $inc: { wallet: totalAmount } }
+            );
+
+            console.log("user id is ", idofuser);
+
+            console.log("detail of the order is ",userorder);
+            await wallet.create({
+                userid:idofuser,
+                date: new Date(),
+                amount: totalAmount,
+                creditordebit: 'credit',
+              });
+              console.log("Wallet updated successfully");
+        } else {
+            console.log("order cancelled");
+        }
+
+
+        product.status = selectedstatus;
+
+        // Save the updated order to the database
+        await order.save();
+        console.log("Order returned successfully");
+        res.redirect('/userOrders');
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Error returning order" });
+    }
+}
 
 
 

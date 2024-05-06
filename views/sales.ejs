@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>coupon Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- DataTable HEADER-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+        }
+        
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+        }
+        
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            padding: 15px;
+        }
+        
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        .sidebar ul li a:hover {
+            color: #ccc;
+        }
+        
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            margin-bottom: 20px;
+        }
+        
+        .user-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .user-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .user-item button {
+            cursor: pointer;
+        }
+        
+        /* Styling for table headings */
+        #categoryTable thead th {
+            background-color: #007bff; /* Blue */
+            color: #ffffff; /* White */
+        }
+      
+
+
+        .delete-button {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #ff0000; /* Red color for delete button, you can change it to your desired color */
+        color: #fff; /* Text color for the button */
+        text-decoration: none; /* Remove underline from the link */
+        border-radius: 4px; /* Optional: Adds rounded corners */
+    }
+
+    .delete-button:hover {
+        background-color: #cc0000; /* Darker red color on hover */
+    }
+    .report-options {
+    max-width: 400px; /* Adjust as needed */
+    margin: 0 auto; /* Center the box horizontally */
+    padding: 20px; /* Add some padding for spacing */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 8px; /* Add rounded corners */
+}
+.date-label {
+    font-weight: bold;
+    color: #007bff; /* Blue color */
+}
+
+    </style>
+</head>
+<body>
+    <% function formatDate(inputDate) { %>
+        <% const date = new Date(inputDate); %>
+        <% const day = String(date.getDate()).padStart(2, '0'); %>
+        <% const month = String(date.getMonth() + 1).padStart(2, '0'); %>
+        <% const year = String(date.getFullYear()).slice(-2); %>
+        <%= day %>-<%= month %>-<%= year %>
+    <% } %>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>  
+            <li><a href="/admin/userManagement">User Management</a></li>
+            <li><a href="/admin/categoryManagement">Category Management</a></li>
+            <li><a href="/productManagement">Product Management</a></li>
+            <li><a href="/admin/orderManagement">Order Management</a></li>
+            <li><a href="/couponManagement">Coupon Management</a></li>
+            <li><a href="/sales">Sales</a></li>
+            <li><a href="/admin/Logoutget">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <h1 style="text-align: center;"> Sales Report </h1>  
+        <br>
+        <form action="/salesfilter" method="post" onsubmit="return validateDates()">
+            <label for="start_date" class="date-label">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+            <span id="start_date_error" class="error-message"></span>
+            <label for="end_date" class="date-label">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+            <span id="end_date_error" class="error-message"></span>
+            <button type="submit" style="background-color: #007bff; color: white;border-radius:12px;margin-left: 2px;border: 1px solid black;">Submit</button>
+        </form>
+        
+        <br>
+        <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+          <tr>
+            <th style="background-color:#3da3f6">User Name</th>
+            <th style="background-color:#3da3f6">Product Name</th>
+           
+            <th style="background-color:#3da3f6">Quantity</th>
+            <th style="background-color:#3da3f6"> Prices</th>
+            <th style="background-color:#3da3f6">Total Prices</th>
+            <th style="background-color:#3da3f6">Order Date</th>
+            <th style="background-color:#3da3f6">Payment Method</th>
+            <th style="background-color:#3da3f6">Status</th>
+
+          </tr>  
+        </thead>
+        <tbody>
+            <% orderdetalist.forEach((order, index) => { %>
+                <% order.productcollection.forEach((product, productIndex) => { %>
+                    <tr>
+                        <td data-label="User Name"><%= order.Username %></td>
+                        <td data-label="Product Name"><%= product.productName %></td>
+                       
+                        <td data-label="Quantity"><%= product.quantity %></td>
+                        <td data-label="Prices">₹<%= product.price %></td>
+                        <td data-label="Total Prices">₹<%= product.price * product.quantity %></td>
+                        <td data-label="Order Date"><%= formatDate(order.orderDate) %></td>
+                            
+                         
+                        <td data-label="Payment Method"><%= order.paymentMethod %></td>
+                        <td data-label="Status"><%= product.status %></td>
+                            
+                       
+                    </tr>
+                <% }); %>         
+            <% }); %>
+        </tbody>
+      </table>   
+      <div class="card-body">
+        <div class="chart-pie pt-4 pb-2">
+            <div class="report-options">
+                <div class="row">
+                    <div class="col">
+                        <input type="date" name="startingdate" id="startingDate" class="form-control">
+                        <span class="date-label">Starting Date</span>
+                    </div>
+                    <div class="col">
+                        <input type="date" name="endingdate" id="endingDate" class="form-control">
+                        <span class="date-label">Ending Date</span>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary btn-block mb-3" onclick="generateReport('pdf')">Excel Report</button>
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary btn-block" onclick="generateReport('excel')">PDF Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+</div>
+
+ 
+  
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+  integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.datatables.net/v/bs5/dt-1.13.8/datatables.min.js"></script>
+<script>
+  new DataTable('#example');
+
+</script>  
+
+
+
+<script>
+    function generateReport(reportType) {
+        const startingDate = document.getElementById('startingDate').value;
+        const endingDate = document.getElementById('endingDate').value;
+        if (reportType === 'pdf') {
+            window.location.href = `/reportpdf?startingdate=${startingDate}&endingdate=${endingDate}`;
+        } else if (reportType === 'excel') {
+            window.location.href = `/reportexcel?startingdate=${startingDate}&endingdate=${endingDate}`
+        }
+    }
+</script>
+
+
+<script>
+    function validateDates() {
+        var startDateInput = document.getElementById("start_date");
+        var endDateInput = document.getElementById("end_date");
+        var startDate = new Date(startDateInput.value);
+        var endDate = new Date(endDateInput.value);
+        var currentDate = new Date();
+    
+        // Check if start date is greater than current date
+        if (startDate > currentDate) {
+            startDateInput.nextElementSibling.textContent = "cannot be in the future.";
+            startDateInput.nextElementSibling.style.color = "red"; // Set error message color to red
+            return false;
+        } else {
+            startDateInput.nextElementSibling.textContent = "";
+        }
+    
+        // Check if end date is less than current date
+        if (endDate < startDate) {
+            endDateInput.nextElementSibling.textContent = "cannot be in less than startDate.";
+            endDateInput.nextElementSibling.style.color = "red"; // Set error message color to red
+            return false;
+        } else {
+            endDateInput.nextElementSibling.textContent = "";
+        }
+    
+        // Check if start date is greater than end date
+        if (startDate > endDate) {
+            startDateInput.nextElementSibling.textContent = "Start date cannot be after end date.";
+            endDateInput.nextElementSibling.textContent = "End date cannot be before start date.";
+            startDateInput.nextElementSibling.style.color = "red"; // Set error message color to red
+            endDateInput.nextElementSibling.style.color = "red"; // Set error message color to red
+            return false;
+        } else {
+            startDateInput.nextElementSibling.textContent = "";
+            endDateInput.nextElementSibling.textContent = "";
+        }
+    
+        return true;
+    }
+</script>
+
+
+</body>
+</html>

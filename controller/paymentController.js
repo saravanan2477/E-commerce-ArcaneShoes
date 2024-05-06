@@ -6,7 +6,7 @@ require('dotenv').config();
 // console.log(instance);
 const orderpayment = async (req, res) => {
   try { 
-    console.log('here');
+    console.log('this is online payment starting');
     const { amount } = req.body;
     var instance = new Razorpay({ key_id: process.env.KEY_ID, key_secret: process.env.KEY_SECRET });
     var options = {

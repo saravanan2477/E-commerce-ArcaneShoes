@@ -5,6 +5,7 @@
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
+    "exceljs": "^4.4.0",
     "express": "^4.18.3",
     "express-session": "^1.18.0",
     "git": "^0.1.5",
@@ -15,9 +16,11 @@
     "nodemailer": "^6.9.12",
     "nodemon": "^3.1.0",
     "path": "^0.12.7",
-    "razorpay": "^2.9.2",
+    "pdfkit": "^0.15.0",
+    "pdfkit-table": "^0.1.99",
+    "razorpay": "^2.9.3",
     "sweetalert": "^2.1.2",
-    "sweetalert2": "^11.10.8"
+    "sweetalert2": "^11.6.13"
   },
   "name": "sksproject",
   "version": "1.0.0",

@@ -118,12 +118,12 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <h4 class="h4" style="color: rgb(250, 8, 8); font-size: 30px; font-family: Arial, sans-serif;">BILLING ADDRESS</h4>
-                                    <p></p><%= order.addresscollection[0].firstname %>
-                                    <%= order.addresscollection[0].lastname %> <br>
-                                    <%= order.addresscollection[0].address %> ,                                  
-                                    <%= order.addresscollection[0].city %>
-                                    <%= order.addresscollection[0].pincode %>, <br>
-                                   Ph:<%= order.addresscollection[0].phone%>
+                                    <p></p><%= order.addresscollection.firstname %>
+                                    <%= order.addresscollection.lastname %> <br>
+                                    <%= order.addresscollection.address %> ,                                  
+                                    <%= order.addresscollection.city %>
+                                    <%= order.addresscollection.pincode %>, <br>
+                                   Ph:<%= order.addresscollection.phone%>
                                     
                                 </div>
                             </div>

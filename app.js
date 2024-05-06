@@ -12,6 +12,7 @@ const productController = require('./routes/productrouter');
 const userProfilerouter = require("./routes/userProfilerouter")
 const Coupondetails = require('./routes/couponRouter');
 const paymentRoute = require('./routes/paymentRouter');
+const salesController=require('./routes/salesRouter');
 const Swal = require('sweetalert2')
 const app = express();
 
@@ -50,9 +51,9 @@ app.use("/", productController);
 app.use("/",userProfilerouter)
 app.use("/",cartrouter)
 app.use("/",orderrouter)
-app.use('/',Coupondetails);
-app.use('/',paymentRoute);
-
+app.use("/",Coupondetails);
+app.use("/",paymentRoute);
+app.use("/",salesController);
 
 
 // Serving static assets

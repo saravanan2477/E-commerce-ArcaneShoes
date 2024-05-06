@@ -25,8 +25,11 @@ router.get('/orderDetails/:orderid/:productid', checkSessionBlocked,orderControl
 
 
   //! user order get
-  router.get("/userOrders",checkSessionBlocked,orderController.showUserOrders);
+router.get("/userOrders",checkSessionBlocked,orderController.showUserOrders);
 
 router.get('/cancelOrder/:orderId/:productId', orderController.cancelOrder);
+
+router.get('/return/:userid/:productid',orderController.orderReturn)
+
 
 module.exports= router;

@@ -82,27 +82,7 @@ addToCart: async (req, res) => {
   },
 
 
-
-//   updateQuantity: async (req, res) => {
-//     try {
-//         const { productId, action } = req.params;
-//         const sessionId = req.session.userid; // Assuming you're using Express session or a similar mechanism
-
-//         const cartItem = await Cart.findOne({ productid: productId, userid: sessionId });
-//         if (!cartItem) {
-//             return res.status(404).send('Item not found in cart');
-//         }
-
-//         let newQuantity = action === 'decrease' ? Math.max(1, cartItem.quantity - 1) : cartItem.quantity + 1;
-//         cartItem.quantity = newQuantity;
-//         await cartItem.save();
-
-//         res.redirect('/cart'); // Redirect to the cart page after updating the quantity
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).send('Server Error');
-//     }
-// },          
+     
 
        
 

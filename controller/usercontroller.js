@@ -7,7 +7,6 @@ const crypto = require("crypto")
 const nodemailer = require('nodemailer')
 
 const UserCollection = require("../model/users");
-const wallet=require("../model/wallet");
 const Wallet = require("../model/wallet");
 
 
@@ -418,9 +417,11 @@ const getLogout = (req, res) => {
 
   const getwallet= async (req, res) => {
   try {
-    const userid = req.session.userid;
-    const userdet = await UserCollection.findById(userid);
-    const walletdetails = await wallet.find({userid:userid}).sort({ date: -1 });
+    const Userid = req.session.userid;
+    const userdet = await UserCollection.findById(Userid);
+    const walletdetails = await Wallet.find({userid:Userid}).sort({ date: -1 });
+
+    console.log("id of the user is ",Userid);
 
     console.log("wallet of the user is ", walletdetails);
 

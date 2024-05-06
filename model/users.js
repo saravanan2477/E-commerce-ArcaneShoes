@@ -19,6 +19,10 @@ const loginschema = new mongoose.Schema({
     phone: {
         type: Number,
     },
+    wallet:{
+        type:Number,
+        default:0
+    },
     
 });
 
