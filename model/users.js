@@ -23,6 +23,9 @@ const loginschema = new mongoose.Schema({
         type:Number,
         default:0
     },
+    referralcode:{
+        type: String,
+    },
     
 });
 

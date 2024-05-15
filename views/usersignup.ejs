@@ -1,216 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>Sign Up V4</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!--===============================================================================================-->    
-    <link rel="icon" type="image/png" href="/images/icons/favicon.ico"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="/images/icons/favicon.ico" />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/bootstrap/css/bootstrap.min.css"
+    />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+    />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
-    <!--===============================================================================================-->    
-    <link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="fonts/iconic/css/material-design-iconic-font.min.css"
+    />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+    <link rel="stylesheet" type="text/css" href="vendor/animate/animate.css" />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
-    <!--===============================================================================================-->    
-    <link rel="stylesheet" type="text/css" href="vendor/daterangepicker/daterangepicker.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/css-hamburgers/hamburgers.min.css"
+    />
     <!--===============================================================================================-->
-    <link rel="stylesheet" type="text/css" href="/css/util.css">
-    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/animsition/css/animsition.min.css"
+    />
     <!--===============================================================================================-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/select2/select2.min.css"
+    />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="vendor/daterangepicker/daterangepicker.css"
+    />
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="/css/util.css" />
+    <link rel="stylesheet" type="text/css" href="/css/main.css" />
+    <!--===============================================================================================-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
     <style>
-         .login100-social-item {
-            text-decoration: none;
-        }
-        .input100 {
-            padding-left: 40px; /* Adjust as needed */
-            position: relative;
-        }
-        .input-icon {
-            position: absolute;
-            top: 66%;
-            left: 10px;
-            transform: translateY(-50%); 
-            font-size: 18px;
-            color: #302727;
-        }
-        .error-message{
-            color: red; /* Set text color to red */
+      .login100-social-item {
+        text-decoration: none;
+      }
+      .input100 {
+        padding-left: 40px; /* Adjust as needed */
+        position: relative;
+      }
+      .input-icon {
+        position: absolute;
+        top: 66%;
+        left: 10px;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: #302727;
+      }
+      .error-message {
+        color: red; /* Set text color to red */
         text-align: center; /* Center text horizontally */
+      }
+      .container-login100 {
+        background: linear-gradient(to right, #ee1354, #ffd900, #ff0000);
+        background-size: 200% 200%;
+        animation: gradientAnimation 10s ease infinite;
+        transition: background 1s ease;
+        background-image: url(/public/images/bg-01.jpg);
+      }
+
+      .transition-loop {
+        animation: none !important;
+        transition: none !important;
+        animation-delay: 1s; /* Delay the animation start */
+      }
+
+      @keyframes gradientAnimation {
+        0% {
+          background-position: 0% 50%;
         }
-        .container-login100 {
-            background: linear-gradient(to right, #ee1354, #ffd900, #ff0000);
-            background-size: 200% 200%;
-            animation: gradientAnimation 10s ease infinite;
-            transition: background 1s ease;
-            background-image: url(/public/images/bg-01.jpg);
+        50% {
+          background-position: 100% 50%;
         }
-    
-        .transition-loop {
-            animation: none !important;
-            transition: none !important;
-            animation-delay: 1s; /* Delay the animation start */
+        100% {
+          background-position: 0% 50%;
         }
-    
-        @keyframes gradientAnimation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
+      }
     </style>
-    
-</head>
-<body>
+  </head>
+  <body>
+    <div class="limiter">
+      <div class="container-login100">
+        <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+          <form
+            id="signupForm"
+            class="login100-form validate-form"
+            action="/usersignuppost"
+            method="post"
+            onsubmit="return validateForm()"
+          >
+            <span class="login100-form-title p-b-49"> Sign Up </span>
 
+            <div
+              class="wrap-input100 validate-input m-b-23"
+              data-validate="Username is required"
+            >
+              <span class="label-input100">Username</span>
+              <input
+                class="input100"
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Type your username"
+              />
+              <span class="input-icon"><i class="fa fa-user"></i></span>
+              <!-- Icon -->
+            </div>
 
-   <div class="limiter">
-        <div class="container-login100" >
-            <div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
-                <form id="signupForm" class="login100-form validate-form" action="/usersignuppost" method="post" onsubmit="return validateForm()">
-                    <span class="login100-form-title p-b-49">
-                        Sign Up
-                    </span>
-            
-                    <div class="wrap-input100 validate-input m-b-23" data-validate="Username is required">
-                        <span class="label-input100">Username</span>
-                        <input class="input100" type="text" id="username" name="username" placeholder="Type your username">
-                        <span class="input-icon"><i class="fa fa-user"></i></span> <!-- Icon -->
-                    </div>
-            
-                    <div class="wrap-input100 validate-input" data-validate="Email is required">
-                        <span class="label-input100">Email</span>
-                        <input class="input100" type="email" id="email" name="email" placeholder="Type your email">
-                        <span class="input-icon"><i class="fa fa-envelope"></i></span> <!-- Icon -->
-                    </div>
-                    <div class="wrap-input100 validate-input" data-validate="Email is required">
-                        <span class="label-input100">Phone Number</span>
-                        <input class="input100" type="phone" id="phone" name="phone" placeholder="Type your Phone Number">
-                        <span class="input-icon"><i class="fa fa-mobile"></i></span> <!-- Icon -->
-                    </div>
-            
-                    <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <span class="label-input100">Password</span>
-                        <input class="input100" type="password" id="password" name="password" placeholder="Type your password">
-                        <span class="input-icon"><i class="fa fa-lock"></i></span> <!-- Icon -->
-                    </div>
-                    <br>
-                    
-                    <div class="container-login100-form-btn">
-                        <div class="wrap-login100-form-btn">
-                            <div class="login100-form-bgbtn"></div>
-                            <button class="login100-form-btn" type="submit">
-                                Sign Up
-                            </button>
-                        </div>
-                    </div>
-            
-                <!-- Add this div to display the error message -->
+            <div
+              class="wrap-input100 validate-input"
+              data-validate="Email is required"
+            >
+              <span class="label-input100">Email</span>
+              <input
+                class="input100"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Type your email"
+              />
+              <span class="input-icon"><i class="fa fa-envelope"></i></span>
+              <!-- Icon -->
+            </div>
+            <div
+              class="wrap-input100 validate-input"
+              data-validate="Phone Number is required"
+            >
+              <span class="label-input100">Phone Number</span>
+              <input
+                class="input100"
+                type="phone"
+                id="phone"
+                name="phone"
+                placeholder="Type your Phone Number"
+              />
+              <span class="input-icon"><i class="fa fa-mobile"></i></span>
+              <!-- Icon -->
+            </div>
 
-                       
-   
+            <div
+              class="wrap-input100 validate-input"
+              data-validate="Password is required"
+            >
+              <span class="label-input100">Password</span>
+              <input
+                class="input100"
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Type your password"
+              />
+              <span class="input-icon"><i class="fa fa-lock"></i></span>
+              <!-- Icon -->
+            </div>
 
+            <div class="wrap-input100 validate-input" data-validate="">
+              <span class="label-input100">Referal Code (Optional)</span>
+              <input
+                class="input100"
+                type="Referal"
+                id="referralcode"
+                name="referralcode"
+                placeholder="Type your Referal Code"
+              />
+              <span class="input-icon"><i class="fa fa-lock"></i></span>
+              <!-- Icon -->
+            </div>
 
-                    <div class="flex-c-m">
-                        <div class="flex-c-m">
-                            <% if (errorMessage) { %>
-                                <div class="alert alert-danger" role="alert" style="color: red;">
-                                    <%= errorMessage %>
-                                </div>
-                            <% } %>
-                        </div>
-                        
-                        <!-- <a href="#" class="login100-social-item bg1">
+            <br />
+            <div
+              id="errorMessage"
+              class="alert alert-danger"
+              role="alert"
+              style="display: none; color: red"
+            ></div>
+
+            <div class="container-login100-form-btn">
+              <div class="wrap-login100-form-btn">
+                <div class="login100-form-bgbtn"></div>
+                <button class="login100-form-btn" type="submit">Sign Up</button>
+              </div>
+            </div>
+
+            <!-- Add this div to display the error message -->
+
+            <div class="flex-c-m">
+              <div class="flex-c-m">
+                <% if (errorMessage) { %>
+                <div class="alert alert-danger" role="alert" style="color: red">
+                  <%= errorMessage %>
+                </div>
+                <% } %>
+              </div>
+
+              <!-- <a href="#" class="login100-social-item bg1">
                             <i class="fab fa-facebook"></i>
                         </a> -->
-                        <!-- <a href="#" class="login100-social-item bg3">
+              <!-- <a href="#" class="login100-social-item bg3">
                             <i class="fab fa-google"></i>
                         </a> -->
-                    </div>
-                    <div class="flex-col-c p-t-155">
-                        <span class="txt1 p-b-17">
-                            Or Login Using
-                        </span>
-            
-                        <a href="/userlogin" class="txt2">
-                            Login
-                        </a>
-                    </div>
-                </form>
             </div>
+            <div class="flex-col-c p-t-155">
+              <span class="txt1 p-b-17"> Or Login Using </span>
+
+              <a href="/userlogin" class="txt2"> Login </a>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-   
-    <script>
-        function validateForm() {
-            var username = document.getElementById("username").value;
-            var email = document.getElementById("email").value;
-            var password = document.getElementById("password").value;
-            var errorMessage = document.getElementById("errorMessage");
-
-            // Check if any field is empty
-            if (username.trim() === "" || email.trim() === "" || password.trim() === "") {
-                errorMessage.textContent = "All fields are required";
-                return false;
-            }
-
-            // Validate username length
-            if (username.length < 2) {
-                errorMessage.textContent = "Username must be at least 2 characters long";
-                return false;
-            }
-
-            // Validate email format using regex
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                errorMessage.textContent = "Invalid email address";
-                return false;
-            }
-
-            // Validate password strength using regex (at least 6 characters, one lowercase letter, one uppercase letter, one number, and one special character)
-            var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
-            if (!passwordRegex.test(password)) {
-                errorMessage.textContent = "Enter Strong Password";
-                return false;
-            }
-
-            // If all validations pass, return true to submit the form
-            return true;
+    <script>function validateForm() {
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var phone = document.getElementById("phone").value;
+        var password = document.getElementById("password").value;
+        var errorMessage = document.getElementById("errorMessage");
+    
+        // Check if any field is empty
+        if (username.trim() === "" || email.trim() === "" || phone.trim() === "" || password.trim() === "") {
+            errorMessage.textContent = "All fields are required";
+            errorMessage.style.display = "block"; // Show the error message
+            return false; // Prevent form submission
         }
+    
+        // Validate username length
+        if (username.length < 2) {
+            errorMessage.textContent = "Username must be at least 2 characters long";
+            errorMessage.style.display = "block"; // Show the error message
+            return false; // Prevent form submission
+        }
+    
+        // Validate email format using regex
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            errorMessage.textContent = "Invalid email address";
+            errorMessage.style.display = "block"; // Show the error message
+            return false; // Prevent form submission
+        }
+    
+        // Validate password strength using regex
+        var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
+        if (!passwordRegex.test(password)) {
+            errorMessage.textContent = "Enter Strong Password";
+            errorMessage.style.display = "block"; // Show the error message
+            return false; // Prevent form submission
+        }
+    
+        // If all validations pass, clear error message and allow form submission
+        errorMessage.textContent = ""; // Clear previous error message
+        errorMessage.style.display = "none"; // Hide the error message
+        return true; // Allow form submission
+    }
+    
     </script>
-    
-    <div id="dropDownSelect1"></div>
-    
-    <!--===============================================================================================-->
-    <script src="vendor/jquery/jquery-3.2.1.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/animsition/js/animsition.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/bootstrap/js/popper.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/select2/select2.min.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/daterangepicker/moment.min.js"></script>
-    <script src="vendor/daterangepicker/daterangepicker.js"></script>
-    <!--===============================================================================================-->
-    <script src="vendor/countdowntime/countdowntime.js"></script>
-    <!--===============================================================================================-->
-    <script src="js/main.js"></script>
 
-</body>
+    <div id="dropDownSelect1"></div>
+
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/jquery/jquery-3.2.1.min.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/animsition/js/animsition.min.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/bootstrap/js/popper.js"></script> -->
+    <!-- <script src="vendor/bootstrap/js/bootstrap.min.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/select2/select2.min.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/daterangepicker/moment.min.js"></script> -->
+    <!-- <script src="vendor/daterangepicker/daterangepicker.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="vendor/countdowntime/countdowntime.js"></script> -->
+    <!--===============================================================================================-->
+    <!-- <script src="js/main.js"></script> -->
+  </body>
 </html>

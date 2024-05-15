@@ -113,7 +113,7 @@
                     <div class="form-group">
                         <label for="username">User Name</label>
                         <input type="text" class="form-control" id="username" placeholder="Enter User Name"
-                               name="username" value="<%= user.username %>">
+                               name="username" value="<%= user.username %>" >
 
                         <div id="username-error" class="error-message"></div>
                     </div>
@@ -121,7 +121,7 @@
                     <div class="form-group">
                         <label for="mobile">Mobile Number</label>
                         <input type="number" class="form-control" id="mobile" placeholder="Enter Mobile Number"
-                               name="mobile" value="<%= user.phone %>">
+                               name="mobile" value="<%= user.phone %>" >
                         <div id="mobile-error" class="error-message"></div>
                     </div>
 
@@ -141,19 +141,14 @@
 
 <script>
     function validateForm() {
+        console.log("entered the validation");
         // Reset error messages
         document.getElementById("username-error").innerHTML = "";
-        document.getElementById("email-error").innerHTML = "";
+        document.getElementById("mobile-error").innerHTML = "";
 
         // Get form values
         var username = document.getElementById("username").value.trim();
-        var email = document.getElementById("email").value.trim();
-
-        // Null validation
-        if (username === null || email === null) {
-            alert("Null values are not allowed.");
-            return false;
-        }
+        var mobile = document.getElementById("mobile").value.trim();
 
         // Validate username
         if (username === "") {
@@ -161,14 +156,12 @@
             return false;
         }
 
-      
-
-        // Validate email
-        if (email === "") {
-            document.getElementById("email-error").innerHTML = "Please enter an email address.";
+        // Validate mobile number
+        if (mobile === "") {
+            document.getElementById("mobile-error").innerHTML = "Please enter a mobile number.";
             return false;
-        } else if (!/^\S+@\S+\.\S+$/.test(email)) {
-            document.getElementById("email-error").innerHTML = "Please enter a valid email address.";
+        } else if (!/^\d{10}$/.test(mobile)) {
+            document.getElementById("mobile-error").innerHTML = "Please enter a valid 10-digit mobile number.";
             return false;
         }
 

@@ -80,7 +80,7 @@
     }
     
     .product-title {
-        font-size: 3rem;
+        font-size: 2rem;
         text-transform: capitalize;
         font-weight: 700;
         position: relative;
@@ -390,31 +390,51 @@
                 <h4 class="product-title">
                     <%= product.category.category %>
                 </h4>
-                <div class="product-rating">
+                <!-- <div class="product-rating">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star-half-alt"></i>
                     <span>5(21)</span>
-                </div>
-                <h3>Discount 5%</h3>
+                </div> -->
                 <div class="product-price">
-                    <% if (product.offer && product.offer.percentage > 0) { %>
-                        <p class="last-price">Old Price: <span>₹<%= product.Price %>.00</span></p>
-                        <p class="offer-price">Offer: <%= product.offer.percentage %>% Off</p>
-                        <p>Discount Amount: ₹<%= product.offer.discountAmount %></p>
-                        <p class="new-price">New Price: ₹<%= product.offer.newPrice %></p>
-                        <!-- Optionally, you can display the total price -->
-                        <p class="total-price">Total Price: ₹<%= product.offer.newPrice %></p>
-                        <% } else { %>
-                            <!-- Display a message if there is no offer -->
-                            <p>No offer available for this product</p>
-                            <!-- Display the original price as total price when there's no offer -->
+                    <% if (poffer && poffer.productoffer > 0 && discountamount > 0) { %>
+                        <% if (discountamount >= poffer.productoffer) { %>
                             
-                            <p class="total-price">Total Price: ₹<%= product.price %></p>
-                            <% } %>
+                            
+                            <p class="last-price">Old Price: <span>₹<%= product.price %>.00</span></p>
+                            <p class="offer-price">Offer: <%= discountamount %> Off</p>
+                            <p class="new-price">New Price: ₹<%= discount %></p>
+                        <% } else { %>
+                            
+
+                            <p class="last-price">Old Price: <span>₹<%= product.price %>.00</span></p>
+                            <p class="offer-price">Offer: <%= poffer.productoffer %>% Off</p>
+                            <p>Discount Amount: ₹<%= discountamount %></p>
+                            <p class="new-price">New Price: ₹<%= discount %></p>
+                        <% } %>
+                    <% } else if (poffer && poffer.productoffer > 0) { %>
+                        
+                        <p class="last-price">Old Price: <span>₹<%= product.price %>.00</span></p>
+                        <p class="offer-price">Offer: <%= poffer.productoffer %>% Off</p>
+                        <p class="new-price">New Price: ₹<%= discount %></p>
+                    <% } else if (discountamount > 0) { %>
+                        
+
+                        <p class="last-price">Old Price: <span>₹<%= product.price %>.00</span></p>
+                        <p>Discount Amount: ₹<%= discountamount %></p>
+                        <p class="new-price">New Price: ₹<%= discount %></p>
+                    <% } else { %>
+                        <!-- Display a message if there is no offer or if productoffer is null -->
+                        <p>No offer available for this product</p>
+                        <!-- Display the original price as total price when there's no offer -->
+                        <p class="total-price">Total Price: ₹<%= product.price %></p>
+                    <% } %>
                 </div>
+                
+                
+                
 
                 <div class="product-detail">
                     <h2>About this item:</h2>

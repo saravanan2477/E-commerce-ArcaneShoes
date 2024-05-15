@@ -97,7 +97,8 @@
             <h3 class="wallet-title">Wallet</h3>
         </div>
         <div class="wallet-balance">
-            <h5 class="balance-text">Balance: <%- userdet.wallet %></h5>
+            <h5 class="balance-text">Balance: <%= userdet.wallet.toString().substring(0, 7) %></h5>
+
         </div>
       
         <div class="transaction-container mt-3">

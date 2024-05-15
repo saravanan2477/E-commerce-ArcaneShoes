@@ -65,22 +65,16 @@ const OrderSchema = new mongoose.Schema({
             type:String
         }
     },
-
-
     paymentMethod: {
         type: String
     },
    
-totalPrice:{
+    totalPrice:{
     type: Number
-},   
-orderDate:{
+    },   
+    orderDate:{
     type: Date
-    
-},
-totalPrice:{
-    type: Number
-},   
+    },  
     Discount:{
         type:Number
     },

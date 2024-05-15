@@ -8,9 +8,10 @@ const orderpayment = async (req, res) => {
   try { 
     console.log('this is online payment starting');
     const { amount } = req.body;
+    console.log('price from the payhment controler',amount);
     var instance = new Razorpay({ key_id: process.env.KEY_ID, key_secret: process.env.KEY_SECRET });
     var options = {
-        amount: amount * 100, // Convert amount to the smallest currency unit (e.g., paise in INR)
+        amount: amount , 
         currency: "INR",
         receipt: "order_rcptid_11",
     };
@@ -36,9 +37,21 @@ const orderpayment = async (req, res) => {
   }
 };
 
-// Make sure to replace 'dist/utils/razorpay-utils' with the correct path to your utility functions.
+
+
+const paymentFailed = ( req,res)=>{
+  try {
+     res.render('paymentFailed')
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+
+
 
 
 module.exports = {
-  orderpayment
+  orderpayment,
+  paymentFailed
 }

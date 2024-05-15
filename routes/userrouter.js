@@ -41,6 +41,22 @@ router.post("/otppost",usercontroller.otppost)
 router.get('/resendotp', usercontroller.resendotp)
 
 
+//!forgot password
+
+
+/// forgot password
+router.get('/forgotPasswordEmail', usercontroller.forgotPasswordEmail);
+router.post('/forgotPasswordOtp', usercontroller.forgotPasswordEmailpost);
+//otp
+router.get('/forgotPasswordOtp', usercontroller.forgotPasswordOtp);
+router.post('/resendOtps', usercontroller.resendOtps);
+router.post('/forgotPasswordConfirm', usercontroller.forgotPasswordOtppost);
+// add new password and confirm
+router.get('/forgotPasswordConfirm', usercontroller.forgotPasswordConfirm);
+
+// Add a route for updating the password
+router.post('/updatePassword', usercontroller.updatePassword);
+
 //!main page
 
 router.get("/homepage",checkSessionBlocked,usercontroller.Homepage)

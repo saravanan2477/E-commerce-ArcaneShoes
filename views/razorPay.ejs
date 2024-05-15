@@ -79,13 +79,17 @@ $(document).ready(function(){
 						}
 					};
 					var razorpayObject = new Razorpay(options);
+				
 					razorpayObject.on('payment.failed', function (response){
-							alert("Payment Failed");
+						alert("Payment Failed");
+
 					});
 					razorpayObject.open();
 				}
 				else{
 					alert(res.msg);
+
+					window.location.href = "/paymentFailed";
 				}
 			}
 		})

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Offer Management</title>
     <link rel="stylesheet" href="styles.css">
     <!-- DataTable HEADER-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
@@ -123,79 +123,90 @@
           <li><a href="/admin/Logoutget">Logout</a></li>
         </ul>
     </div>
+<!-- Content area -->
+<div class="content">
+    <h1 style="text-align: center;">Product Offer</h1>  
+    <br>
+    <a href="/addProductOffer" class="btn btn-primary" id="addCouponButton">Add Offer</a>
 
-    <div class="content">
-        <h1 style="text-align: center;">Order Management</h1>
-        <table id="example" class="table table-striped" style="width:100%">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>User Name</th>
-                    <th>Product Name</th>
-                    <th>Quantity</th>
-                    <!-- <th>Discount</th> -->
-                    <th>Total Prices</th>
-                    <!-- <th>Order Date</th> -->
-                    <th>Payment Method</th>
-                    <th>Status</th>
-                    <th>Status</th>
-                    
-                    <th>Action</th>
+    <br>   
+    <br>   
+<table id="example" class="table table-striped" style="width:100%">
+    <thead>
+      <tr>
+        <th style="background-color:#3da3f6">No</th>
+        <th style="background-color:#3da3f6">Product Name</th>
+        <th style="background-color:#3da3f6">Price</th>
+        <th style="background-color:#3da3f6">Offer</th>
+       
+        <th style="background-color:#3da3f6">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (newproductOffer && newproductOffer.length > 0) { %>
+      <% newproductOffer.forEach((offer, index) => { %>
+      <tr>
+        <td><%= index + 1 %></td>
+        <td><%= offer.productname %></td>
+        <td><%= offer.price %></td>
+        <td><%= offer.productoffer %>%</td>
+        <td>
+          <a href="/deleteproductoffer/<%=offer.id%>" class="delete-button" style="border: 1px solid red; background-color: rgb(240, 66, 127); padding: 5px 10px; text-decoration: none; color: rgb(255, 253, 253);">Delete</a>
+          
 
-                </tr>
-            </thead>
-            <tbody>
-              <% let productIndex = 1; %> <!-- Initialize the counter before the loop -->
-              <% if (orderdetalist && Array.isArray(orderdetalist)) { %>
-                 <% orderdetalist.forEach((order) => { %>
-                   <% if (order.productcollection && Array.isArray(order.productcollection)) { %>
-                     <% order.productcollection.forEach((product) => { %>
-                       <tr>
-                         <td><%= productIndex %></td> <!-- Use the counter here -->
-                         <td data-label="User Name"><%= order.Username %></td>
-                         <td data-label="Product Name"><%= product.productName %></td>
-                         <td data-label="Quantity"><%= product.quantity %></td>
-                         <td data-label="Total Prices">₹<%= product.price * product.quantity - order.Discount  %></td>
-                         <td data-label="Payment Method"><%= order.paymentMethod %></td>
-                         <td data-label="status"><%= product.status %></td>
-                         <td data-label="Status">
-                           
-                             <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
-                              <div class="dropdown">
-                                 <select name="status" class="form-select" aria-label="Select Status">
-                                   <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                   <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                   <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                   <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                   <option value="Returned" <%= product.status === 'Returned' ? 'selected' : '' %>>Returned</option>
-                                 </select>
-                              </div>
-                             
-                              <input type="hidden" name="productid" value="<%= product.productid %>">
-                             
-                              <td data-label="Action" style="display: flex;">
-                                <% if (product.status !== 'Cancelled') { %>
-                                    <% if (product.status !== 'Delivered') { %>
-                                      <% if (product.status !== 'Returned') { %>
-                    
-                                        <button type="submit" class="cancel-btn">Update</button>
-                                    <% } %>
-                                <% } %>
-                            <% } %>
-                            </td>
-                            
-                             </form>
-                         
-                         </td>
-                       </tr>
-                       <% productIndex++; %> <!-- Increment the counter after displaying each product -->
-                     <% }); %>
-                   <% } %>
-                 <% }); %>
-              <% } %>
-             </tbody>
-        </table>
-    </div>
+
+        </td>
+      </tr>
+      <% }); %>
+      <% } %>
+       
+    </tbody>
+  </table>   
+
+<br>
+<!-- Table for Top Selling Categories -->
+<div class="card shadow mb-4">
+<h1 style="text-align: center;">Category Offer</h1> 
+<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+<h6 class="m-0 font-weight-bold text-primary">
+  <a href="/addCategoryOffer" class="btn btn-primary" id="addCouponButton">Add CategoryOffer</a>
+</h6>
+</div>
+<div class="card-body">
+<div class="table-responsive">
+  <table id="example" class="table table-striped" style="width:100%">
+
+    <thead>
+      <tr>        
+        <th style="background-color:#3da3f6">Category Name</th>
+        <th style="background-color:#3da3f6">Offer</th>
+        <th style="background-color:#3da3f6">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (categoryOffers && categoryOffers.length > 0) { %>
+        <% categoryOffers.forEach((categoryOffer) => { %>
+          <tr>
+            <td><%= categoryOffer.category %></td>
+            <td><%= categoryOffer.alloffer %>%</td>
+            <td>
+              <a href="/deletecategoryOffer/<%=categoryOffer.id%>" class="delete-button" style="border: 1px solid red; background-color: rgb(240, 66, 127); padding: 5px 10px; text-decoration: none; color: rgb(255, 253, 253);">Delete</a>
+            </td>
+          </tr>
+          <% }); %>
+        <% } %>
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+</div>
 
     <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>

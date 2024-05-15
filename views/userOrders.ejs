@@ -51,7 +51,7 @@
                                             </a>
                                         </span>
                                         <span class="w-r__price">
-                                            <label class="w-r__price">₹<%= product.price * product.quantity  %></label>
+                                            <label class="w-r__price">₹<%= product.price * product.quantity - order.Discount  %></label>
                                         </span>
                                         
                                         <!-- Display the quantity -->
@@ -131,12 +131,48 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Find all elements with the class 'cancel-order-link'
         const cancelOrderLinks = document.querySelectorAll(".cancel-order-link");
-    
-        // Loop through each cancel order link
         cancelOrderLinks.forEach(link => {
-            // Add a click event listener to each cancel order link
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const orderId = this.getAttribute("data-order-id");
+                const productId = this.getAttribute("data-product-id");
+                const predefinedReasons = ["Item no longer needed", "Found a better price elsewhere", "Changed mind", "Duplicate order", "Ordered by mistake", "Delivery taking too long", "Other"];
+                Swal.fire({
+                    title: "Cancel Order",
+                    html: `
+                    <select id="return-reason" class="form-select" aria-label="Default select example" style="padding: 0.375rem 2.25rem 0.375rem 0.75rem; border-radius: 0.375rem; border: 1px solid #ced4da; color: #495057; font-size: 1rem; background-color: #fff; background-image: none;">
+                        <option value="">Select a reason</option>
+                        ${predefinedReasons.map(reason => `<option value="${reason}">${reason}</option>`)}
+                    </select>
+                    `,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, cancel",
+                    cancelButtonText: "No, keep it"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const selectedReason = document.getElementById("return-reason").value; // Corrected id
+                        if (selectedReason) {
+                            window.location.href = "/cancelOrder/" + orderId + "/" + productId + "?reason=" + encodeURIComponent(selectedReason);
+                        } else {
+                            Swal.fire("Please select a reason to cancel the order.", "", "error");
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Find all elements with the class 'return-order-link'
+        const returnOrderLinks = document.querySelectorAll(".return-order-link");
+    
+        // Loop through each return order link
+        returnOrderLinks.forEach(link => {
+            // Add a click event listener to each return order link
             link.addEventListener("click", function (e) {
                 // Prevent the default action (following the link)
                 e.preventDefault();
@@ -144,26 +180,40 @@
                 // Get the order ID and product ID from the data attributes
                 const orderId = this.getAttribute("data-order-id");
                 const productId = this.getAttribute("data-product-id");
-    
-                // Show the SweetAlert confirmation dialog
+
+                // Predefined list of reasons for returning orders
+                const predefinedReasons = ["Item damaged upon arrival", "Received wrong item", "Item defective", "Not as described", "Changed mind", "Other"];
+
+                // Show the SweetAlert confirmation dialog with predefined reasons as select options
                 Swal.fire({
-                    title: "Cancel Order",
-                    text: "Are you sure you want to cancel this order?",
+                    title: "Return Product",
+                    html: `
+                    <select id="return-reason" class="form-select" aria-label="Default select example" style="padding: 0.375rem 2.25rem 0.375rem 0.75rem; border-radius: 0.375rem; border: 1px solid #ced4da; color: #495057; font-size: 1rem; background-color: #fff; background-image: none;">
+        <option value="">Select a reason</option>
+        ${predefinedReasons.map(reason => `<option value="${reason}">${reason}</option>`)}
+    </select>
+                    `,
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonText: "Yes, cancel",
+                    confirmButtonText: "Yes, return",
                     cancelButtonText: "No, keep it"
                 }).then((result) => {
-                    // If the user confirms cancelling the order
+                    // If the user confirms returning the product and selected a reason
                     if (result.isConfirmed) {
-                        // Redirect to the cancel order page with the order ID and product ID
-                        window.location.href = "/cancelOrder/" + orderId + "/" + productId;
+                        const selectedReason = document.getElementById("return-reason").value;
+                        if (selectedReason) {
+                            // Redirect to the return order page with the order ID, product ID, and selected reason
+                            window.location.href = "/return/" + orderId + "/" + productId + "?reason=" + encodeURIComponent(selectedReason);
+                        } else {
+                            Swal.fire("Please select a reason to return the product.", "", "error");
+                        }
                     }
                 });
             });
         });
     });
-    </script>
+</script>
+
 
 </body>
 </html>

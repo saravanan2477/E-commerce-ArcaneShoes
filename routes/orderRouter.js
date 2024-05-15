@@ -9,6 +9,7 @@ const checkSessionBlocked= require("../Middleware/user");
 
 
  router.get("/checkoutpage",checkSessionBlocked,orderController.getcheckout)
+ router.post("/Checkoutpost",orderController.postcheckout)
 
 
 
@@ -16,7 +17,6 @@ const checkSessionBlocked= require("../Middleware/user");
 
 router.get("/orderAddress",checkSessionBlocked,orderController.addAddresscheckout)
 router.post("/orderAddresspost",orderController.addAddresspostcheckout)
-router.post("/Checkoutpost",orderController.postcheckout)
 
 router.get("/placeOrder",checkSessionBlocked,orderController.Placeorder)
 

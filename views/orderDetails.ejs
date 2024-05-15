@@ -77,26 +77,28 @@
                                             </div>
                                         </td>
                                         <td><%= product.quantity %> Qty</td>
-                                        <td class="text-end">₹<%= product.price %></td>
+                                        <td class="text-end">₹<%= originalPrice.price * product.quantity%></td>
+
+
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="2">Subtotal</td>
-                                        <td colspan="2" class="text-end">₹<%= product.price * product.quantity %></td> <!-- Total Price -->
+                                        <td colspan="2" class="text-end">₹<%= originalPrice.price * product.quantity %></td> <!-- Total Price -->
 
                                     </tr>
-                                    <!-- <tr>
+                                    <tr>
                                         <td colspan="2">Coupon</td>
-                                        <td class="text-end">$20.00</td>
+                                        <td class="text-danger text-end">₹-<%=  discountamount %></td>
                                     </tr>
                                     <tr>
-                                        <td colspan="2">Discount (Code: NEWYEAR)</td>
-                                        <td class="text-danger text-end">-$10.00</td>
-                                    </tr> -->
+                                        <td colspan="2">Discount Offer </td>
+                                        <td class="text-danger text-end">₹-<%= Discount %> </td>
+                                    </tr>
                                     <tr class="fw-bold">
                                         <td colspan="2">TOTAL</td>
-                                        <td colspan="2" class="text-end">₹<%= product.price * product.quantity %></td> <!-- Total Price -->
+                                        <td colspan="2" class="text-end">₹<%= (originalPrice.price * product.quantity) - discountamount -Discount %></td> <!-- Total Price -->
 
                                         
                                     </tr>

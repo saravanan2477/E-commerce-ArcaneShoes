@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Offer Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #6e54a3;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #6e54a3;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #333;
+            text-align: left;
+        }
+
+        input,
+        textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #6e54a3;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #4b367c;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #4b367c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #321f4f;
+        }
+        .error-message {
+    color: red;
+}
+#backButton {
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+
+  /* Hover effect */
+  #backButton:hover {
+    background-color: darkred;
+  }
+    </style>
+    <script>
+        function validateForm() {
+            var category = document.getElementById("category").value.trim();
+            var alloffer = document.getElementById("alloffer").value.trim();
+
+            // Reset error messages
+            document.getElementById("categoryError").innerHTML = "";
+            document.getElementById("allofferError").innerHTML = "";
+
+            // Null validation
+            if (category === "") {
+                document.getElementById("categoryError").innerHTML = "Category is required";
+                return false;
+            }
+
+            if (alloffer === "") {
+                document.getElementById("allofferError").innerHTML = "All Offer is required";
+                return false;
+            }
+
+            // Alloffer validation (greater than 1 character)
+            if (alloffer.length < 2) {
+                document.getElementById("allofferError").innerHTML = "Offer must be greater than 1 character";
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</head>
+<body>
+
+<form action="/addCategoryOffer" method="post" onsubmit="return validateForm()">
+    <h2>Brand Offer Form</h2>
+
+    <label for="category">Category:</label>
+    <input type="text" id="category" name="category" required>
+    <p class="error-message" id="categoryError"></p>
+
+    <label for="alloffer">All Offer:</label>
+    <input id="alloffer" name="alloffer" rows="4" required>
+    <p class="error-message" id="allofferError"></p>
+
+    <input type="submit" value="Submit">
+    <button id="backButton">Go Back</button>
+</form>
+
+<script>
+    document.getElementById('backButton').addEventListener('click', function() {
+      window.history.back();
+    });
+    </script>
+</body>
+</html>

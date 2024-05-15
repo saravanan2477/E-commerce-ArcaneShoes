@@ -163,9 +163,6 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-
-
-
         const imageContainer = document.getElementById('image-container');
         let croppers = [];
         let croppedImagesData = []; // Array to store cropped image data
@@ -192,10 +189,15 @@
                 // Set a fixed height for the container
                 containerDiv.style.height = '150px';
       
-                // Create a new Cropper for each image without a fixed aspect ratio
+                // Create a new Cropper for each image with a fixed aspect ratio and zooming enabled
                 const cropper = new Cropper(imageElement, {
-                  aspectRatio: NaN, // Allow freeform cropping
-                  viewMode: 1, // Set the cropping mode (0: freeform, 1: restrict to the aspect ratio)
+                  aspectRatio: 2/2, // Set the aspect ratio (e.g., 4:3)
+                  viewMode: 1, // Set the cropping mode (0: freeform, 1: restrict to aspect ratio, 2: restrict to canvas)
+                  zoomable: true, // Enable zooming
+                  zoomOnWheel: true, // Enable zooming using the mouse wheel
+                  zoomOnTouch: true, // Enable zooming on touch devices
+                  wheelZoomRatio: 0.1, // Set the ratio of the zoom when using the mouse wheel
+                  touchZoomRatio: 0.1, // Set the ratio of the zoom on touch devices
                 });
       
                 // Create a "Save" button for each image
@@ -293,27 +295,13 @@
           // Clear the validation message
           document.getElementById('validationMessage').textContent = '';
         }
-
-
-
-        document.getElementById('priceInput').addEventListener('input', function () {
-  // Get the current value of the price input
-  const priceValue = parseFloat(this.value);
-
-  // Check if the value is less than 1
-  if (isNaN(priceValue) || priceValue < 1) {
-    // Display an error message
-    document.getElementById('priceValidationMessage').textContent = 'Price must be greater than or equal to 1';
-  } else {
-    // Clear the error message if the value is valid
-    document.getElementById('priceValidationMessage').textContent = '';
-  }
-});
-
-
-
-
       </script>
 </body>
 
 </html>
+
+
+
+
+
+

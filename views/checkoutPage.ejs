@@ -177,7 +177,41 @@
 							</div>
 					
 							<!-- Coupon Code Section -->
-						
+							<!-- Coupon Code Section -->
+							<div class="col-md-6 order-md-2">
+								<div class="row mb-5">
+									<div class="col-md-12">
+										<h2 class="h3 mb-3 text-black">Coupon Code</h2>
+										<label for="c_code" class="text-black mb-3">Enter your coupon code if you have
+											one</label>
+											<div class="coupon-section">
+										<div class="input-group w-75 couponcode-wrap">
+										
+										<div class="p-3 p-lg-5 border bg-white">
+											<input id="coupencode" name="coupencode" type="text" class="form-control"
+											placeholder="Enter the code">
+										<button id="coupenbtn" type="button" class="btn btn-info"
+											
+										onclick="applyCoupon(`<%= totalsum %>`)">Apply Now</button>
+									
+									</div>
+									
+									<div id="messageContainer" style="color: red;"></div>
+								
+									<br><h5 class="text-danger">Discount: ₹ <span id="discountValue">0.00</span></h5>
+									<h5> Price: <span id="total-price2">
+											<%= totalsum %>
+										</span></h5>
+										</div>
+										<br>
+										<button id="deleteCouponBtn" type="button" class="btn btn-danger" onclick="deleteCoupon()">Remove Coupon</button>
+										<a href="/allCoupons" id="availableCouponsLink">
+											<button class="btn btn-primary" type="button" id="availableCouponsButton">Available Coupons</button>
+										</a>
+									</div>
+									</div>
+								</div>
+							</div>
 						
 					
 						<!-- Payment Method Section -->
@@ -195,7 +229,7 @@
 						
 							<option selected value="Cash on Delivery">Cash on Delivery</option>
 							
-							<option id="credit-card" value="Net Banking">Credit Card</option>
+							<option id="credit-card" value="Net Banking">Pay Online</option>
                         </select>
                   
                 </div>
@@ -206,13 +240,13 @@
                 </div>
             </form>
             <button type="button" class="btn btn-black btn-lg py-3 btn-block" id="rzp-button1" style="display: none;">
-                Razor Pay
+				Online Payment
             </button>
         </div>
     </div>
 </div>
 			
-	<span id="price" data-totalprice="<%= totalsum %>"></span>
+<span id="price" data-totalprice="<%= totalsum %>"></span>
 
 
 
@@ -222,7 +256,6 @@
 
 
 <script>
-    // Add event listener to the payment method select element
     document.getElementById('paymentMethod').addEventListener('change', function() {
         var paymentMethod = this.value;
 		console.log(paymentMethod,"this is the choosed methjod ");
@@ -237,11 +270,92 @@
             document.getElementById('placeOrderButton').style.display = 'block';
         }
     });
-	document.getElementById('rzp-button1').onclick = function (e) {
 
-let price = document.getElementById('price')
+
+
+	let alreadyUsedCoupon = false;
+		let overallTotalPrice=0; 
+		async function applyCoupon(totalPrice) {
+
+			const messageContainer = document.getElementById('messageContainer');
+			if (alreadyUsedCoupon) {
+				messageContainer.textContent = 'Coupon already applied.';
+				return;
+			}
+			const coupencode = document.getElementsByName('coupencode')[0].value;
+			try {
+				console.log(coupencode, 'couponcode');
+				const response = await fetch('/coupencheck', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ coupencode }),
+				});
+				if (!response.ok) {
+					messageContainer.textContent = `Invalid entryss`;
+					setTimeout(() => {
+						messageContainer.textContent = ""
+					}, 2000);
+					return;
+				}
+				const data = await response.json();
+				if (data.success) {
+					if (data.success) {
+						console.log('inside sucess');
+						const discountValue = data.discount || 0;
+						const amountLimit = data.amount || 0;
+						overallTotalPrice = totalPrice - discountValue;
+						// Check if the total amount is greater than the discount
+						if (totalPrice > discountValue) {
+							if (totalPrice >= amountLimit) {
+								messageContainer.textContent = 'Coupon code entered Successfully.';
+								setTimeout(() => {
+									messageContainer.textContent = "";
+								}, 2000);
+								console.log('inside to if');
+								// overallTotalPrice = totalPrice - discountValue; // Update the global variable
+								console.log('overalltotalprice', overallTotalPrice);
+								document.getElementById('discountValue').textContent = discountValue.toFixed(2);
+								document.getElementById('total-price2').textContent = `₹${overallTotalPrice.toFixed(2)}`;
+								// document.getElementById('total-price3').textContent = ₹${overallTotalPrice.toFixed(2)};
+								alreadyUsedCoupon = true;
+								console.log('discount is',overallTotalPrice);
+							} else {
+								messageContainer.textContent = 'Your purchase amount is not greater than the coupon purchase amount. You are not eligible for this coupon.';
+								setTimeout(() => {
+									messageContainer.textContent = "";
+								}, 4000);
+							}
+						} else {
+							messageContainer.textContent = 'Coupon code is either expired or invalid: ' + data.message;
+							setTimeout(() => {
+								messageContainer.textContent = "";
+							}, 4000);
+						}
+					} else {
+						messageContainer.textContent = `Failed to apply coupon: `;
+						setTimeout(() => {
+							messageContainer.textContent = "";
+						}, 4000);
+						return;
+					}
+				}
+			} catch (error) {
+				messageContainer.textContent = ` Error applying coupon: ${error.message}`;
+				console.error('Error applying coupon:', error);
+			}
+		}
+
+
+
+	document.getElementById('rzp-button1').onclick = function (e) {
+		let price = document.getElementById('price')
 let orderprice = price.getAttribute('data-totalprice')
-$(document).ready(function () {
+console.log(orderprice,"this is the ordee rprice");
+console.log(overallTotalPrice,"discount price is");
+
+		$(document).ready(function () {
 console.log('ajx');
 var settings = {
 	"url": "/create/orderId",
@@ -251,7 +365,7 @@ var settings = {
 		"Content-Type": "application/json"
 	},
 	"data": JSON.stringify({
-		"amount":  orderprice
+		"amount":  (overallTotalPrice || orderprice)*100
 	}),
 };
 
@@ -259,72 +373,121 @@ var settings = {
 $.ajax(settings).done(function (response) {
 	console.log('done');
 	orderId = response.orderId;
-	orderprice = response.orderprice; // Assign response.orderprice to orderprice
+	orderprice = response.orderprice; 
 	ordresignature = response.signature
-	
-
+	$("#rzp-button1").show();
 }); 
 });
 
 
-console.log('btn clicked');
-var options = {
-	"key": "rzp_test_1krsf9QUdTfWiN",
-	"amount": orderprice* 100,
-	"currency": "INR",
-	"name": "SKS",
-	"description": "Online Payment",
-	"image": "",
-	"order_id": orderId,
-	"handler": function (response) {
-		// Create a form dynamically
-		var form = document.createElement('form');
-		form.method = 'post';
-		form.action = '/Checkoutpost';  // Replace with the URL you want to redirect to
-		// Create an input element to hold the payment ID
-		var paymentIdInput = document.createElement('input');
-		paymentIdInput.type = 'hidden';
-		paymentIdInput.name = 'razorpay_payment_id';
-		paymentIdInput.value = response.razorpay_payment_id;
-		// Add the input element to the form
-		form.appendChild(paymentIdInput);
-		// Add hidden input fields for payment mode and address details
-		var paymentModeInput = document.createElement('input');
-		paymentModeInput.type = 'hidden';
-		paymentModeInput.name = 'paymentMethod';
-		paymentModeInput.value = document.getElementById('paymentMethod').value; // Assumes the payment mode is selected through a dropdown
-		form.appendChild(paymentModeInput);
-		var selectedAddressInput = document.querySelector('input[name="shippingOption"]:checked');
-		if (selectedAddressInput) {
-			0.
 
-			var addressIdInput = document.createElement('input');
-			addressIdInput.type = 'hidden';
-			addressIdInput.name = 'shippingOption';
-			addressIdInput.value = selectedAddressInput.value;
-			form.appendChild(addressIdInput);
-		}
-		// Append the form to the body
-		document.body.appendChild(form);      // Submit the form
-		form.submit();
-	}
-};
+	
+console.log(orderprice,"orderprice above the option");
+console.log(overallTotalPrice,"discount price from above the option");
+
+    var options = {
+        "key": "rzp_test_1krsf9QUdTfWiN",
+        "amount": overallTotalPrice || orderprice * 100, 
+        "currency": "INR",
+        "name": "SKS",
+        "description": "Online Payment",
+        "image": "",
+        "order_id": orderId,
+        "handler": function (response) {
+            // Create a form dynamically
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/Checkoutpost';
+            // Create an input element to hold the payment ID
+            var paymentIdInput = document.createElement('input');
+            paymentIdInput.type = 'hidden';
+            paymentIdInput.name = 'razorpay_payment_id';
+            paymentIdInput.value = response.razorpay_payment_id;
+            // Add the input element to the form
+            form.appendChild(paymentIdInput);
+            // Add hidden input fields for payment mode and address details
+            var paymentModeInput = document.createElement('input');
+            paymentModeInput.type = 'hidden';
+            paymentModeInput.name = 'paymentMethod';
+            paymentModeInput.value = document.getElementById('paymentMethod').value;
+            form.appendChild(paymentModeInput);
+            coupencode.value = document.getElementById('coupencode').value;
+            form.appendChild(coupencode);
+            var selectedAddressInput = document.querySelector('input[name="shippingOption"]:checked');
+            if (selectedAddressInput) {
+                var addressIdInput = document.createElement('input');
+                addressIdInput.type = 'hidden';
+                addressIdInput.name = 'shippingOption';
+                addressIdInput.value = selectedAddressInput.value;
+                form.appendChild(addressIdInput);
+            }
+            // Append the form to the body
+            document.body.appendChild(form);
+            // Submit the form
+            form.submit();
+        }
+    };
 var rzp1 = new Razorpay(options);
 rzp1.on('payment.failed', function (response) {
 	console.log("error data",response);
-	alert(response.error.code);
-	alert(response.error.description);
-	alert(response.error.source);
-	alert(response.error.step);
-	alert(response.error.reason);
-	alert(response.error.metadata.order_id);
-	alert(response.error.metadata.payment_id);
+console.log("got rnto error ");
+window.location.href = "/paymentFailed";
+return
 });
 rzp1.open();
 e.preventDefault();
 }
+
+
+
+
+function deleteCoupon() {
+  // Make an AJAX request to the server to delete the coupon
+  document.getElementById('coupencode').value = '';
+  fetch('/deleteCoupon', {
+    method: 'POST',
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alreadyUsedCoupon = false;
+
+      document.getElementById('discountValue').innerText = '0.00';
+      document.getElementById('total-price2').innerText = '<%= totalsum %>';
+      document.getElementById('messageContainer').innerText = 'Coupon deleted successfully.';
+
+      delete window.sessionStorage.coupon;
+      delete window.sessionStorage.coupencode;
+
+      // Reload the page
+      window.location.reload(); // This will reload the page
+    } else {
+      // Display an error message if deletion fails
+      document.getElementById('messageContainer').innerText = 'Failed to delete coupon.';
+
+      // Hide error message after 3 seconds
+      setTimeout(function() {
+        document.getElementById('messageContainer').innerText = '';
+      }, 3000); // 3000 milliseconds = 3 seconds
+    }
+  })
+  .catch(error => {
+    console.error('Error deleting coupon:', error);
+  });
+}
+
 	
+
+
+/////////////remove copuon 
+
+
+
+
+
 </script>
+
+
 	<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/tiny-slider.js"></script>

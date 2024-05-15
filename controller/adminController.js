@@ -480,7 +480,8 @@ const getLogout = (req, res) => {
 const orderget = async(req,res)=>{
   try{
   const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
-// console.log(orderdetalist,"orders are here");
+  
+//console.log(orderdetalist,"orders are here");
     res.render("orderManagement",{orderdetalist});
   }
   catch(err){
