@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+    <!-- Add these in your HTML file -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.all.min.js"></script>
     <style>
         body {
@@ -118,6 +123,24 @@
     color: #007bff; /* Blue color */
 }
 
+
+select {
+            width: 30%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -146,16 +169,26 @@
     <div class="content">
         <h1 style="text-align: center;"> Sales Report </h1>  
         <br>
-        <form action="/salesfilter" method="post" onsubmit="return validateDates()">
+        <form action="/costomSales" method="post" onsubmit="return validateDates()">
             <label for="start_date" class="date-label">Start Date:</label>
             <input type="date" id="start_date" name="start_date" required>
             <span id="start_date_error" class="error-message"></span>
-            <label for="end_date" class="date-label">End Date:</label>
+            <label for="end_date" class="date-label">End Date:</label>  
             <input type="date" id="end_date" name="end_date" required>
             <span id="end_date_error" class="error-message"></span>
             <button type="submit" style="background-color: #007bff; color: white;border-radius:12px;margin-left: 2px;border: 1px solid black;">Submit</button>
+
+            
+            <select id="reportType" onchange="filterOrders()">
+                <option value="">Select Time Frame</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+            </select>
         </form>
+       
         
+          
         <br>
         <table id="example" class="table table-striped" style="width:100%">
         <thead>
@@ -197,7 +230,7 @@
       <div class="card-body">
         <div class="chart-pie pt-4 pb-2">
             <div class="report-options">
-                <div class="row">
+                <!-- <div class="row">
                     <div class="col">
                         <input type="date" name="startingdate" id="startingDate" class="form-control">
                         <span class="date-label">Starting Date</span>
@@ -206,16 +239,17 @@
                         <input type="date" name="endingdate" id="endingDate" class="form-control">
                         <span class="date-label">Ending Date</span>
                     </div>
-                </div>
+                </div> -->
                 <br>
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-primary btn-block mb-3" onclick="generateReport('pdf')">Excel Report</button>
+                        <button id="downloadExcel" class="btn btn-success">Download Excel</button>
                     </div>
                     <div class="col">
-                        <button class="btn btn-primary btn-block" onclick="generateReport('excel')">PDF Report</button>
+                        <button id="downloadPDF" class="btn btn-success">Download PDF</button>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -241,17 +275,7 @@
 
 
 
-<script>
-    function generateReport(reportType) {
-        const startingDate = document.getElementById('startingDate').value;
-        const endingDate = document.getElementById('endingDate').value;
-        if (reportType === 'pdf') {
-            window.location.href = `/reportpdf?startingdate=${startingDate}&endingdate=${endingDate}`;
-        } else if (reportType === 'excel') {
-            window.location.href = `/reportexcel?startingdate=${startingDate}&endingdate=${endingDate}`
-        }
-    }
-</script>
+
 
 
 <script>
@@ -296,6 +320,84 @@
     }
 </script>
 
+<script>
+    function filterOrders() {
+        const reportType = document.getElementById('reportType').value;
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', `/salesfilter?type=${reportType}`, true);
+        xhr.send();
+        xhr.onload = function() {
+            if (xhr.status !== 200) {
+                alert(`Error ${xhr.status}: ${xhr.statusText}`);
+            } else {
+                const orders = JSON.parse(xhr.responseText);
+                updateTable(orders);
+            }
+        };
+        xhr.onerror = function() {
+            alert("Request failed");
+        };
+    }
 
+    function updateTable(orders) {
+        const tbody = document.querySelector('#example tbody');
+        tbody.innerHTML = '';
+        orders.forEach(order => {
+            order.productcollection.forEach(product => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td data-label="User Name">${order.Username}</td>
+                    <td data-label="Product Name">${product.productName}</td>
+                    <td data-label="Quantity">${product.quantity}</td>
+                    <td data-label="Prices">₹${product.price}</td>
+                    <td data-label="Total Prices">₹${product.price * product.quantity}</td>
+                    <td data-label="Order Date">${new Date(order.orderDate).toLocaleDateString()}</td>
+                    <td data-label="Payment Method">${order.paymentMethod}</td>
+                    <td data-label="Status">${product.status}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+    }
+
+    document.getElementById('downloadExcel').addEventListener('click', function() {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(document.querySelector('#example'));
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'Orders.xlsx');
+    });
+
+    document.getElementById('downloadPDF').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const table = document.querySelector('#example');
+        const data = [];
+        const headers = [];
+        table.querySelectorAll('thead th').forEach(th => headers.push(th.textContent));
+        table.querySelectorAll('tbody tr').forEach(tr => {
+            const row = [];
+            tr.querySelectorAll('td').forEach(td => row.push(td.textContent));
+            data.push(row);
+        });
+        doc.autoTable({
+    head: [headers],
+    body: data,
+    margin: { top: 20 },
+    theme: 'grid',
+    headStyles: {
+        fillColor: [41, 128, 186], // Head background color
+        textColor: [255, 255, 255], // Head text color
+    },
+    styles:{
+        columnWidth: 23, // 'auto', 'wrap', 'fixed', or a number
+        halign: 'left', // left, center, right
+        valign: 'middle', // top, middle, bottom
+    }
+
+});
+
+        doc.save('Orders.pdf');
+    });
+</script>
 </body>
 </html>

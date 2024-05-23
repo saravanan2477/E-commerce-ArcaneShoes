@@ -62,6 +62,15 @@
             transition: background-color 0.3s;
         }
 
+        select {
+            width: calc(107% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #6e54a3;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
+
         input[type="submit"]:hover {
             background-color: #321f4f;
         }
@@ -83,35 +92,7 @@
     background-color: darkred;
   }
     </style>
-    <script>
-        function validateForm() {
-            var category = document.getElementById("category").value.trim();
-            var alloffer = document.getElementById("alloffer").value.trim();
 
-            // Reset error messages
-            document.getElementById("categoryError").innerHTML = "";
-            document.getElementById("allofferError").innerHTML = "";
-
-            // Null validation
-            if (category === "") {
-                document.getElementById("categoryError").innerHTML = "Category is required";
-                return false;
-            }
-
-            if (alloffer === "") {
-                document.getElementById("allofferError").innerHTML = "All Offer is required";
-                return false;
-            }
-
-            // Alloffer validation (greater than 1 character)
-            if (alloffer.length < 2) {
-                document.getElementById("allofferError").innerHTML = "Offer must be greater than 1 character";
-                return false;
-            }
-
-            return true;
-        }
-    </script>
 </head>
 <body>
 
@@ -119,11 +100,16 @@
     <h2>Brand Offer Form</h2>
 
     <label for="category">Category:</label>
-    <input type="text" id="category" name="category" required>
+    <select id="category" name="category" >
+        <option value="" disabled selected>Select a category</option>
+        <% categories.forEach(category => { %>
+            <option value="<%= category.category %>"><%= category.category %></option>
+        <% }) %>
+    </select>
     <p class="error-message" id="categoryError"></p>
 
-    <label for="alloffer">All Offer:</label>
-    <input id="alloffer" name="alloffer" rows="4" required>
+    <label for="alloffer"> Offer Price:</label>
+    <input  type="number"  id="alloffer" name="alloffer" rows="4" >
     <p class="error-message" id="allofferError"></p>
 
     <input type="submit" value="Submit">
@@ -131,9 +117,36 @@
 </form>
 
 <script>
-    document.getElementById('backButton').addEventListener('click', function() {
+     document.getElementById('backButton').addEventListener('click', function() {
       window.history.back();
     });
-    </script>
+    function validateForm() {
+        var category = document.getElementById("category").value.trim();
+        var alloffer = document.getElementById("alloffer").value.trim();
+
+        // Reset error messages
+        document.getElementById("categoryError").innerHTML = "";
+        document.getElementById("allofferError").innerHTML = "";
+
+        // Null validation
+        if (category === "") {
+            document.getElementById("categoryError").innerHTML = "Category is required";
+            return false;
+        }
+
+        if (alloffer === "") {
+            document.getElementById("allofferError").innerHTML = "An Offer is required";
+            return false;
+        }
+
+        // Alloffer validation (greater than 1 character)
+        if (alloffer <= 2) {
+            document.getElementById("allofferError").innerHTML = "Offer must be greater than 2 ";
+            return false;
+        }
+
+        return true;
+    }
+</script>
 </body>
 </html>

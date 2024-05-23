@@ -3,6 +3,7 @@ const Category = require("../model/category");
 const Product = require("../model/product");
 const ProductOffer = require("../model/productOffer");
 const categoryOffer =require('../model/categoryOffer')
+const WishList = require("../model/wishlist");
 
 // const multer = require('multer');
 
@@ -197,77 +198,86 @@ module.exports = {
     res.redirect("/productmanagement");
   },
 
-  getproduct: async (req, res) => {
+
+  
+  getproduct : async (req, res) => {
     const pid = req.params.id;
     try {
-        const product = await Product.findById(pid).populate("category");
-        if (!product) {
-            return res.status(404).send("Product not found");
+      const product = await Product.findById(pid).populate("category");
+      if (!product) {
+        return res.status(404).send("Product not found");
+      }
+  
+      // Check if the product has a category before accessing its _id property
+      if (!product.category) {
+        return res.status(404).send("Product category not found");
+      }
+  
+      // Check if there is already an offer for the product
+      const pname = product.productname;
+      const poffer = await ProductOffer.findOne({ productname: pname });
+      console.log("product offer is", poffer);
+  
+      let discountAmount = 0;
+  
+      // If there is a product offer, calculate its discount
+      if (poffer) {
+        const originalPrice = parseFloat(product.price);
+        const discountPercentage = parseFloat(poffer.productoffer);
+        discountAmount = (originalPrice * discountPercentage) / 100;
+  
+        console.log('product offer is ', poffer);
+      }
+  
+      // Check if there is already a category offer for the product's category
+      const CategoryOffer = await categoryOffer.findOne({ category: product.category.category });
+      console.log("this is the category offer", CategoryOffer);
+  
+      // If there is a category offer, calculate its discount
+      if (CategoryOffer) {
+        const originalPrice = parseFloat(product.price);
+        const discountPercentage = parseFloat(CategoryOffer.alloffer);
+        const categoryDiscountAmount = (originalPrice * discountPercentage) / 100;
+        console.log("originalPrice", originalPrice);
+        console.log("discountPercentage", discountPercentage);
+        console.log("categoryDiscountAmount", categoryDiscountAmount);
+  
+        // If the category offer provides a higher discount than the product offer, update discountAmount
+        if (categoryDiscountAmount > discountAmount) {
+          discountAmount = categoryDiscountAmount;
         }
-
-        // Check if the product has a category before accessing its _id property
-        if (!product.category) {
-            return res.status(404).send("Product category not found");
-        }
-
-        // Check if there is already an offer for the product
-        const pname = product.productname;
-        const poffer = await ProductOffer.findOne({ productname: pname });
-        console.log("product offer is", poffer);
-   
-        let discountAmount = 0;
-       
-        // If there is a product offer, calculate its discount
-        if (poffer) {
-            const originalPrice = parseFloat(product.price);
-            const discountPercentage = parseFloat(poffer.productoffer);
-            discountAmount = (originalPrice * discountPercentage) / 100;
-            
-            console.log('product offer is ', poffer)
-            console.log('originalPrice is ', originalPrice)
-            console.log('discountPercentage is ', discountPercentage)
-            console.log('discountAmount is ', discountAmount)
-        }
-        
-        // Check if there is already a category offer for the product's category
-        const CategoryOffer = await categoryOffer.findOne({ category: product.category.category });
-        console.log(categoryOffer, "this is the category offer");
-        
-        // If there is a category offer, calculate its discount
-        if (CategoryOffer) {
-            const originalPrice = parseFloat(product.price);
-            const discountPercentage = parseFloat(CategoryOffer.alloffer);
-            const categoryDiscountAmount = (originalPrice * discountPercentage) / 100;
-            console.log("originalPrice", originalPrice)
-            console.log("discountPercentage", discountPercentage)
-            console.log("categoryDiscountAmount", categoryDiscountAmount)
-
-            // If the category offer provides a higher discount than the product offer, update discountAmount
-            if (categoryDiscountAmount > discountAmount) {
-                discountAmount = categoryDiscountAmount;
-            }
-        }
-
-        // Calculate the discounted price
-        const discountedPrice = parseFloat(product.price) - discountAmount;
-
-        // Fetch related products
-        const relatedProducts = await Product.find({ category: product.category._id })
-            .limit(5)
-            .populate("category");
-
-        res.render("productDetails", { 
-            product, 
-            relatedProducts, 
-            poffer,
-            discount: discountedPrice,
-            discountamount: discountAmount,
-        });
+      }
+  
+      // Calculate the discounted price
+      const discountedPrice = parseFloat(product.price) - discountAmount;
+  
+      // Fetch related products
+      const relatedProducts = await Product.find({ category: product.category._id })
+        .limit(5)
+        .populate("category");
+  
+      // Check if the product is in the user's wishlist
+      let isInWishlist = false;
+      const userId = req.session.userid;
+      if (userId) {
+        const wishlistItem = await WishList.findOne({ userid: userId, productid: pid });
+        isInWishlist = !!wishlistItem;
+      }
+  
+      res.render("productDetails", { 
+        product, 
+        relatedProducts, 
+        poffer,
+        discount: discountedPrice,
+        discountamount: discountAmount,
+        isInWishlist,
+      });
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+      console.error(error);
+      res.status(500).send("Internal Server Error");
     }
-},
+  },
+  
 
 
   deleteimage: async (req, res) => {
@@ -317,7 +327,7 @@ module.exports = {
       const query = buildQuery(category, priceRange);
 
       // Define pagination constants
-      const PAGE_SIZE = 4; // Number of products per page
+      const PAGE_SIZE = 10; // Number of products per page
 
       // Get current page from query parameters, default to 1 if not provided
       const currentPage = parseInt(page) || 1;

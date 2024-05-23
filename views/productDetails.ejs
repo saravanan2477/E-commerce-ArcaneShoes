@@ -448,14 +448,19 @@
 
                 <div class="purchase-info">
                     <% if (product.stock === 0) { %>
-                        <button class="btn btn-info float-end" disabled>Add To Cart</button>
+                      <button class="btn btn-info float-end" disabled>Add To Cart</button>
                     <% } else { %>
-                        <a href="/addcart/<%= product._id %>" class="btn btn-info float-end">Add To Cart</a>
+                      <a href="/addcart/<%= product._id %>" class="btn btn-info float-end">Add To Cart</a>
                     <% } %>
-             
-                <a href="/Wishlist/<%=product._id%>" class="btn btn-info float-end">Add To wishList</a>
-
-                </div>
+                  
+                    <% if (isInWishlist) { %>
+                      <a href="/removeFromWishlist/<%= product._id %>" class="btn btn-warning float-end">Remove from Wishlist</a>
+                    <% } else { %>
+                      <a href="/Wishlist/<%= product._id %>" class="btn btn-info float-end">Add To Wishlist</a>
+                    <% } %>
+                  </div>
+                  
+                  
             </div>
         </div>
       

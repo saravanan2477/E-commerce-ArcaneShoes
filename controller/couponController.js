@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const couponCollection= require('../model/coupon');
 const Product = require("../model/product");
+const Category = require("../model/category");
 const ProductOffer =require('../model/productOffer')
 const categoryOffer =require('../model/categoryOffer')
 const Ordercollection = require("../model/order");
@@ -154,14 +155,17 @@ const couponremove = async(req,res)=>{
         }
       }
 /// add product Offer 
-const addProductOffer = async(req,res)=>{
-  try{
-    res.render('addProductOffer')
-  }catch (error) {
+// Updated addProductOffer controller function
+const addProductOffer = async (req, res) => {
+  try {
+    const products = await Product.find({}, 'productname'); // Fetch product names
+    res.render('addProductOffer', { products }); // Pass products to the view
+  } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
+  }
 }
-}
+
 
 /////// add product offer post 
 const productOfferpost = async (req,res)=>{
@@ -198,14 +202,17 @@ const DeleteProductOffer = async(req,res)=>{
 
 
 ///// category offer 
-const addCategoryOffer = async(req,res)=>{
-  try{
-    res.render('addCategoryOffer')
-  }catch (error) {
+// Updated addCategoryOffer controller function
+const addCategoryOffer = async (req, res) => {
+  try {
+    const categories = await Category.find({}, 'category'); // Fetch category names
+    res.render('addCategoryOffer', { categories }); // Pass categories to the view
+  } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
+  }
 }
-}
+
 
 /// add Brand Offer post
 const addCategoryOfferpost=async(req,res)=>{

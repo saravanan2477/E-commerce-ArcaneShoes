@@ -38,24 +38,7 @@ router.post('/coupencheck',CouponControllers.coupencheck)
 router.post('/deleteCoupon', CouponControllers.couponremove);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//! offers
 
 //// product Offer
 router.get('/offerManagement', checkSession, CouponControllers. poductOffer);

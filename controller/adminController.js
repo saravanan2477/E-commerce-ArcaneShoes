@@ -4,6 +4,9 @@ const UserCollection=require("../model/users")
 const Category = require("../model/category");
 const Ordercollection = require("../model/order")
 const Product = require("../model/product");
+const ProductOffer = require("../model/productOffer");
+const categoryOffer =require('../model/categoryOffer')
+
 
 //adminlogin get
 const adminlogin = async (req, res) => {
@@ -477,19 +480,72 @@ const getLogout = (req, res) => {
 
 //!order page
 
-const orderget = async(req,res)=>{
-  try{
-  const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
+const orderget = async (req, res) => {
+  try {
+    const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
   
-//console.log(orderdetalist,"orders are here");
-    res.render("orderManagement",{orderdetalist});
-  }
-  catch(err){
-    console.log("error");
-  return res.status(500).send("Failed to order page.");
+    // Iterate through each order
+    for (let i = 0; i < orderdetalist.length; i++) {
+      const order = orderdetalist[i];
+  
+      let finalPrice = 0;
+  
+      // Iterate through each product in the order
+      for (let j = 0; j < order.productcollection.length; j++) {
+        const product = order.productcollection[j];
+        const productid = product.productid;
+  
+        // Fetch original price of the product
+        let originalPrice = await Product.findById(productid).select("price");
+        originalPrice = originalPrice.price;
+  
+        // Retrieve product offer
+        const productOfferInstance = await ProductOffer.findOne({ productname: product.productName });
+  
+        // Calculate product discount
+        let discountAmount = 0;
+        if (productOfferInstance) {
+          const discountPercentage = parseFloat(productOfferInstance.productoffer);
+          discountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+        }
+  
+        // Retrieve category offer
+        const categoryOfferInstance = await categoryOffer.findOne({ category: product.Category });
 
+  
+        // Calculate category discount
+        if (categoryOfferInstance) {
+          const discountPercentage = parseFloat(categoryOfferInstance.alloffer);
+          const categoryDiscountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+  
+          // If the category offer provides a higher discount than the product offer, update discountAmount
+          if (categoryDiscountAmount > discountAmount) {
+            discountAmount = categoryDiscountAmount;
+          }
+        }
+  
+        // Calculate tax
+        const taxRate = 0.03; // 3%
+        const taxAmount = parseFloat(originalPrice) * taxRate;
+  
+        // Calculate final price including tax
+        const productFinalPrice = (parseFloat(originalPrice) * product.quantity) - discountAmount + taxAmount - order.Discount;
+        
+        // Add product final price to the order's final price
+        finalPrice += productFinalPrice;
+      }
+  
+      // Update order with final price
+      order.finalPrice = finalPrice;
+    }
+  
+    res.render("orderManagement", { orderdetalist });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Failed to render order page.");
   }
-}
+};
+
 
 
 const updateOrderpost = async (req, res) => {

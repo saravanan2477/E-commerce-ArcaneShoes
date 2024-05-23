@@ -45,13 +45,15 @@
                                         <span class="w-r__name">
                                             <a href="#">
                                                 <span class="product-name">
+                                                   
                                                     <h4><%= product.productName %></h4> <!-- Display product name -->
                                                 </span>
                                                 
                                             </a>
                                         </span>
                                         <span class="w-r__price">
-                                            <label class="w-r__price">₹<%= product.price * product.quantity - order.Discount  %></label>
+                                             
+                                            <label class="w-r__price">₹<%= order.finalPrice%> </label>
                                         </span>
                                         
                                         <!-- Display the quantity -->

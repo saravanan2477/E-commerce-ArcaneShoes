@@ -27,26 +27,72 @@ module.exports={
     },
   
     //// SalesReportFilter
-     SalesFilter : async (req, res) => {
-      try {
-          const startDate = new Date(req.body.start_date);
-          const endDate = new Date(req.body.end_date);
-          const orderdetalist  = await Ordercollection.find({
-              
-  orderDate: { $gte: startDate, $lte: endDate }
-          }).sort({ 
-            orderDate: -1 });
+  //// SalesReportFilter
   
-          res.render('Sales', { orderdetalist });
-      } catch (error) {
-          console.log(error);
-          // Handle the error appropriately
-          res.status(500).send("Internal Server Error");
+    costomSales: async (req, res) => {
+    try {
+        // Parse and validate start date
+        const startDate = new Date(req.body.start_date);
+        if (isNaN(startDate)) {
+            throw new Error('Invalid start date');
+        }
+
+        // Parse and validate end date
+        const endDate = new Date(req.body.end_date);
+        if (isNaN(endDate)) {
+            throw new Error('Invalid end date');
+        }
+
+        // Ensure end date is greater than start date
+        if (endDate < startDate) {
+            throw new Error('End date cannot be earlier than start date');
+        }
+
+        // Find orders within the date range
+        const orderdetalist = await Ordercollection.find({
+            orderDate: { $gte: startDate, $lte: endDate }
+        }).sort({
+            orderDate: -1
+        });
+
+        res.render('Sales', { orderdetalist });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+},
+
+
+
+SalesFilter: async (req, res) => {
+  try {
+      const reportType = req.query.type;
+      const currentDate = new Date();
+      let startDate;
+      let endDate = new Date();
+
+      if (reportType === 'daily') {
+          startDate = new Date(currentDate.setHours(0, 0, 0, 0));
+      } else if (reportType === 'weekly') {
+          const first = currentDate.getDate() - currentDate.getDay();
+          startDate = new Date(currentDate.setDate(first));
+          startDate.setHours(0, 0, 0, 0);
+      } else if (reportType === 'monthly') {
+          startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
       }
-  },
-  
 
+      endDate.setHours(23, 59, 59, 999); // End of the current day
 
+      const orderdetalist = await Ordercollection.find({
+          orderDate: { $gte: startDate, $lte: endDate }
+      }).sort({ orderDate: -1 });
+
+      res.json(orderdetalist);
+  } catch (error) {
+      console.log(error);
+      res.status(500).send("Internal Server Error");
+  }
+},
 
 
 
@@ -148,7 +194,7 @@ module.exports={
       doc.pipe(res);
 
       // Add content to the PDF document
-      doc.text("Sales Report", { align: "center", fontSize: 10, margin: 2 });
+      doc.text("Sales Report", { align: "center", fontSize: 10, margin: 5 });
 
       // Define the table data
       const tableData = {

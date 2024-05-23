@@ -77,7 +77,7 @@
                                             </div>
                                         </td>
                                         <td><%= product.quantity %> Qty</td>
-                                        <td class="text-end">₹<%= originalPrice.price * product.quantity%></td>
+                                        <td class="text-end">₹<%= originalPrice * product.quantity%></td>
 
 
                                     </tr>
@@ -85,22 +85,33 @@
                                 <tfoot>
                                     <tr>
                                         <td colspan="2">Subtotal</td>
-                                        <td colspan="2" class="text-end">₹<%= originalPrice.price * product.quantity %></td> <!-- Total Price -->
+                                        <td colspan="2" class="text-end">₹<%= originalPrice * product.quantity %></td> <!-- Total Price -->
 
                                     </tr>
                                     <tr>
                                         <td colspan="2">Coupon</td>
                                         <td class="text-danger text-end">₹-<%=  discountamount %></td>
                                     </tr>
-                                    <tr>
+                                     <tr>
                                         <td colspan="2">Discount Offer </td>
                                         <td class="text-danger text-end">₹-<%= Discount %> </td>
                                     </tr>
-                                    <tr class="fw-bold">
-                                        <td colspan="2">TOTAL</td>
-                                        <td colspan="2" class="text-end">₹<%= (originalPrice.price * product.quantity) - discountamount -Discount %></td> <!-- Total Price -->
+                                    <tr class=" fw-bold">
+                                        <td colspan="2">Tax</td>
+   
 
+                                        <td colspan="2" class="text-end">+₹<%= taxAmount.toFixed(2) %></td> 
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">Total  </td>
+                                        <% 
+                                        // Perform the calculation here
+                                        taxAmount = Number(taxAmount)
+                                        const totalAmount = (originalPrice * product.quantity) - discountamount - Discount + taxAmount ;
                                         
+                                    %>
+                                        <td class=" text-end">₹<%= totalAmount %> </td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -115,7 +126,7 @@
                                     <p><%= order.paymentMethod %></p>
                                     
                                     <% if (order.paymentMethod !== 'Cash on Delivery') { %>
-                                        <p>Total Price ₹<%= order.totalPrice %> <span class="badge bg-success rounded-pill">PAID</span>
+                                        <p>Total Price ₹<%= totalAmount%> <span class="badge bg-success rounded-pill">PAID</span>
                                     <% } %>
                                 </div>
                                 <div class="col-lg-6">

@@ -39,52 +39,50 @@ addToCart: async (req, res) => {
   try {
       const sessionId = req.session.userid;
       const productId = req.params.productId;
+
+      // Find product and populate its category
       const product = await Product.findOne({ _id: productId }).populate("category");
-
-
-      const pname = product.productname;    
-      // Retrieve product offer
-      const pOffer = await ProductOffer.findOne({ productname: pname });
-      console.log('product offer is ',pOffer)
-      // Calculate product discount
-      let discountAmount = 0;
-      if (pOffer) {
-          const originalPrice = parseFloat(product.price);
-          const discountPercentage = parseFloat(pOffer.productoffer);
-          discountAmount = (originalPrice * discountPercentage) / 100;
-
-
-          console.log('product offer is ',pOffer)
-          console.log('originalPrice of poduct is ',originalPrice)
-          console.log('discountPercentage is ',discountPercentage)
-          console.log('discountAmount is ',discountAmount)
-      }
-
-      
-      // Retrieve category offer
-      const CategoryOffer = await categoryOffer.findOne({ category: { $regex: new RegExp (Category.category ,'i')} });    
-      console.log('category offer is ',CategoryOffer)
-
-      // Calculate category discount
-      if (categoryOffer) {
-          const originalPrice = parseFloat(product.price);
-          const discountPercentage = parseFloat(CategoryOffer.alloffer);
-          const categoryDiscountAmount = (originalPrice * discountPercentage) / 100;
-          console.log('originalPrice offer of category  is ',originalPrice)
-          console.log('discountPercentage offer is ',discountPercentage)
-          console.log('categoryDiscountAmount offer is ',categoryDiscountAmount)
-
-          // If the category offer provides a higher discount than the product offer, update discountAmount
-          if (categoryDiscountAmount > discountAmount) {
-              discountAmount = categoryDiscountAmount;
-          }
-      }
 
       if (!product) {
           return res.status(404).send('Product not found');
       }
 
-      // Add product to cart with discounted price
+      const pname = product.productname;
+      const originalPrice = parseFloat(product.price);
+
+      let discountAmount = 0;
+      let finalPrice = originalPrice;
+
+      // Retrieve product offer
+      const pOffer = await ProductOffer.findOne({ productname: pname });
+
+      if (pOffer) {
+          const discountPercentage = parseFloat(pOffer.productoffer);
+          discountAmount = (originalPrice * discountPercentage) / 100;
+      }
+      console.log("discountAmount in product is",discountAmount)
+
+      console.log("finalPrice in product is", finalPrice);
+
+      // Retrieve category offer if the product category matches the category offer
+      const CategoryOffer = await categoryOffer.findOne({ category: product.category.category });
+
+      console.log("categoryName and CategoryOffer is ",CategoryOffer )
+      if (CategoryOffer) {
+          const categoryDiscountPercentage = parseFloat(CategoryOffer.alloffer);
+          const categoryDiscountAmount = (originalPrice * categoryDiscountPercentage) / 100;
+
+          // Use the higher discount between product and category offer
+          if (categoryDiscountAmount > discountAmount) {
+              discountAmount = categoryDiscountAmount;
+          }
+      }
+      console.log("discountAmount in categroy is",discountAmount)
+      // Calculate final price
+      finalPrice = originalPrice - discountAmount;
+      console.log("finalPrice in categoty is", finalPrice);
+
+      // Add product to cart with the calculated final price
       let cartItem = await Cart.findOne({ productid: productId, userid: sessionId });
       if (cartItem) {
           cartItem.quantity += 1;
@@ -93,7 +91,7 @@ addToCart: async (req, res) => {
               productid: productId,
               userid: sessionId,
               productname: product.productname,
-              price: parseFloat(product.price) - discountAmount, // Apply discount
+              price: finalPrice, // Apply final price
               quantity: 1,
               image: product.image
           });
@@ -106,6 +104,7 @@ addToCart: async (req, res) => {
       res.status(500).send('Server Error');
   }
 },
+
 
 
     

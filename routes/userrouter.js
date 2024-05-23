@@ -14,7 +14,7 @@ router.get("/",usercontroller.guestHomepage)
 
 
 //!product detail page
-router.get("/productDetails",checkSessionBlocked,  usercontroller.productDetails);
+router.get("/productDetails/:id",checkSessionBlocked,  usercontroller.productDetails);
 
 //!all products page
 router.get("/allProducts",checkSessionBlocked,  usercontroller.allProducts);

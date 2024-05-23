@@ -155,7 +155,7 @@
                          <td data-label="User Name"><%= order.Username %></td>
                          <td data-label="Product Name"><%= product.productName %></td>
                          <td data-label="Quantity"><%= product.quantity %></td>
-                         <td data-label="Total Prices">₹<%= product.price * product.quantity - order.Discount  %></td>
+                         <td data-label="Total Prices">₹<%= order.finalPrice  %></td>
                          <td data-label="Payment Method"><%= order.paymentMethod %></td>
                          <td data-label="status"><%= product.status %></td>
                          <td data-label="Status">

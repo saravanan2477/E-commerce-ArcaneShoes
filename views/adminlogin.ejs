@@ -6,46 +6,66 @@
 <title>Admin Login</title>
 <style>
     body {
-        font-family: Arial, sans-serif;
-        background-color: #795f5f;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(to right, #6a11cb, #2575fc);
         margin: 0;
         padding: 0;
+        color: #ffffff;
     }
     .container {
         max-width: 400px;
         margin: 50px auto;
-        padding: 20px;
-        background: #d3c3c3;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
         text-align: center;
+        backdrop-filter: blur(10px);
     }
     h2 {
         margin-bottom: 20px;
+        font-size: 2em;
+        color: #ffffff;
     }
-    input[type="text"], input[type="password"], input[type="submit"] {
+    input[type="text"], input[type="password"], button {
         width: 100%;
-        padding: 10px;
+        padding: 15px;
         margin: 10px 0;
-        border: 1px solid #0c0b0b;
-        border-radius: 5px;
+        border: none;
+        border-radius: 25px;
         box-sizing: border-box;
+        font-size: 1em;
     }
-    input[type="submit"] {
+    input[type="text"], input[type="password"] {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        text-align: center;
+    }
+    input[type="text"]::placeholder, input[type="password"]::placeholder {
+        color: #ffffff;
+        opacity: 0.8;
+    }
+    button {
         background-color: #4caf50;
         color: white;
         border: none;
         cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
     }
-    input[type="submit"]:hover {
+    button:hover {
         background-color: #45a049;
+    }
+    .error-message {
+        color: #d31010;
+        font-size: 1.1em;
     }
 
     /* Responsive */
     @media screen and (max-width: 480px) {
         .container {
             margin: 20px;
-            padding: 10px;
+            padding: 20px;
         }
     }
 </style>
@@ -53,30 +73,21 @@
 <body>
 
     <div class="container">
-        
         <h2>Admin Login</h2>
-      
-            
         <form id="loginForm" action="/admin/adminloginpost" method="post">
             <input type="text" id="username" name="username" value="admin" placeholder="Admin name">
             <span class="error-message" id="usernameError"></span> <!-- Error message placeholder -->
             <input type="password" id="password" name="password" value="1234" placeholder="Password">
             <span class="error-message" id="passwordError"></span> <!-- Error message placeholder -->
             <button type="submit">Login</button>
-           
-                
         </form>
         <% if(typeof message !== 'undefined') { %>
             <div class="alert alert-danger text-center" style="color: #ff0c0c;">
                 <%= message %>
             </div>
-        <%}%>
+        <% } %>
     </div>
-  
-    <div>
-      
-     
-    </div>
+
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
             // Reset previous error messages
@@ -104,8 +115,7 @@
             return isValid;
         });
     </script>
-    
-    
 
 </body>
 </html>
+    

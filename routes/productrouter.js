@@ -38,9 +38,10 @@ router.get("/editproduct/:id", checkSession,  productController.getEditProduct);
 router.post("/editproduct/:id",upload,  productController.postEditProduct);
 router.get("/deleteproduct/:id",  productController.getproductdelete);
 router.get("/unlistproduct/:id", productController.getUnlistProduct);
-router.get("/getproduct/:id", productController.getproduct);
 router.post("/deleteimage", productController.deleteimage);
 
+//! product details page get
+router.get("/getproduct/:id", productController.getproduct);
 
 
 module.exports=router ; 

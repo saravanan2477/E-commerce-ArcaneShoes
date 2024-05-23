@@ -487,17 +487,36 @@ const Homepage = async (req, res) => {
 
 //!product detail page get
 
+
 const productDetails = async (req, res) => {
   try {
+    console.log(" got into productDetails")
     const productId = req.params.id;
-    console.log("productId", productId);
-    const productView = await Product.findById(productId);
-    res.render("productDetails");
+    const userId = req.session.userid;
+    console.log("productId:", productId);
+    console.log("userId:", userId);
+
+    // Fetch the product details
+    const product = await Product.findById(productId);
+    if (!product) return res.status(404).send("Product not found");
+
+    // Check if the product is in the user's wishlist
+    let isInWishlist = false;
+    if (userId) {
+      const wishlistItem = await WishList.findOne({ userid: userId, productid: productId });
+      isInWishlist = !!wishlistItem;
+      console.log("wishlistItem:", wishlistItem);
+      console.log("isInWishlist:", isInWishlist);
+    }
+
+    // Pass the product and isInWishlist to the template
+    res.render("productDetails", { product, isInWishlist });
   } catch (error) {
     console.log("Error:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 const allProducts = async (req, res) => {
   try {
@@ -601,7 +620,7 @@ const addToWishlist = async (req, res) => {
     //  product exists
     const product = await Product.findById(productId);
     if (!product) return res.status(404).send("Product not found");
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
     // user exists
     const user = await UserCollection.findById(userId);
     if (!user) return res.status(404).send("User not found");

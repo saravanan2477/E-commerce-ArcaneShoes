@@ -4,7 +4,8 @@ const salesController = require("../controller/salesController");
 const checkSession =require('../Middleware/Admin')
 
 router.get('/Sales',checkSession.checkSession,salesController.sales);
-router.post('/salesfilter', salesController.SalesFilter);
+router.get('/salesfilter', salesController.SalesFilter);
+router.post('/costomSales', salesController.costomSales);
 
 
 //! Route for generating PDF report

@@ -36,7 +36,7 @@
             text-align: left;
         }
 
-        input {
+        input, select {
             width: calc(100% - 22px);
             padding: 10px;
             margin-bottom: 15px;
@@ -44,8 +44,16 @@
             border-radius: 6px;
             transition: border-color 0.3s;
         }
+        select {
+            width: calc(107% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #6e54a3;
+            border-radius: 6px;
+            transition: border-color 0.3s;
+        }
 
-        input:focus {
+        input:focus, select:focus {
             border-color: #4b367c;
         }
 
@@ -63,101 +71,101 @@
         button:hover {
             background-color: #321f4f;
         }
+
         .error-message {
             color: #ff0000;
             margin-top: -10px;
             margin-bottom: 10px;
             font-size: 14px;
         }
-        #backButton {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
 
-  /* Hover effect */
-  #backButton:hover {
-    background-color: darkred;
-  }
+        #backButton {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #backButton:hover {
+            background-color: darkred;
+        }
     </style>
 </head>
 <body>
-
     <form action="/addProductOffer" method="post" onsubmit="return validateForm()">
         <h2>Add Offer</h2>
         <label for="productName">Product Name:</label>
-        <input type="text" id="productName" name="productName" required>
+        <select id="productName" name="productName" >
+            <option value="" disabled selected>Select a product</option>
+            <% products.forEach(product => { %>
+                <option value="<%= product.productname %>"><%= product.productname %></option>
+            <% }) %>
+        </select>
         <p class="error-message" id="productNameError"></p>
 
         <label for="productPrice">Product Price:</label>
-        <input type="number" id="productPrice" name="productPrice" required>
+        <input type="number" id="productPrice" name="productPrice" >
         <p class="error-message" id="productPriceError"></p>
 
         <label for="offerPercentage">Offer Percentage:</label>
-        <input type="number" id="offerPercentage" name="offerPercentage" required>
+        <input type="number" id="offerPercentage" name="offerPercentage" >
         <p class="error-message" id="offerPercentageError"></p>
 
         <button type="submit">Add Offer</button>
         
-        <button id="backButton">Go Back</button>
+        <button id="backButton" type="button">Go Back</button>
     </form>
+
     <script>
         document.getElementById('backButton').addEventListener('click', function() {
           window.history.back();
         });
-        </script>
-    <script>
-          function validateForm() {
-            var productName = document.getElementById("productName").value;
-            var productPrice = document.getElementById("productPrice").value;
-            var offerPercentage = document.getElementById("offerPercentage").value;
 
-            // Reset error messages
-            document.getElementById("productNameError").innerHTML = "";
-            document.getElementById("productPriceError").innerHTML = "";
-            document.getElementById("offerPercentageError").innerHTML = "";
+        function validateForm() {
+    var productName = document.getElementById("productName").value;
+    var productPrice = document.getElementById("productPrice").value;
+    var offerPercentage = document.getElementById("offerPercentage").value;
 
-            // Null validation
-            if (!productName.trim()) {
-                document.getElementById("productNameError").innerHTML = "Product Name is required";
-                return false;
-            }
+    // Reset error messages
+    document.getElementById("productNameError").innerHTML = "";
+    document.getElementById("productPriceError").innerHTML = "";
+    document.getElementById("offerPercentageError").innerHTML = "";
 
-            // Price validation
-            if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
-                document.getElementById("productPriceError").innerHTML = "Please enter a valid positive price";
-                return false;
-            }
+    // Null validation
+    if (!productName.trim()) {
+        document.getElementById("productNameError").innerHTML = "Product Name is required";
+        return false;
+    }
 
-            // Discount validation
-            if (isNaN(offerPercentage) || offerPercentage < 1 || offerPercentage > 100) {
-                document.getElementById("offerPercentageError").innerHTML = "Please enter a valid percentage between 0 and 100";
-                return false;
-            }
+    if (!productPrice.trim()) {
+        document.getElementById("productPriceError").innerHTML = "Product Price is required";
+        return false;
+    }
 
-            return true; // Form is valid
-        }
-        function addOffer() {
-            var productName = document.getElementById("productName").value;
-            var productPrice = parseFloat(document.getElementById("productPrice").value);
-            var offerPercentage = parseFloat(document.getElementById("offerPercentage").value);
+    if (!offerPercentage.trim()) {
+        document.getElementById("offerPercentageError").innerHTML = "Offer Percentage is required";
+        return false;
+    }
 
-            // Calculate the discounted price
-            var discountedPrice = productPrice - (productPrice * (offerPercentage / 100));
+    // Price validation
+    if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+        document.getElementById("productPriceError").innerHTML = "Please enter a valid positive price";
+        return false;
+    }
 
-            // Output or use the data as needed
-            console.log("Product Name: " + productName);
-            console.log("Original Price: $" + productPrice);
-            console.log("Offer Percentage: " + offerPercentage + "%");
-            console.log("Discounted Price: $" + discountedPrice.toFixed(2));
+    // Discount validation
+    if (isNaN(offerPercentage) || offerPercentage < 1 || offerPercentage > 100) {
+        document.getElementById("offerPercentageError").innerHTML = "Please enter a valid percentage between 1 and 100";
+        return false;
+    }
 
-            // You can modify this part to send the data to the server or perform other actions
-        }
+    return true; // Form is valid
+}
+
     </script>
-
+    
 </body>
 </html>
