@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const dotenv=require('dotenv')
 dotenv.config()
 // Mongoose connection
-mongoose.connect(process.env.MONGO_ENV)
+mongoose.connect("mongodb+srv://saravanank24680:5W4Govdp6I3oUfmC@arcanesteps.x2cvb46.mongodb.net/SKS?retryWrites=true&w=majority&appName=arcanesteps")
   .then(() => {
     console.log("MongoDB is connected");
   })
