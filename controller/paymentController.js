@@ -8,10 +8,10 @@ const orderpayment = async (req, res) => {
   try { 
     console.log('this is online payment starting');
     const { amount } = req.body;
-    console.log('price from the payhment controler',amount);
+    console.log('price from the payhment controler',typeof(amount));
     var instance = new Razorpay({ key_id: process.env.KEY_ID, key_secret: process.env.KEY_SECRET });
     var options = {
-        amount: amount , 
+        amount: amount * 100, 
         currency: "INR",
         receipt: "order_rcptid_11",
     };

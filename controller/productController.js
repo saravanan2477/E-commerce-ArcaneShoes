@@ -39,7 +39,7 @@ module.exports = {
       productname,
       category,
       price,
-      model,
+      Brand,
       description,
       stock,
       croppedImages,
@@ -50,7 +50,7 @@ module.exports = {
         productname: productname,
         category: category,
         price: price,
-        model: model,
+        brand: Brand,
         description: description,
         image: croppedImages || [],
         stock: stock,
@@ -95,7 +95,7 @@ module.exports = {
       productname,
       category,
       price,
-      model,
+      brand,
       description,
       stock,
       isListed,
@@ -116,7 +116,7 @@ module.exports = {
           productname: productname,
           category: category,
           price: price,
-          model: model,
+          brand: brand,
           description: description,
           image: updatedImagePaths,
 
@@ -203,7 +203,9 @@ module.exports = {
   getproduct : async (req, res) => {
     const pid = req.params.id;
     try {
+      console.log('entered get product get')
       const product = await Product.findById(pid).populate("category");
+      console.log("product in product detail is",product)
       if (!product) {
         return res.status(404).send("Product not found");
       }
@@ -327,7 +329,7 @@ module.exports = {
       const query = buildQuery(category, priceRange);
 
       // Define pagination constants
-      const PAGE_SIZE = 10; // Number of products per page
+      const PAGE_SIZE = 4; // Number of products per page
 
       // Get current page from query parameters, default to 1 if not provided
       const currentPage = parseInt(page) || 1;

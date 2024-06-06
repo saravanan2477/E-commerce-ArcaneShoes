@@ -42,7 +42,7 @@ addToCart: async (req, res) => {
 
       // Find product and populate its category
       const product = await Product.findOne({ _id: productId }).populate("category");
-
+console.log("product is in add to cart", product);
       if (!product) {
           return res.status(404).send('Product not found');
       }
@@ -91,8 +91,10 @@ addToCart: async (req, res) => {
               productid: productId,
               userid: sessionId,
               productname: product.productname,
+              Category:product.category.category,
               price: finalPrice, // Apply final price
               quantity: 1,
+              proffer:discountAmount,
               image: product.image
           });
       }

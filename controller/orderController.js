@@ -9,9 +9,10 @@ const wallet = require("../model/wallet");
 const couponCollection= require('../model/coupon');
 const ProductOffer = require("../model/productOffer");
 const categoryOffer =require('../model/categoryOffer')
+const PDFDocument = require("pdfkit");
 
 
-const TAX_RATE = 0.03; // 3% tax rate
+
 module.exports = {
   getcheckout: async (req, res) => {
     try {
@@ -19,21 +20,61 @@ module.exports = {
       const sessionId = req.session.userid;
 
       const checkout = await Cart.find({ userid: sessionId });
-
+      const TAX_RATE= 0.03;
       let totalsum = 0;
       let totalTax = 0; // Initialize total tax amount
+      let totalDiscount = 0;
 
-      checkout.forEach((items) => {
-        const totalitems = items.price * items.quantity;
-        const taxAmount = totalitems * TAX_RATE;
+      for (const item of checkout) {
+        const product = await Product.findById(item.productid);
+        console.log("product is ",product)
+        
 
-        totalsum += totalitems + taxAmount;
-        totalTax += taxAmount; // Accumulate the tax amount
-      });
+        if (!product) {
+          return res.status(404).send(`Product with ID ${item.productid} not found.`);
+        }
+
+        const originalPrice = item.price;
+        console.log("cartprice is ",originalPrice)
+        console.log("originalPrice is ",originalPrice)
+        let discountAmount = 0;
+
+        // Retrieve product offer
+        const productOfferInstance = await ProductOffer.findOne({ productname: product.name });
+        if (productOfferInstance) {
+          const discountPercentage = parseFloat(productOfferInstance.productoffer);
+          discountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+        }
+
+        // Retrieve category offer
+        const categoryOfferInstance = await categoryOffer.findOne({ category: product.category.category });
+
+
+console.log("categoryOfferInstance is in get checkout ",categoryOfferInstance)
+        
+        if (categoryOfferInstance) {
+          const discountPercentage = parseFloat(categoryOfferInstance.alloffer);
+          const categoryDiscountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+          if (categoryDiscountAmount > discountAmount) {
+            discountAmount = categoryDiscountAmount;
+          }
+        }
+
+        const taxAmount = originalPrice * item.quantity * TAX_RATE;
+        const finalPrice = (originalPrice * item.quantity) - discountAmount + taxAmount;
+
+        totalsum += finalPrice;
+        totalTax += taxAmount;
+        totalDiscount += discountAmount;
+        console.log("taxAmount is ",taxAmount)
+console.log("finalPrice is ",finalPrice)
+console.log("totalTax is ",totalTax)
+console.log("totalDiscount is ",totalDiscount)
+      }
 
       const address = await Address.find({ userid: userId });
-
-      res.render("CheckoutPage", { checkout, address, totalsum, totalTax }); // Pass totalTax to the template
+console.log("checkout is ", checkout);
+      res.render("CheckoutPage", { checkout, address, totalsum, totalTax, totalDiscount });
     } catch (error) {
       console.log(error);
       res.status(500).send("Error in product details");
@@ -71,11 +112,12 @@ module.exports = {
       const orderProducts = cartItems.map((item) => ({
         productid: item.productid,
         productName: item.productname,
-        //Category: item.Category,
+        Category: item.Category,
         price: item.price,
         quantity: item.quantity,
         image: item.image,
         status: "pending",
+        proffer:item.proffer*item.quantity
       }));
       let product;
       // Update stock for each product in the order
@@ -189,11 +231,7 @@ module.exports = {
 
   Placeorder: async (req, res) => {
     try {
-      // Process the order and save it to the database
-      // const newOrder = new Ordercollection({ /* Your order data */ });
-      // await newOrder.save();
-
-      // Optionally, you can retrieve the newly created order ID and send it back as a response
+   
       res.render("placeOrder");
     } catch (error) {
       console.error(error);
@@ -203,84 +241,81 @@ module.exports = {
 
   showUserOrders: async (req, res) => {
     try {
-      const userid = req.session.userid;
-  
-      const orders = await Ordercollection.find({ userid: userid }).sort({
-        orderDate: -1,
-      });
-  
-      const Categorie = await Category.find();
-  
-      // Iterate through each order
-      for (let i = 0; i < orders.length; i++) {
-        const order = orders[i];
-  
-        let finalPrice = 0;
-  
-        // Iterate through each product in the order
-        for (let j = 0; j < order.productcollection.length; j++) {
-          const product = order.productcollection[j];
-          const productid = product.productid;
-  
-          // Fetch original price of the product
-          let originalPrice = await Product.findById(productid).select("price");
-          originalPrice = originalPrice.price;
-  
-          // Retrieve product offer
-          const productOfferInstance = await ProductOffer.findOne({ productname: product.productName });
-  
-          // Calculate product discount
-          let discountAmount = 0;
-          if (productOfferInstance) {
-            const discountPercentage = parseFloat(productOfferInstance.productoffer);
-            discountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
-          }
-  
-          // Retrieve category offer
-          
-          const categoryOfferInstance = await categoryOffer.findOne({ category: product.Category });
-  
-          // Calculate category discount
-          if (categoryOfferInstance) {
-            const discountPercentage = parseFloat(categoryOfferInstance.alloffer);
-            const categoryDiscountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
-  
-            // If the category offer provides a higher discount than the product offer, update discountAmount
-            if (categoryDiscountAmount > discountAmount) {
-              discountAmount = categoryDiscountAmount;
+        const userid = req.session.userid;
+
+        const orders = await Ordercollection.find({ userid: userid }).sort({ orderDate: -1 });
+
+        const Categorie = await Category.find();
+
+        // Iterate through each order
+        for (let i = 0; i < orders.length; i++) {
+            const order = orders[i];
+            console.log("order in show", order);
+
+            // Iterate through each product in the order
+            for (let j = 0; j < order.productcollection.length; j++) {
+                const product = order.productcollection[j];
+                const productid = product.productid;
+
+                // Fetch original price of the product
+                let originalPrice = await Product.findById(productid).select("price");
+                console.log("originalPrice", originalPrice);
+                originalPrice = originalPrice.price;
+
+                // Retrieve product offer
+                const productOfferInstance = await ProductOffer.findOne({ productname: product.productName });
+                console.log("productOfferInstance is", productOfferInstance);
+
+                // Calculate product discount
+                let discountAmount = 0;
+                if (productOfferInstance) {
+                    const discountPercentage = parseFloat(productOfferInstance.productoffer);
+                    discountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+                }
+
+                // Retrieve category offer
+                const categoryOfferInstance = await categoryOffer.findOne({ category: product.Category });
+                console.log("categoryOfferInstance is", categoryOfferInstance);
+
+                // Calculate category discount
+                if (categoryOfferInstance) {
+                    const discountPercentage = parseFloat(categoryOfferInstance.alloffer);
+                    const categoryDiscountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
+                    console.log("categoryDiscountAmount is", categoryDiscountAmount);
+
+                    // If the category offer provides a higher discount than the product offer, update discountAmount
+                    if (categoryDiscountAmount > discountAmount) {
+                        discountAmount = categoryDiscountAmount;
+                    }
+                }
+
+                // Calculate tax
+                const taxRate = 0.03; // 3%
+                const taxAmount = parseFloat(originalPrice) * taxRate;
+
+                // Calculate final price including tax
+                const productFinalPrice = (parseFloat(originalPrice) * product.quantity) - discountAmount + taxAmount - (order.Discount || 0);
+                console.log("order discount is", order.Discount);
+                console.log("productFinalPrice is", productFinalPrice);
+                console.log("taxAmount is", taxAmount);
+                console.log("discountAmount is", discountAmount);
+
+                // Update the product's finalPrice
+                product.finalPrice = productFinalPrice;
             }
-          }
-  
-          // Calculate tax
-          const taxRate = 0.03; // 3%
-          const taxAmount = parseFloat(originalPrice) * taxRate;
-  
-          // Calculate final price including tax
-          const productFinalPrice = parseFloat(originalPrice)*product.quantity - discountAmount + taxAmount-order.Discount;
-          
-          // Add product final price to the order's final price
-          finalPrice += productFinalPrice;
-          console.log("productFinalPrice issqqwqw",productFinalPrice)
-          console.log("taxAmount issqqwqw",taxAmount)
-          console.log("discountAmount issqqwqw",discountAmount)
 
-
-
-          // const totalAmount = (originalPrice * product.quantity) - discountamount - Discount + taxAmount ;
-
+            // Save the modified order with updated product final prices
+            await order.save();
+            console.log("order saved with updated final prices", order);
         }
-  
-        // Update order with final price
-        order.finalPrice = finalPrice;
-        console.log("finalPrice issqqwqw",finalPrice)
-      }
-  
-      res.render("userOrders", { Categorie, orders });
+
+        res.render("userOrders", { Categorie, orders });
     } catch (error) {
-      console.log(error);
-      res.status(500).send("Error rendering user orders");
+        console.log(error);
+        res.status(500).send("Error rendering user orders");
     }
-  },
+},
+
   
   // Assuming you have a route to fetch all products
   orderDetailsget: async (req, res) => {
@@ -378,8 +413,8 @@ console.log("originalPrice iss ",typeof(originalPrice))
         originalPrice,
         discountamount: order.Discount,
         Discount: discountAmount,
-        finalPrice: finalPrice, // Format the final price to 2 decimal places
-        taxAmount: taxAmount // Format the tax amount to 2 decimal places
+        finalPrice: finalPrice.toFixed(2),
+        taxAmount: taxAmount.toFixed(2)
         
       });
 
@@ -389,12 +424,13 @@ console.log("originalPrice iss ",typeof(originalPrice))
     }
 },
 
+
   
 
 cancelOrder: async (req, res) => {
   try {
     const { orderId, productId } = req.params;
-
+const TAX_RATE=0.03;
     // Find the order by ID
     const order = await Ordercollection.findById(orderId);
     if (!order) {
@@ -462,18 +498,19 @@ console.log("totalRefund is ",totalRefund);
 
 orderReturn: async (req, res) => {
   try {
+console.log("entered order return")
     
     const userid = req.params.userid;
     const productid = req.params.productid;
     const selectedstatus = "Returned";
     const idofuser = req.session.userid;
-
+const TAX_RATE=0.03;
     // Retrieve order details
     let order = await Ordercollection.findOne({
       _id: userid,
       "productcollection.productid": productid,
     });
-
+console.log("order is ",order)
     if (!order) {
       return res.status(404).send("Order not found");
     }
@@ -481,19 +518,35 @@ orderReturn: async (req, res) => {
     const product = order.productcollection.find(
       (product) => product.productid.toString() === productid
     );
+console.log("product is ",product)
+
     if (!product) {
       return res.status(404).send("Product not found in the order");
     }
 
-    const { price, quantity } = product;
+    const { price, quantity,proffer} = product;
+    console.log("price is ",price)
+    console.log("quantity is ",quantity)
+    console.log("product is ",product)
 
     // Calculate the amount to refund
-    let totalRefund = price * quantity;
+    let tr=proffer/quantity
+    let tr1=tr+price
+
+    console.log('tr pric is',tr)
+    console.log('tr1 pric is',tr1)
+    console.log('tr pric is',price)
+    console.log('proffer  is',proffer)
+  
+    let Refund = tr1*quantity;
+    totalRefund=Refund-proffer
+    console.log("totalRefund is ",totalRefund)
 
     // Check if a coupon was applied to the order
     if (order.Discount > 0) {
       totalRefund -= order.Discount;
     }
+    console.log("order.Discount is ",order.Discount)
 
     // Update order status to 'Returned'
     await Ordercollection.updateOne(
@@ -511,6 +564,9 @@ orderReturn: async (req, res) => {
       // Calculate tax amount and reduce it from the refund
       const taxAmount = totalRefund * TAX_RATE;
       totalRefund += taxAmount;
+      console.log("taxAmount",taxAmount)
+      console.log("totalRefund is ",totalRefund)
+      console.log("TAX_RATE is",TAX_RATE)
 
       // Update user's wallet and create a refund entry
       let userorder = await UserCollection.findOneAndUpdate(
@@ -527,6 +583,7 @@ orderReturn: async (req, res) => {
     }
 
     product.status = selectedstatus;
+    console.log("product.status is",product.status)
 
     // Save the updated order to the database
     await order.save();
@@ -538,5 +595,147 @@ orderReturn: async (req, res) => {
       .json({ success: false, message: "Error returning order" });
   }
 },
+
+
+
+
+
+Invoice: async (req, res) => {
+  try {
+      let userId = req.session.userid;
+      console.log(userId);
+      const orderId = req.params.orderid;
+      console.log("Entered", orderId);
+
+      const invoiceDetails = await UserCollection.findOne({ _id: userId });
+      console.log("Invoice", invoiceDetails);
+
+      const specificOrder = await Ordercollection.findById(orderId);
+      if (!specificOrder) {
+          console.error(`Order not found for ID: ${orderId}`);
+          return res.status(404).render("error", { message: "Order not found." });
+      }
+      console.log("Invoiceu", specificOrder);
+
+      // Create a new PDF document
+      const doc = new PDFDocument();
+
+      // Set response headers to trigger a download
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
+      // Pipe the PDF document to the response
+      doc.pipe(res);
+      console.log("hello ask1");
+      const imagePath = "public/images/logo.png"; // Change this to the path of your image
+      const imageWidth = 100; // Adjust image width based on your layout
+      const imageX = 550 - imageWidth; // Adjust X-coordinate based on your layout
+      const imageY = 50; // Adjust Y-coordinate to place the image at the top
+      doc.image(imagePath, imageX, imageY, { width: imageWidth });
+      // Move to the next section after the image
+      doc.moveDown(1);
+      // Add content to the PDF document
+      doc.fontSize(16).text("Billing Details", { align: "center" });
+      doc.moveDown(1.2);
+      doc.fontSize(10).text("Customer Details", { align: "center" });
+      doc.moveDown(1);
+      doc.text(`Order ID: ${orderId}`);
+
+      doc.moveDown(0.3);
+      doc.text(`Name: ${invoiceDetails.username || ""}`);
+      doc.moveDown(0.3);
+      doc.text(`Email: ${invoiceDetails.email || ""}`);
+
+      console.log("hello ask6");
+
+      if (specificOrder.address) {
+          const address = specificOrder.address;
+          doc.moveDown(0.3);
+          doc.text(
+              `Address: ${address.address}, ${address.city}, ${address.state} ${address.pincode || ""
+              }`
+          );
+      } else {
+          console.warn(`Address not found for order ID: ${orderId}`);
+      }
+
+      doc.moveDown(0.3);
+      doc.text(`Payment Method: ${specificOrder.paymentMethod || ""}`);
+      console.log("hello ask2");
+      doc.moveDown(0.3);
+      console.log("In");
+      const headerY = 300; // Adjust this value based on your layout
+      doc.font("Helvetica-Bold");
+      doc.text("Name", 100, headerY, { width: 150, lineGap: 5 });
+      doc.text("Status", 300, headerY, { width: 150, lineGap: 5 });
+      doc.text("Quantity", 400, headerY, { width: 50, lineGap: 5 });
+      doc.text("Price", 500, headerY, { width: 50, lineGap: 5 });
+      doc.font("Helvetica");
+
+      // Table rows
+      const contentStartY = headerY + 30; // Adjust this value based on your layout
+      let currentY = contentStartY;
+      specificOrder.productcollection.forEach((product, index) => {
+          doc.text(product.productName || "", 100, currentY, {
+              width: 150,
+              lineGap: 5,
+          });
+
+          doc.text(product.status || "", 300, currentY, {
+              width: 50,
+              lineGap: 5,
+          });
+          doc.text(product.quantity || "", 400, currentY, {
+              width: 50,
+              lineGap: 5,
+          });
+
+          doc.text(product.price || "", 500, currentY, {
+              width: 50,
+              lineGap: 5,
+          });
+          console.log("Reached Here");
+
+          // Calculate the height of the current row and add some padding
+          const lineHeight = Math.max(
+              doc.heightOfString(product.productName || "", { width: 150 }),
+              doc.heightOfString(product.status || "", { width: 150 }),
+
+              doc.heightOfString(product.price || "", { width: 50 })
+          );
+          currentY += lineHeight + 10; // Adjust this value based on your layout
+      });
+      console.log("Reached Here2");
+      doc.text(`Total Price: ${specificOrder.totalPrice || ""}`, {
+          width: 400, // Adjust the width based on your layout
+          lineGap: 5,
+      });
+
+      // Set the y-coordinate for the "Thank you" section
+      const separation = 50; // Adjust this value based on your layout
+      const thankYouStartY = currentY + separation; // Update this line
+
+      // Move to the next section
+      doc.y = thankYouStartY; // Change this line
+
+      // Move the text content in the x-axis
+      const textX = 60;
+      const textWidth = 500;
+      doc.fontSize(14).text(
+          "Thank you for choosing RED STORE! We appreciate your support and are excited to have you as part of our family.",
+          textX,
+          doc.y,
+          { align: "center", width: textWidth, lineGap: 10 }
+      );
+
+      doc.end();
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error returning order" });
+  }
+},
+
+
 
 };

@@ -104,7 +104,8 @@
           <li><a href="/couponManagement">Coupon Management</a></li>
           <li><a href="/sales">Sales</a></li>
           <li><a href="/offerManagement">Offer Management</a></li>
-          <li><a href="/admin/Logoutget">Logout</a></li>
+          <li><a href="/admin/Logoutget" id="logout-button">Logout</a></li>
+
         </ul>
     </div>
 
@@ -123,6 +124,7 @@
                     <th>Price</th>
                     <th>Image</th>
                     <th>Stock</th>
+                    <th>Brand</th>
                     <th>status</th>
                     <th>List/UnList</th>
                     <th>Action</th>
@@ -158,6 +160,9 @@
                                 <%= product.stock %>
                             </td>
                             <td>
+                                <%= product.brand %>
+                            </td>
+                            <td>
                                 <% if (product.isListed) { %>
                                     <span class="text-success">Listed</span>
                                 <% } else { %>
@@ -171,14 +176,14 @@
                                     <a href="/unlistproduct/<%= product._id %>" class="btn btn-success" style="background-color: green;">List</a>
                                 <% } %>
                             </td>
-                            
+                         
                             <td>
                                 <!-- Edit Button -->
                                 <a href="/editproduct/<%= product._id %>" class="btn btn-primary">Edit</a>
                             </td>
                             <td>
                                 <!-- delete Button -->
-                                <a href="/deleteproduct/<%= product._id %>" class="btn bg-gradient-primary mb-0 delete-button" data-product-id="<%= product._id %>" style="background-color: rgb(240, 66, 127); color: white;">Delete</a>
+                                <a href="/deleteproduct/<%= product._id %>" class="btn bg-gradient-primary mb-0 delete-button" data-product-id="<%= product._id %>" style="background-color: rgb(236, 31, 31); color: white;">Delete</a>
 
 
                                   </td>
@@ -235,5 +240,39 @@
         });
     });
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/admin/Logoutget";
+                        }
+                    });
+                });
+            });
+            
+</script>
 </body>
 </html>

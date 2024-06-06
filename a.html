@@ -1,9 +1,0 @@
-var rzp1 = new Razorpay(options);
-rzp1.on('payment.failed', function (response) {
-	console.log("error data",response);
-console.log("got rnto error ");
-window.location.href = "/paymentFailed";
-return
-});
-rzp1.open();
-e.preventDefault();

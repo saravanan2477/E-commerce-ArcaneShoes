@@ -16,7 +16,10 @@ const Cartschema = new mongoose.Schema({
         type: String
     
     },
-
+    proffer:{
+        type: Number,
+        required: true,
+      },
     Category:{
         type: String
     

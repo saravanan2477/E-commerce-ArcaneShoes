@@ -170,7 +170,7 @@ const addAddress= async(req,res)=>{
 //! add address post
 
 const addAddresspost = async(req,res)=>{
-  try{
+  try {
    const a=req.session.userid
   //  console.log('a',a);
    const address = {
@@ -286,74 +286,6 @@ const addressdelete= await Address.findByIdAndDelete(del)
 }
 
 
-
-
-
-
-/////// Order Cancel////
-// const OrderCancel = async (req, res) => {
-//     try {
-//         console.log("lkdgldjgljdkjgkjklj",req.query.reason);
-//         const userid = req.params.userid;
-//         const productid = req.params.productid;
-//         const selectedstatus = 'Cancelled';
-//         console.log("dsgdgdhgdfdf", productid);
-
-
-//         // Retrieve order details
-//         const order = await orderCollection.findOne(
-//             { 'userid': userid, 'productcollection._id': productid },
-//             { 'productcollection.$': 1, 'paymentMethod': 1, 'intDiscount': 1 }
-//         );
-//         if (!order) {
-//             return res.status(404).send("Order not found");
-//         }
-//         let dis = order.intDiscount;
-//         const proId = order.productcollection[0].productid;
-
-//         console.log("proid is", proId);
-//         console.log("order", order);
-//         console.log("discount", dis);
-
-//         // Extract necessary details from the order
-//         const { price, quantity } = order.productcollection[0];
-//         console.log("QUAn0", quantity);
-//         // Update order status to 'Cancelled'
-//         await Ordercollection.findOneAndUpdate(
-//             { 'userid': userid, 'productcollection._id': productid },
-//             { $set: { 'productcollection.$.status': selectedstatus } }
-//         );
-//         // Add stock back to the Product database
-//         const desc = await Product.findOneAndUpdate(
-//             { _id: proId },
-//             { $inc: { Stock: quantity } }
-//         );
-//         console.log("helloworld", desc);
-
-
-//         if (order.paymentMethod === 'credit-card') {
-//             console.log("inside");
-//             const cancellationRefundAmount = price * quantity - dis;
-//             await User.findOneAndUpdate(
-//                 { _id: userid },
-//                 { $inc: { wallet: cancellationRefundAmount } }
-//             );
-//             await Wallet.create({
-//                 userid,
-//                 date: new Date(),
-//                 amount: cancellationRefundAmount,
-//                 creditordebit: 'debit',
-//               });
-//             }
-
-
-
-//         res.json({ success: true });
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).send("Error updating order status");
-//     }
-// };
 module.exports= {
   showUserUi,
   editProfileGet,

@@ -161,8 +161,24 @@
         width: 150px; 
         position: relative;
         top: 0;
-        right: -425px;
+        right: -400px;
         padding: 10px;
+    }
+
+
+    #searchBtn{
+        position: relative;
+        padding: 10px;
+        color: #fff;
+        font-size: 16px;
+        background-color: #ff523b;
+        border: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+        right: -100px;
+        
+        transition: border-color 0.3s ease-in-out;
+
     }
     .product-container {
     display: block;
@@ -176,6 +192,22 @@
     padding: 5px;
     border-bottom: 1px solid #ddd;
 }
+
+#clearFilterForm{
+    padding: 110px;
+        font-size: 16px;
+     
+        border-radius: 5px;
+        transition: border-color 0.3s ease-in-out;
+        width: 150px; 
+        position: relative;
+        
+        right: 350px;
+        padding: 10px;
+
+}
+
+
 
 
 </style>
@@ -221,67 +253,51 @@
         <!------------------------------ Products------------------------------>
         <div class="small-container" id="product-container">
             <div class="sort-options">
-            <form action="/filter" method="post" >
-                <select name="category" id="category" class="form-select">
-                    <option value="All Categories">All Categories</option>
-                    
-                        
-                       
-                           
-            <!-- Add your category options dynamically here -->
-            <% categories.forEach(category => { %>
-                <option value="<%= category._id %>"><%= category.category %></option>
-            <% }); %>
-                            
-                            <!-- Add your category options here -->
-                        </select>
-                 
+                <form action="/filter" method="post">
+                    <select name="category" id="category" class="form-select">
+                        <option value="All Categories">All Categories</option>
+                        <% categories.forEach(category => { %>
+                            <option value="<%= category._id %>"><%= category.category %></option>
+                        <% }); %>
+                    </select>
+                    <select name="sortprice" id="sortprice" class="form-select">
+                        <option value="">All Prices</option>
+                        <option value="lowToHigh">Low to High</option>
+                        <option value="highToLow">High to Low</option>
+                    </select>
+                    <select name="priceRange" id="priceRange" class="form-select">
+                        <option value="">Price Range</option>
+                        <option value="100-1000">100 - 1000</option>
+                        <option value="1000-1500">1000 - 1500</option>
+                        <option value="1500-2000">1500 - 2000</option>
+                    </select>
+                    <select name="sortAlphabetically" id="sortAlphabetically" class="form-select">
+                        <option value="">Alphabetical Order</option>
+                        <option value="ascending">Ascending (A to Z)</option>
+                        <option value="descending">Descending (Z to A)</option>
+                    </select>
+                    <button type="submit" class="animated-button">Filter</button>
+                </form>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search here...">
+                <button id="searchBtn">Search</button>
+                <form action="/allProducts" method="get" id="clearFilterForm">
+                    <button type="submit" class="animated-button">Clear Filter</button>
+                </form>
+            </div>
+    
             
-                
-                        <select name="sortprice" id="sortprice" class="form-select">
-                            <option value="">All Prices</option>
-                            <option value="lowToHigh">Low to High</option>
-                            <option value="highToLow">High to Low</option>
-                        </select>
-                  
-               
-                        <select name="priceRange" id="priceRange" class="form-select">
-                            <option value="">Price Range</option>
-                            <option value="100-1000">100 - 1000</option>
-                            <option value="1000-1500">1000 - 1500</option>
-                            <option value="1500-2000">1500 - 2000</option>
-                        </select>
-                  
-            
-                <!-- Add the alphabetical sorting option -->
-               
-                        <select name="sortAlphabetically" id="sortAlphabetically" class="form-select">
-                            <option value="">Alphabetical Order</option>
-                            <option value="ascending">Ascending (A to Z)</option>
-                            <option value="descending">Descending (Z to A)</option>
-                        </select>
-                  
-                        <button type="submit" class="animated-button">Filter</button>
-                        
-                        <input type="text" id="searchInput" class="search-input" placeholder="Search" oninput="searchProducts()">
+        <!-- <div id="showSearchedProducts" style="height: 70vh; width: 600px;"> -->
 
-                        
-            </form>
-            
         </div>
-
-            <!--<h2 class="title" >Featured Products</h2>-->
-             <!------------------------------ featured Products------------------------------>
-             <div class="small-container" id="product-container">
-                
-                <div class="row">
-                    <% if (productcollection && productcollection.length > 0) { %> <!-- Check if there are products to display -->
+            <div class="small-container" id="product-container">
+                <div class="row" id="product-list">
+                    <% if (productcollection && productcollection.length > 0) { %>
                         <% productcollection.forEach(product => { %>
                             <div class="col-4 product-container" id="product-item">
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="wishlist-container">
-                                            <a href="/wishlist/<%=product._id%>"><i class="fa fa-heart wishlist-icon"></i></a>
+                                            <a href="/wishlist/<%= product._id %>"><i class="fa fa-heart wishlist-icon"></i></a>
                                         </div>
                                         <a href="/getproduct/<%= product._id %>"><img src="<%= product.image[0] %>"></a>
                                     </div>
@@ -295,40 +311,30 @@
                                             <i class="fa fa-star-o"></i>
                                         </div>
                                         <p>₹<%= product.price %></p>
-                                        
-                                        <a href="/getproduct/<%= product._id %>" class="btn">View</a> 
+                                        <a href="/getproduct/<%= product._id %>" class="btn">View</a>
                                     </div>
                                 </div>
                             </div>
                         <% }) %>
-                    <% } else { %> <!-- If no products are found, display a message -->
+                    <% } else { %>
                         <div class="col-12">
                             <h3 style="color: red;">No products found.</h3>
                         </div>
-
                     <% } %>
                 </div>
             </div>
-            
-            
-            
-        <!-- Pagination Controls -->
-<div class="pagination">
-    <% if (currentPage > 1) { %>
-        <a href="/allProducts?page=<%= currentPage - 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">&laquo; Previous</a>
-      <% } %>
-      
-      <% for (let i = 1; i <= totalPages; i++) { %>
-        <a href="/allProducts?page=<%= i %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-      <% } %>
-      
-      <% if (currentPage < totalPages) { %>
-        <a href="/allProducts?page=<%= currentPage + 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">Next &raquo;</a>
-      <% } %>
-      
-  </div>
-  
-            
+        
+            <div class="pagination" id="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="/allProducts?page=<%= currentPage - 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">&laquo; Previous</a>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="/allProducts?page=<%= i %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <a href="/allProducts?page=<%= currentPage + 1 %>&sortprice=<%= sortprice %>&sortAlphabetically=<%= sortAlphabetically %>&category=<%= category %>&priceRange=<%= priceRange %>">Next &raquo;</a>
+                <% } %>
+            </div>
         </div>
         
         
@@ -376,69 +382,116 @@
         </div>
     </div>
   
-     
-        <!-----------------------------------js for toggle menu----------------------------------------------->
-        <script>
-            var menuItems=document.getElementById("MenuItems");
-            
-            MenuItems.style.maxHeight="0px";
-            function menutoggle(){
-                if(MenuItems.style.maxHeight == "0px"){
-                    MenuItems.style.maxHeight="200px";
-                }
-                else{
-                    MenuItems.style.maxHeight="0px";
-                }
-            }
-        </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    function searchProducts() {
-        var input = document.getElementById('searchInput').value.toLowerCase();
-        var productItems = document.querySelectorAll('.product-container');
 
-        productItems.forEach(function(item) {
-            var productName = item.querySelector('h4').innerText.toLowerCase();
-            if (productName.includes(input)) {
-                item.style.display = 'block'; // Show matching products
+    <script>
+        var menuItems = document.getElementById("MenuItems");
+        MenuItems.style.maxHeight = "0px";
+        function menutoggle() {
+            if (MenuItems.style.maxHeight == "0px") {
+                MenuItems.style.maxHeight = "200px";
             } else {
-                item.style.display = 'none'; // Hide non-matching products
+                MenuItems.style.maxHeight = "0px";
             }
-        });
-    }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        }
 
-<script>
-    
-            // Wait for the document to be fully loaded
-            document.addEventListener("DOMContentLoaded", function () {
-                // Find the logout button element
-                const logoutButton = document.getElementById("logout-button");
-            
-                // Add a click event listener to the logout button
-                logoutButton.addEventListener("click", function (e) {
-                    // Prevent the default action (following the link)
-                    e.preventDefault();
-            
-                    // Show the SweetAlert confirmation dialog
-                    Swal.fire({
-                        title: "Logout",
-                        text: "Are you sure you want to logout?",
-                        icon: "warning",
-                        showCancelButton: true, 
-                        confirmButtonText: "Yes, logout",
-                        cancelButtonText: "No, cancel"
-                    }).then((result) => {
-                        // If the user confirms the logout
-                        if (result.isConfirmed) {
-                            // Redirect to the logout page
-                            window.location.href = "/logout";
-                        }
-                    });
+        document.getElementById('searchBtn').addEventListener("click", () => searchProducts());
+
+        async function searchProducts(page = 1) {
+            console.log("inside click")
+            var input = document.getElementById('searchInput').value.toLowerCase();
+            if (input.length < 1) {
+                alert("Search properly");
+                return;
+            };
+
+            const response = await fetch('/searchedProducts', {
+                method: 'POST',
+                headers: {
+                    'content-type': "application/json"
+                },
+                body: JSON.stringify({
+                    searchedInput: input,
+                    page: page
+                })
+            });
+            const res = await response.json();
+            console.log("searchedProducts", res);
+
+            const productContainer = document.getElementById('product-list');
+            productContainer.innerHTML = '';
+
+            if (res.products && res.products.length > 0) {
+                res.products.forEach(product => {
+                    const productHTML = `
+                        <div class="col-4 product-container" id="product-item">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="wishlist-container">
+                                        <a href="/wishlist/${product._id}"><i class="fa fa-heart wishlist-icon"></i></a>
+                                    </div>
+                                    <a href="/getproduct/${product._id}"><img src="${product.image[0]}" alt="${product.productname}"></a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="/getproduct/${product._id}"><h4>${product.productname}</h4></a>
+                                    <div class="rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-half-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                    </div>
+                                    <p>₹${product.price}</p>
+                                    <a href="/getproduct/${product._id}" class="btn">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    productContainer.insertAdjacentHTML('beforeend', productHTML);
+                });
+            } else {
+                productContainer.innerHTML = '<div class="col-12"><h3 style="color: red;">No products found.</h3></div>';
+            }
+
+            updatePagination(res.totalPages, res.currentPage);
+        }
+
+        function updatePagination(totalPages, currentPage) {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+
+            if (currentPage > 1) {
+                paginationContainer.innerHTML += `<a href="#" onclick="searchProducts(${currentPage - 1})">&laquo; Previous</a>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationContainer.innerHTML += `<a href="#" onclick="searchProducts(${i})" class="${i === currentPage ? 'active' : ''}">${i}</a>`;
+            }
+
+            if (currentPage < totalPages) {
+                paginationContainer.innerHTML += `<a href="#" onclick="searchProducts(${currentPage + 1})">Next &raquo;</a>`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const logoutButton = document.getElementById("logout-button");
+            logoutButton.addEventListener("click", function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Logout",
+                    text: "Are you sure you want to logout?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, logout",
+                    cancelButtonText: "No, cancel"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/logout";
+                    }
                 });
             });
-            
-</script>
+        });
+    </script>
     </body>
 </html>

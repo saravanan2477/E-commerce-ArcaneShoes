@@ -41,12 +41,12 @@
                         <form action="/addproduct" method="POST"  onsubmit="return validateForm()" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="productname" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="productname" name="productname" required>
+                                <input type="text" class="form-control" id="productname" name="productname" >
                                 <div id="productnameError" class="error-message"></div>
                             </div>
                             <div class="mb-4">
                                 <label for="category" class="form-label">Category</label>
-                                <select class="form-select" id="category" name="category" required>
+                                <select class="form-select" id="category" name="category" >
                                     <option value="">Select Category</option>
                                     <% if(categories.length> 0) { %>
                                         <% categories.forEach( categorie=> { %>
@@ -58,13 +58,13 @@
                             </div>
                             <div class="mb-3">
                                 <label for="price" class="form-label">Price</label>
-                                <input type="number" class="form-control" id="price" name="price" required>
+                                <input type="number" class="form-control" id="price" name="price" >
                                 <div id="priceError" class="error-message"></div>
                             </div>
                            
                             <div class="mb-3">
                                 <label for="discription" class="form-label">Discription</label>
-                                <input type="text" class="form-control" id="discription" name="discription" required>
+                                <input type="text" class="form-control" id="discription" name="disription" >
                                 <div id="discriptionError" class="error-message"></div>
                             </div>
                             <div class="mb-3">
@@ -76,12 +76,17 @@
                             </div>
                             <div class="mb-3">
                                 <label for="stock" class="form-label">Stock</label>
-                                <input type="number" class="form-control" id="stock" name="stock" min="1" required>
+                                <input type="number" class="form-control" id="stock" name="stock" min="1" >
                                 <div id="stockError" class="error-message"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="Brand" class="form-label">Brand</label>
+                                <input type="text" class="form-control" id="Brand" name="Brand" min="1" >
+                                <div id="BrandError" class="error-message"></div>
                             </div>
                             <div class="mb-4">
                                 <label for="isListed" class="form-label">IsListed</label>
-                                <select class="form-select" id="isListed" name="isListed" required>
+                                <select class="form-select" id="isListed" name="isListed" >
                                     <option value="true">True</option>
                                     <option value="false">False</option>
                                 </select>
@@ -155,6 +160,15 @@
                 isValid = false;
             } else {
                 document.getElementById('stockError').innerText = '';
+            }
+            if (Brand === '') {
+                document.getElementById('BrandError').innerText = 'Please enter the Brand';
+                isValid = false;
+            } else if (Brand.split(/\s+/).length > 30) {
+                document.getElementById('BrandError').innerText = 'Brand should be below 30 words';
+                isValid = false;
+            } else {
+                document.getElementById('BrandError').innerText = '';
             }
     
             return isValid;

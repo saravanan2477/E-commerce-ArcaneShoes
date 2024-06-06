@@ -120,7 +120,8 @@
           <li><a href="/couponManagement">Coupon Management</a></li>
           <li><a href="/sales">Sales</a></li>
           <li><a href="/offerManagement">Offer Management</a></li>
-          <li><a href="/admin/Logoutget">Logout</a></li>
+          <li><a href="/admin/Logoutget" id="logout-button">Logout</a></li>
+
         </ul>
     </div>
 
@@ -145,55 +146,50 @@
                 </tr>
             </thead>
             <tbody>
-              <% let productIndex = 1; %> <!-- Initialize the counter before the loop -->
-              <% if (orderdetalist && Array.isArray(orderdetalist)) { %>
-                 <% orderdetalist.forEach((order) => { %>
-                   <% if (order.productcollection && Array.isArray(order.productcollection)) { %>
-                     <% order.productcollection.forEach((product) => { %>
-                       <tr>
-                         <td><%= productIndex %></td> <!-- Use the counter here -->
-                         <td data-label="User Name"><%= order.Username %></td>
-                         <td data-label="Product Name"><%= product.productName %></td>
-                         <td data-label="Quantity"><%= product.quantity %></td>
-                         <td data-label="Total Prices">₹<%= order.finalPrice  %></td>
-                         <td data-label="Payment Method"><%= order.paymentMethod %></td>
-                         <td data-label="status"><%= product.status %></td>
-                         <td data-label="Status">
-                           
-                             <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
+                <% let productIndex = 1; %> <!-- Initialize the counter before the loop -->
+                <% if (orderdetalist && Array.isArray(orderdetalist)) { %>
+                  <% orderdetalist.forEach((order) => { %>
+                    <% if (order.productcollection && Array.isArray(order.productcollection)) { %>
+                      <% order.productcollection.forEach((product) => { %>
+                        <tr>
+                          <td><%= productIndex %></td> <!-- Use the counter here -->
+                          <td data-label="User Name"><%= order.Username %></td>
+                          <td data-label="Product Name"><%= product.productName %></td>
+                          <td data-label="Quantity"><%= product.quantity %></td>
+                          <td data-label="Total Prices">₹<%= product.finalPrice %></td> <!-- Use individual product price -->
+                          <td data-label="Payment Method"><%= order.paymentMethod %></td>
+                          <td data-label="status"><%= product.status %></td>
+                          <td data-label="Status">
+                            <form action="/admin/update-status/<%= order._id %>/<%= product.productid %>" method="post">
                               <div class="dropdown">
-                                 <select name="status" class="form-select" aria-label="Select Status">
-                                   <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                                   <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                   <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
-                                   <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                   <option value="Returned" <%= product.status === 'Returned' ? 'selected' : '' %>>Returned</option>
-                                 </select>
+                                <select name="status" class="form-select" aria-label="Select Status">
+                                  <option value="pending" <%= product.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                  <option value="Shipped" <%= product.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+                                  <option value="Cancelled" <%= product.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                  <option value="Delivered" <%= product.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                                  <option value="Returned" <%= product.status === 'Returned' ? 'selected' : '' %>>Returned</option>
+                                </select>
                               </div>
-                             
                               <input type="hidden" name="productid" value="<%= product.productid %>">
-                             
                               <td data-label="Action" style="display: flex;">
                                 <% if (product.status !== 'Cancelled') { %>
-                                    <% if (product.status !== 'Delivered') { %>
-                                      <% if (product.status !== 'Returned') { %>
-                    
-                                        <button type="submit" class="cancel-btn">Update</button>
+                                  <% if (product.status !== 'Delivered') { %>
+                                    <% if (product.status !== 'Returned') { %>
+                                      <button type="submit" class="cancel-btn">Update</button>
                                     <% } %>
+                                  <% } %>
                                 <% } %>
-                            <% } %>
-                            </td>
-                            
-                             </form>
-                         
-                         </td>
-                       </tr>
-                       <% productIndex++; %> <!-- Increment the counter after displaying each product -->
-                     <% }); %>
-                   <% } %>
-                 <% }); %>
-              <% } %>
-             </tbody>
+                              </td>
+                            </form>
+                          </td>
+                        </tr>
+                        <% productIndex++; %> <!-- Increment the counter after displaying each product -->
+                      <% }); %>
+                    <% } %>
+                  <% }); %>
+                <% } %>
+              </tbody>
+              
         </table>
     </div>
 
@@ -207,5 +203,39 @@
             $('#example').DataTable();
         });
     </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/admin/Logoutget";
+                        }
+                    });
+                });
+            });
+            
+</script>
 </body>
 </html>

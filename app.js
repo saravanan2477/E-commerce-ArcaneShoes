@@ -15,6 +15,8 @@ const paymentRoute = require('./routes/paymentRouter');
 const salesController=require('./routes/salesRouter');
 const Swal = require('sweetalert2')
 const app = express();
+const passport =require('passport')
+
 
 app.use('/public/', express.static('./public'));
 
@@ -42,6 +44,13 @@ app.use(morgan("tiny"));
 // View engine setup
 app.set("view engine", "ejs");
 
+//load the passport configuration
+require('./auth/passport')
+
+//setup the passport sesion and initialization
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 
 // Routes setup
@@ -58,7 +67,40 @@ app.use("/",salesController);
 
 // Serving static assets
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+// 404 error handler for user routes
+app.use(function(req, res, next) {
+  if (req.originalUrl.startsWith('/admin')) {
+    next();
+  } else {
+    res.status(404).render('error404'); // Assuming you have a user-404.ejs template
+  }
+});
+
+// 404 error handler for admin routes
+app.use('/admin/*', function(req, res) {
+  res.status(404).render('adminerror404'); // Assuming you have an admin-404.ejs template
+});
+
+// Error-handling middleware
+app.use(function(err, req, res, next) {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  res.status(err.status || 500);
+  console.log(err);
+  res.render('error404');
+});
+
+
 // Start server
-app.listen(port, () => {
+app.listen(port, (err) => {
+  if (!err) {
   console.log(`Server is running on http://localhost:${port}`);
+  }
+  else{
+  console.log(err);
+  }
+
 });

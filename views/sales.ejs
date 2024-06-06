@@ -141,6 +141,33 @@ select {
             border-color: #0056b3;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
         }
+
+
+        .cool-button {
+    display: inline-block;
+    padding: 10px 10px;
+    font-size: 14px;
+    color: #fff;
+    background-color: #007bff; /* Change to your preferred color */
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cool-button:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.cool-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
     </style>
 </head>
 <body>
@@ -162,7 +189,8 @@ select {
             <li><a href="/couponManagement">Coupon Management</a></li>
             <li><a href="/sales">Sales</a></li>
           <li><a href="/offerManagement">Offer Management</a></li>
-          <li><a href="/admin/Logoutget">Logout</a></li>
+          <li><a href="/admin/Logoutget" id="logout-button">Logout</a></li>
+
         </ul>
     </div>
 
@@ -171,10 +199,10 @@ select {
         <br>
         <form action="/costomSales" method="post" onsubmit="return validateDates()">
             <label for="start_date" class="date-label">Start Date:</label>
-            <input type="date" id="start_date" name="start_date" required>
+            <input type="date" id="start_date" name="start_date" >
             <span id="start_date_error" class="error-message"></span>
             <label for="end_date" class="date-label">End Date:</label>  
-            <input type="date" id="end_date" name="end_date" required>
+            <input type="date" id="end_date" name="end_date" >
             <span id="end_date_error" class="error-message"></span>
             <button type="submit" style="background-color: #007bff; color: white;border-radius:12px;margin-left: 2px;border: 1px solid black;">Submit</button>
 
@@ -202,6 +230,7 @@ select {
             <th style="background-color:#3da3f6">Order Date</th>
             <th style="background-color:#3da3f6">Payment Method</th>
             <th style="background-color:#3da3f6">Status</th>
+            <th style="background-color:#3da3f6">Details</th>
 
           </tr>  
         </thead>
@@ -220,6 +249,12 @@ select {
                          
                         <td data-label="Payment Method"><%= order.paymentMethod %></td>
                         <td data-label="Status"><%= product.status %></td>
+                        <td data-label="Details">
+                            <a class="cool-button" href="/orderDetails/<%= order._id %>/<%= product.productid %>">VIEW</a>
+                        </td>
+                        
+                        
+
                             
                        
                     </tr>
@@ -230,16 +265,7 @@ select {
       <div class="card-body">
         <div class="chart-pie pt-4 pb-2">
             <div class="report-options">
-                <!-- <div class="row">
-                    <div class="col">
-                        <input type="date" name="startingdate" id="startingDate" class="form-control">
-                        <span class="date-label">Starting Date</span>
-                    </div>
-                    <div class="col">
-                        <input type="date" name="endingdate" id="endingDate" class="form-control">
-                        <span class="date-label">Ending Date</span>
-                    </div>
-                </div> -->
+              
                 <br>
                 <div class="row">
                     <div class="col">
@@ -361,8 +387,14 @@ select {
     }
 
     document.getElementById('downloadExcel').addEventListener('click', function() {
+        const table = document.querySelector('#example');
+        const clone = table.cloneNode(true);
+        // Remove the last column (Details) from the cloned table
+        clone.querySelectorAll('tr').forEach(row => {
+            row.removeChild(row.lastElementChild);
+        });
         const wb = XLSX.utils.book_new();
-        const ws = XLSX.utils.table_to_sheet(document.querySelector('#example'));
+        const ws = XLSX.utils.table_to_sheet(clone);
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
         XLSX.writeFile(wb, 'Orders.xlsx');
     });
@@ -371,33 +403,79 @@ select {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const table = document.querySelector('#example');
-        const data = [];
         const headers = [];
-        table.querySelectorAll('thead th').forEach(th => headers.push(th.textContent));
+        const data = [];
+
+        // Extract headers
+        table.querySelectorAll('thead th').forEach((th, index) => {
+            if (index < table.querySelectorAll('thead th').length - 1) { // Skip last column
+                headers.push(th.textContent);
+            }
+        });
+
+        // Extract data rows
         table.querySelectorAll('tbody tr').forEach(tr => {
             const row = [];
-            tr.querySelectorAll('td').forEach(td => row.push(td.textContent));
+            tr.querySelectorAll('td').forEach((td, index) => {
+                if (index < tr.querySelectorAll('td').length - 1) { // Skip last column
+                    row.push(td.textContent);
+                }
+            });
             data.push(row);
         });
-        doc.autoTable({
-    head: [headers],
-    body: data,
-    margin: { top: 20 },
-    theme: 'grid',
-    headStyles: {
-        fillColor: [41, 128, 186], // Head background color
-        textColor: [255, 255, 255], // Head text color
-    },
-    styles:{
-        columnWidth: 23, // 'auto', 'wrap', 'fixed', or a number
-        halign: 'left', // left, center, right
-        valign: 'middle', // top, middle, bottom
-    }
 
-});
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            margin: { top: 20 },
+            theme: 'grid',
+            headStyles: {
+                fillColor: [41, 128, 186], // Head background color
+                textColor: [255, 255, 255], // Head text color
+            },
+            styles: {
+                columnWidth: 23, // 'auto', 'wrap', 'fixed', or a number
+                halign: 'left', // left, center, right
+                valign: 'middle', // top, middle, bottom
+            }
+        });
 
         doc.save('Orders.pdf');
     });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/admin/Logoutget";
+                        }
+                    });
+                });
+            });
+            
 </script>
 </body>
 </html>

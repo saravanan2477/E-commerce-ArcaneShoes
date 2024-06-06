@@ -26,7 +26,7 @@ const adminlogin = async (req, res) => {
 
 //adminlogin post
 const adminloginpost = async (req, res) => {
-    console.log("hejefnb");
+    
     try {
         const admin = {
             username: "admin",
@@ -48,167 +48,197 @@ const adminloginpost = async (req, res) => {
 
 
 //dashboard get
-const dashboard =  async (req, res) => {
+const dashboard = async (req, res) => {
+  console.log("got in to dashboard");
+  if (req.session.admin) {
+    try {
+      // Daily Orders
+      const dailyOrders = await Ordercollection.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
+            orderCount: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+      console.log("Daily Orders:", dailyOrders);
 
-  console.log("got in to dashbaord");
-    if (req.session.admin) {
-      try {
-        // Daily Orders
-        const dailyOrders = await Ordercollection.aggregate([
-          {
-            $group: {
-              _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
-              orderCount: { $sum: 1 },
-            },
-          },
-          { $sort: { _id: 1 } },
-        ]);
-        console.log("Daily Orders:", dailyOrders);
-  
-        const { dates, orderCounts, totalOrderCount } = dailyOrders.reduce(
-          (result, order) => {
-            result.dates.push(order._id);
-            result.orderCounts.push(order.orderCount);
-            result.totalOrderCount += order.orderCount;
-            return result;
-          },
-          { dates: [], orderCounts: [], totalOrderCount: 0 }
-        );
-        // monthly
-        const monthlyOrders = await Ordercollection.aggregate([
-          {
-            $group: {
-              _id: {
-                year: { $year: "$orderDate" },
-                month: { $month: "$orderDate" },
-              },
-              orderCount: { $sum: 1 },
-            },
-          },
-          { $sort: { "_id.year": 1, "_id.month": 1 } },
-        ]);
-        console.log("monthlyData Orders:", monthlyOrders);
-        const monthlyData = monthlyOrders.reduce((result, order) => {
-          const monthYearString = `${order._id.year}-${String(
-            order._id.month
-          ).padStart(2, "0")}`;
-          result.push({
-            month: monthYearString,
-            orderCount: order.orderCount,
-          });
+      const { dates, orderCounts, totalOrderCount } = dailyOrders.reduce(
+        (result, order) => {
+          result.dates.push(order._id);
+          result.orderCounts.push(order.orderCount);
+          result.totalOrderCount += order.orderCount;
           return result;
-        }, []);
-        let monthdata = orderCounts;
-  
-        //  Yearly Order
-        const yearlyOrders = await Ordercollection.aggregate([
-          {
-            $group: {
-              _id: { $dateToString: { format: "%Y", date: "$orderDate" } },
-              orderCount: { $sum: 1 },
+        },
+        { dates: [], orderCounts: [], totalOrderCount: 0 }
+      );
+
+      // Monthly Orders
+      const monthlyOrders = await Ordercollection.aggregate([
+        {
+          $group: {
+            _id: {
+              year: { $year: "$orderDate" },
+              month: { $month: "$orderDate" },
             },
+            orderCount: { $sum: 1 },
           },
-          { $sort: { _id: 1 } },
-        ]);
-        console.log("years Orders:", yearlyOrders);
-        const { years, orderCounts3, totalOrderCount3 } = yearlyOrders.reduce(
-          (result, order) => {
-            result.years.push(order._id);
-            result.orderCounts3.push(order.orderCount);
-            result.totalOrderCount3 += order.orderCount;
-            return result;
-          },
-          { years: [], orderCounts3: [], totalOrderCount3: 0 }
-        );
-  
-  
-        const topsellingproduct = await Ordercollection.aggregate([
-          {
-            $unwind: "$productcollection" // Deconstruct the productcollection array
-          },
-          {
-            $group: {
-              _id: "$productcollection.productid", // Group by product id
-              totalQuantity: { $sum: "$productcollection.quantity" }, // Calculate total quantity sold for each product
-              productName: { $first: "$productcollection.productName" } // Retrieve the productName
-            }
-          },
-          {
-            $sort: { totalQuantity: -1 } // Sort by total quantity sold in descending order
-          },
-          {
-            $limit: 5 // Limit the result to the top 5 products
-          }
-        ]);
-        topsellingproduct.sort((a, b) => b.totalQuantity - a.totalQuantity);
-
-  console.log("topsellingproduct",topsellingproduct);
-  // Extracting product names into an array
-const productNamess = topsellingproduct.map(product => product.productName);
-
-console.log("Product Names in Descending Order of Quantity:", productNamess);
-const categories = [];
-for (const productName of productNamess) {
-// Find the product document by name
-const productDoc = await Product.findOne({ productname: productName }).populate('category');
-
-            console.log("productnames",productDoc);
-// Extract category from the document
-const category = productDoc.category;
-
-// Push the category to the categories array
-categories.push(category.category);
-console.log("categories",categories);
-const categoryCount = {};
-categories.forEach(category => {
-  categoryCount[category] = (categoryCount[category] || 0) + 1;
-});
-const sortedCategoryCount = Object.entries(categoryCount)
-  .sort((a, b) => b[1] - a[1])
-  .reduce((acc, [key, value]) => {
-    acc[key] = value;
-    return acc;
-  }, {});
-  console.log("sortedObject",sortedCategoryCount);
-  var entriesArray = Object.entries(sortedCategoryCount);
-
-
-console.log("entriesArray", entriesArray);
-}
-        const productNames = [];
-        const sellingQuantities = [];
-  
-        // Iterate over the aggregation result
-        topsellingproduct.forEach(product => {
-          productNames.push(product.productName); // Push product name to productNames array
-          sellingQuantities.push(product.totalQuantity); // Push total quantity to sellingQuantities array
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ]);
+      console.log("Monthly Orders:", monthlyOrders);
+      const monthlyData = monthlyOrders.reduce((result, order) => {
+        const monthYearString = `${order._id.year}-${String(
+          order._id.month
+        ).padStart(2, "0")}`;
+        result.push({
+          month: monthYearString,
+          orderCount: order.orderCount,
         });
-  
-  
-  
-          res.render('dashboard',{
-            dates,
-            orderCounts,
-            totalOrderCount,
-            monthdata,
-            years,
-            orderCounts3,
-            totalOrderCount3,
-            productNames,
-            sellingQuantities,
-            entriesArray
-          });
-        }
-        catch (error) {
-          console.error("Error fetching and aggregating orders:", error);
-          res.status(500).send("Internal Server Error");
-        }
+        return result;
+      }, []);
+      let monthdata = orderCounts;
+
+      // Yearly Orders
+      const yearlyOrders = await Ordercollection.aggregate([
+        {
+          $group: {
+            _id: { $dateToString: { format: "%Y", date: "$orderDate" } },
+            orderCount: { $sum: 1 },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+      console.log("Yearly Orders:", yearlyOrders);
+      const { years, orderCounts3, totalOrderCount3 } = yearlyOrders.reduce(
+        (result, order) => {
+          result.years.push(order._id);
+          result.orderCounts3.push(order.orderCount);
+          result.totalOrderCount3 += order.orderCount;
+          return result;
+        },
+        { years: [], orderCounts3: [], totalOrderCount3: 0 }
+      );
+
+      // Top Selling Products
+      const topsellingproduct = await Ordercollection.aggregate([
+        {
+          $unwind: "$productcollection", // Deconstruct the productcollection array
+        },
+        {
+          $group: {
+            _id: "$productcollection.productid", // Group by product id
+            totalQuantity: { $sum: "$productcollection.quantity" }, // Calculate total quantity sold for each product
+            productName: { $first: "$productcollection.productName" }, // Retrieve the productName
+          },
+        },
+        {
+          $sort: { totalQuantity: -1 }, // Sort by total quantity sold in descending order
+        },
+        {
+          $limit: 5, // Limit the result to the top 5 products
+        },
+      ]);
+      topsellingproduct.sort((a, b) => b.totalQuantity - a.totalQuantity);
+      console.log("Top Selling Products:", topsellingproduct);
+
+      // Extracting product names into an array
+      const productNamess = topsellingproduct.map((product) => product.productName);
+      console.log("Product Names in Descending Order of Quantity:", productNamess);
+
+      const categories = [];
+      for (const productName of productNamess) {
+        // Find the product document by name
+        const productDoc = await Product.findOne({ productname: productName }).populate("category");
+        console.log("Product Document:", productDoc);
+
+        // Extract category from the document
+        const category = productDoc.category;
+        categories.push(category.category);
       }
-  
-      else {
-        res.redirect("/adminlogin");
-      }
+
+      // Count categories
+      const categoryCount = {};
+      categories.forEach((category) => {
+        categoryCount[category] = (categoryCount[category] || 0) + 1;
+      });
+
+      const sortedCategoryCount = Object.entries(categoryCount)
+        .sort((a, b) => b[1] - a[1])
+        .reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {});
+      console.log("Sorted Category Count:", sortedCategoryCount);
+      var entriesArray = Object.entries(sortedCategoryCount);
+      console.log("Entries Array:", entriesArray);
+
+      const productNames = [];
+      const sellingQuantities = [];
+
+      topsellingproduct.forEach((product) => {
+        productNames.push(product.productName);
+        sellingQuantities.push(product.totalQuantity);
+      });
+
+      // Top Selling Brands
+      const topsellingbrand = await Ordercollection.aggregate([
+        {
+          $unwind: "$productcollection", // Deconstruct the productcollection array
+        },
+        {
+          $lookup: {
+            from: "products", // Assuming your Product collection is named 'products'
+            localField: "productcollection.productid",
+            foreignField: "_id",
+            as: "productDetails",
+          },
+        },
+        {
+          $unwind: "$productDetails", // Deconstruct the productDetails array
+        },
+        {
+          $group: {
+            _id: "$productDetails.brand", // Group by brand
+            totalQuantity: { $sum: "$productcollection.quantity" }, // Calculate total quantity sold for each brand
+          },
+        },
+        {
+          $sort: { totalQuantity: -1 }, // Sort by total quantity sold in descending order
+        },
+        {
+          $limit: 5, // Limit the result to the top 5 brands
+        },
+      ]);
+
+      console.log("Top Selling Brands:", topsellingbrand);
+      const brandNames = topsellingbrand.map((brand) => brand._id);
+      const brandQuantities = topsellingbrand.map((brand) => brand.totalQuantity);
+
+      res.render("dashboard", {
+        dates,
+        orderCounts,
+        totalOrderCount,
+        monthdata,
+        years,
+        orderCounts3,
+        totalOrderCount3,
+        productNames,
+        sellingQuantities,
+        entriesArray,
+        brandNames,
+        brandQuantities,
+      });
+    } catch (error) {
+      console.error("Error fetching and aggregating orders:", error);
+      res.status(500).send("Internal Server Error");
     }
+  } else {
+    res.redirect("/adminlogin");
+  }
+};
+
 
 //!usermanagement get
 const usermanagement = async (req, res) => {
@@ -482,69 +512,87 @@ const getLogout = (req, res) => {
 
 const orderget = async (req, res) => {
   try {
+    console.log("entered orderget");
     const orderdetalist = await Ordercollection.find().sort({ orderDate: -1 });
-  
+
     // Iterate through each order
     for (let i = 0; i < orderdetalist.length; i++) {
       const order = orderdetalist[i];
-  
+      console.log("order in orderget", order);
+
       let finalPrice = 0;
-  
+
       // Iterate through each product in the order
       for (let j = 0; j < order.productcollection.length; j++) {
         const product = order.productcollection[j];
         const productid = product.productid;
-  
+        console.log("product in orderget", product);
+        console.log("productid in orderget", productid);
+
         // Fetch original price of the product
         let originalPrice = await Product.findById(productid).select("price");
+        console.log("originalPrice", originalPrice);
         originalPrice = originalPrice.price;
-  
+
         // Retrieve product offer
         const productOfferInstance = await ProductOffer.findOne({ productname: product.productName });
-  
+        console.log("productOfferInstance is", productOfferInstance);
+
         // Calculate product discount
         let discountAmount = 0;
         if (productOfferInstance) {
           const discountPercentage = parseFloat(productOfferInstance.productoffer);
           discountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
         }
-  
+
         // Retrieve category offer
         const categoryOfferInstance = await categoryOffer.findOne({ category: product.Category });
+        console.log("categoryOfferInstance is", categoryOfferInstance);
 
-  
         // Calculate category discount
         if (categoryOfferInstance) {
           const discountPercentage = parseFloat(categoryOfferInstance.alloffer);
           const categoryDiscountAmount = (parseFloat(originalPrice) * discountPercentage) / 100;
-  
+          console.log("categoryDiscountAmount is", categoryDiscountAmount);
+
           // If the category offer provides a higher discount than the product offer, update discountAmount
           if (categoryDiscountAmount > discountAmount) {
             discountAmount = categoryDiscountAmount;
           }
         }
-  
+
         // Calculate tax
         const taxRate = 0.03; // 3%
         const taxAmount = parseFloat(originalPrice) * taxRate;
-  
+
         // Calculate final price including tax
-        const productFinalPrice = (parseFloat(originalPrice) * product.quantity) - discountAmount + taxAmount - order.Discount;
-        
+        const productFinalPrice = (parseFloat(originalPrice) * product.quantity) - discountAmount + taxAmount - (order.Discount || 0);
+        console.log("order discount is", order.Discount);
+        console.log("productFinalPrice is", productFinalPrice);
+        console.log("taxAmount is", taxAmount);
+        console.log("discountAmount is", discountAmount);
+
         // Add product final price to the order's final price
         finalPrice += productFinalPrice;
+        console.log("order finalPrice ", finalPrice);
+
+        // Store individual product final price
+        product.finalPrice = productFinalPrice;
       }
-  
+
       // Update order with final price
       order.finalPrice = finalPrice;
+      await order.save();
+      console.log("order saved with updated final prices", order);
     }
-  
+
     res.render("orderManagement", { orderdetalist });
   } catch (error) {
     console.log(error);
     res.status(500).send("Failed to render order page.");
   }
 };
+
 
 
 

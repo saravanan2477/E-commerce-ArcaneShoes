@@ -57,6 +57,76 @@
     transition: background 0.5s;
 }
 
+
+
+.coupon-container {
+    border: 1px solid #ff523b;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.coupon-content {
+    margin-bottom: 20px;
+}
+
+.coupon-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.coupon-label {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.coupon-input-section {
+    margin-top: 20px;
+}
+
+.coupon-input-wrap {
+    display: flex;
+    align-items: center;
+}
+
+.coupon-input-box {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.coupon-input {
+    width: 100%;
+}
+
+.coupon-btn {
+    width: auto;
+}
+
+.coupon-message {
+    margin-top: 10px;
+}
+
+.coupon-discount,
+.coupon-price {
+    margin-top: 10px;
+}
+
+.coupon-remove-btn,
+.coupon-available-btn {
+    margin-top: 20px;
+}
+
+
+.coupon-values{
+	margin-top: 50px;
+}
+
+#deleteCouponBtn{
+	margin-top: -40px;
+}
+#availableCouponsButton{
+	margin-top: -40px;
+}
+
 	</style>
 </head>
 
@@ -157,21 +227,23 @@
 												</thead>
 												<% checkout.forEach((product, index)=> { %>
 													<tbody>
-														<% checkout.forEach(function(product) { %>
+														
 														  <tr>
 															<td><%= product.productname %><strong class="mx-2">x</strong><%= product.quantity %></td>
-															<td>₹<%= product.price %></td>
+															<td>₹<%= product.price * product.quantity %></td>
 														  </tr>
-														<% }); %>
+														
 														<!-- Display Tax in Checkout -->
-														<tr>
-														  <td colspan="3" class="text-black font-weight-bold"><strong>Tax:</strong></td>
-														  <td>₹<%= totalTax.toFixed(2) %></td> <!-- Display the total tax amount -->
-														</tr>
+														
+														
 														
 													  </tbody>
 													  
 												<% }); %>
+												<tr>
+													<td colspan="3" class="text-black font-weight-bold"><strong>Tax:</strong></td>
+													<td>₹<%= totalTax.toFixed(2) %></td> 
+												  </tr>
 												<tfoot>
 													<tr>
 														<td colspan="3" class="text-black font-weight-bold"><strong>Order Total:</strong></td>
@@ -179,7 +251,7 @@
 													</tr>
 												</tfoot>
 											</table>
-										</div>
+										</div>		
 									</div>
 								</div>
 								</div>
@@ -187,47 +259,43 @@
 					
 							<!-- Coupon Code Section -->
 							<!-- Coupon Code Section -->
-							<div class="col-md-6 order-md-2">
-								<div class="row mb-5">
-									<div class="col-md-12">
-										<h2 class="h3 mb-3 text-black">Coupon Code</h2>
-										<label for="c_code" class="text-black mb-3">Enter your coupon code if you have
-											one</label>
-											<div class="coupon-section">
-										<div class="input-group w-75 couponcode-wrap">
-										
-										<div class="p-3 p-lg-5 border bg-white">
-											<input id="coupencode" name="coupencode" type="text" class="form-control"
-											placeholder="Enter the code">
-										<button id="coupenbtn" type="button" class="btn btn-info"
-											
-										onclick="applyCoupon(`<%= totalsum %>`)">Apply Now</button>
-									
-									</div>
-									
-									<div id="messageContainer" style="color: red;"></div>
-								
-									<br><h5 class="text-danger">Discount: ₹ <span id="discountValue">0.00</span></h5>
-									<h5> Price: <span id="total-price2">
-											<%= totalsum %>
-										</span></h5>
-										</div>
-										<br>
-										<button id="deleteCouponBtn" type="button" class="btn btn-danger" onclick="deleteCoupon()">Remove Coupon</button>
-										<a href="/allCoupons" id="availableCouponsLink">
-											<button class="btn btn-primary" type="button" id="availableCouponsButton">Available Coupons</button>
-										</a>
-									</div>
-									</div>
-								</div>
-							</div>
-						
+							
+<div class="coupon-container">
+    <div class="coupon-content">
+        <h2 class="coupon-title">Coupon Code</h2>
+        <label for="c_code" class="coupon-label">Enter your coupon code if you have one</label>
+        <div class="coupon-input-section">
+            <div class="input-group coupon-input-wrap">
+                <div class="coupon-input-box">
+                    <input id="coupencode" name="coupencode" type="text" class="coupon-input form-control" placeholder="Enter the code">
+                    <button id="applyCouponBtn" type="button" class="coupon-btn btn btn-info" onclick="applyCoupon(`<%= totalsum %>`)">Apply Now</button>
+                </div>
+	                <br>
+                <div class="coupon-values">
+					<h5 class="coupon-discount text-danger">Discount: ₹ <span id="discountValue">0.00</span></h5>
+					<h5 class="coupon-price">Price: <span id="total-price2"><%= totalsum %></span></h5>
+				</div>
+				
+            </div>
+			
+            <br>
+            <button id="deleteCouponBtn" class="coupon-remove-btn btn btn-danger" type="button" onclick="deleteCoupon()">Remove Coupon</button>
+            <a href="/allCoupons" id="availableCouponsLink">
+                <button class="coupon-available-btn btn btn-primary" type="button" id="availableCouponsButton">Available Coupons</button>
+            </a>
+			<div id="messageContainer" class="coupon-message" style="color: red;"></div>
+
+        </div>
+    </div>
+</div>
+
+<span id="price" data-totalprice="<%= totalsum %>"></span>
 					
 						<!-- Payment Method Section -->
 					<!-- Payment Method Section -->
 
 			
-<span id="price" data-totalprice="<%= totalsum %>"></span>
+
 
 
 <div class="row mb-5 d">
@@ -386,7 +454,7 @@ var settings = {
 		"Content-Type": "application/json"
 	},
 	"data": JSON.stringify({
-		"amount":  (overallTotalPrice || orderprice)*100
+		"amount":  (overallTotalPrice || orderprice)
 	}),
 };
 

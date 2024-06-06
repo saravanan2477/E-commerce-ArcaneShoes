@@ -15,10 +15,6 @@ module.exports={
  sales: async(req,res)=>{
     try{
     const orderdetalist = await Ordercollection.find()
-    
-    
-    
-    
     res.render("Sales", { orderdetalist});
     }catch (err) {
       console.error(err);

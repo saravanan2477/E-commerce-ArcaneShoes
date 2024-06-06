@@ -11,6 +11,21 @@ const Wallet = require("../model/wallet");
 const Ordercollection = require("../model/order");
 
 
+//!google
+
+
+const googleuser = async (req, res) => {
+  try {
+    console.log('google user',req.user);
+    req.session.userid=req.user._id
+    console.log('session is',req.session.userid);
+    res.redirect('/homepage')
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Failed to cancel order by user." });
+  }
+};
+
 //!guest homepage
 const guestHomepage = async (req, res) => {
   try {
@@ -520,7 +535,7 @@ const productDetails = async (req, res) => {
 
 const allProducts = async (req, res) => {
   try {
-    const PAGE_SIZE = 10; // Number of products per page
+    const PAGE_SIZE = 4; // Number of products per page
     let { page, sortprice, sortAlphabetically, category, priceRange } =
       req.query;
     page = parseInt(page) || 1; // Get current page from query parameters, default to 1 if not provided
@@ -703,30 +718,37 @@ const getwallet = async (req, res) => {
   }
 };
 
+const searchProducts = async (req, res) => {
+  try {
+    const { searchedInput, page = 1 } = req.body;
+    const regexPattern = new RegExp(searchedInput, 'i');
+    const itemsPerPage = 4; // Adjust as needed
+
+    const totalProducts = await Product.countDocuments({ productname: { $regex: regexPattern } });
+    const allSearchedProducts = await Product.find({ productname: { $regex: regexPattern } })
+                                             .skip((page - 1) * itemsPerPage)
+                                             .limit(itemsPerPage);
+
+    const totalPages = Math.ceil(totalProducts / itemsPerPage);
+
+    console.log("fetched searched products", allSearchedProducts);
+    return res.json({
+      products: allSearchedProducts,
+      totalPages: totalPages,
+      currentPage: page
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to fetch searched products by user." });
+  }
+}
+
 // //!google login post
 
-// const googleloginpost = (req,res)=>{
-//   console.log("he;llo world");
-//   let token = req.body.token;
-
-//   async function verify() {
-//       const ticket = await client.verifyIdToken({
-//           idToken: token,
-//           audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-//       });
-//       const payload = ticket.getPayload();
-//       const userid = payload['sub'];
-//     }
-//     verify()
-//     .then(()=>{
-//         res.cookie('session-token', token);
-//         res.send('success')
-//     })
-//     .catch(console.error);
-
-// }
 
 module.exports = {
+
+  googleuser,
+
   guestHomepage,
   userlogin,
   userloginpost,
@@ -754,5 +776,7 @@ module.exports = {
   addToWishlist,
   removewishlist,
   getwallet,
-  // googleloginpost
+
+  searchProducts,
+  
 };

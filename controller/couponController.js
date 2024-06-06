@@ -15,8 +15,9 @@ const productoffer = require("../model/productOffer");
 
 ///coupon render
 const couponget = async(req, res) => {
-    const coupondataa=await couponCollection.find()
-    res.render('couponManagement',{coupondataa})
+    const coupondata=await couponCollection.find()
+    console.log("coupdata is ",coupondata)
+    res.render('couponManagement',{coupondata})
 }
 
 
@@ -27,24 +28,39 @@ const addcouponget = async(req, res) => {
 
 
 /// add coupon post
-const addcouponpost = async(req, res) => {
-  console.log("couponnnnnnnnnnnnnnnnnn",req.body);
-  try{
-    const couponData = {
-        coupencode:req.body.couponCode,
-            discount:req.body.discount,
-        expiredate:req.body.expiredate,
-            purchaseamount:req.body.purchaseamount,  
-}
-console.log('dataaaaaaaaaaaaa',couponData);
-       
- await couponCollection.insertMany(couponData)
- res.redirect('/couponManagement')
-}catch(err){
-    console.log("Insert failed",err);
-    res.redirect('/addCoupon')
-}
-}
+const addcouponpost = async (req, res) => {
+  console.log("couponnnnnnnnnnnnnnnnnn", req.body);
+  try {
+    const { couponCode, discount, expiredate, purchaseamount } = req.body;
+
+    // Check if the coupon code already exists
+    const existingCoupon = await couponCollection.findOne({ coupencode: couponCode });
+
+    if (existingCoupon) {
+      console.log("Coupon code already exists.");
+      // Pass an error message to the frontend and return to prevent further execution
+      return res.render("addCoupon", { message: "Coupon already exists!" });
+    }
+
+    const coupondata = {
+      coupencode: couponCode,
+      discount,
+      expiredate: new Date(expiredate),
+      purchaseamount,
+    };
+
+    console.log('dataaaaaaaaaaaaa', coupondata);
+
+    await couponCollection.insertMany([coupondata]);  // Note: insertMany takes an array
+    return res.redirect('/couponManagement');
+  } catch (err) {
+    console.log("Insert failed", err);
+    return res.status(500).json({ error: "Insert failed. Please try again later." });
+  }
+};
+
+
+
 
 
 
@@ -69,6 +85,7 @@ const allCouponsget=async(req,res)=>{
   const showcoupon= await couponCollection.find()
   res.render('allCoupons',{showcoupon})
 }
+
 const coupencheck = async (req, res) => {
   try {
       console.log('coupon appled suceessons ')
@@ -215,21 +232,21 @@ const addCategoryOffer = async (req, res) => {
 
 
 /// add Brand Offer post
-const addCategoryOfferpost=async(req,res)=>{
+const addCategoryOfferpost = async (req, res) => {
+  const CategoryOffer = {
+    category: req.body.category,
+    alloffer: req.body.alloffer,
+  };
 
-  const CategoryOffer={
-    category:req.body.category,
-    alloffer:req.body.alloffer,
-  }
-  try{
-    const newCategoryOffer = await categoryOffer.create(CategoryOffer)
-    console.log("gdfhgsdhfgvsdghzfgc",newCategoryOffer);
+  try {
+    const newCategoryOffer = await categoryOffer.create(CategoryOffer);
+    console.log("New category offer added:", newCategoryOffer);
     res.redirect('/offerManagement'); 
-      }catch (err) {
-        console.log("Insert failed", err);
-        res.redirect('/addCategoryOffer');
-      }
-    }
+  } catch (err) {
+    console.error("Failed to add category offer:", err);
+    res.redirect('/addCategoryOffer');
+  }
+};
 
 //// productOffer Delete
 const DeleteCategoryOffer = async(req,res)=>{

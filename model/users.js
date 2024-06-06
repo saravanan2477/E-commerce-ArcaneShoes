@@ -11,7 +11,8 @@ const loginschema = new mongoose.Schema({
         type: String,
     },
     isblocked: {
-        type: Boolean
+        type: Boolean,
+        default:false
     },
     otp: {
         type: String,
@@ -26,7 +27,9 @@ const loginschema = new mongoose.Schema({
     referralcode:{
         type: String,
     },
-    
+    googleId:{
+        type:String
+    }
 });
 
 const users = mongoose.model('users', loginschema);

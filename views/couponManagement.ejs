@@ -121,7 +121,8 @@
             <li><a href="/couponManagement">Coupon Management</a></li>
             <li><a href="/sales">Sales</a></li>
           <li><a href="/offerManagement">Offer Management</a></li>
-          <li><a href="/admin/Logoutget">Logout</a></li>
+          <li><a href="/admin/Logoutget" id="logout-button">Logout</a></li>
+
         </ul>
     </div>
 
@@ -144,16 +145,25 @@
           </tr>
         </thead>
         <tbody>
-          <% coupondataa.forEach((val, index)=> { %>
+          <% coupondata.forEach((val, index)=> { %>
           <tr>
             <td><%=index +1%></td>
             <td><%= val.coupencode %></td>
            
             <td><%= val.discount %>%</td>
-            <td><%= val.expiredate %></td>
+           <td>
+  <% 
+    let expireDateObj = new Date(val.expiredate);
+    let options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    let formattedDate = expireDateObj.toLocaleDateString('en-US', options);
+  %>
+  <%= formattedDate %>
+</td>
+
+              
             <td><%= val.purchaseamount %></td>
             <td>
-              <a href="/deletecoupon/<%=val.id %>"  class="btn bg-gradient-primary mb-0 delete-button" data-product-id="<%=val.id %>" style="background-color: rgb(240, 66, 127); color: white;">Delete</a>
+              <a href="/deletecoupon/<%=val.id %>"  class="btn bg-gradient-primary mb-0 delete-button" data-product-id="<%=val.id %>" style="background-color: rgb(228, 29, 29); color: white;">Delete</a>
             </td>
           </tr>
           
@@ -211,5 +221,97 @@
         });
     });
     </script>
+      <script>
+        // Example list of existing coupon codes for demonstration purposes
+        const existingCoupons = ['SAVE10', 'DISCOUNT20', 'WELCOME50', '1111'];
+    
+        document.getElementById('backButton').addEventListener('click', function() {
+          window.history.back();
+        });
+    
+        function submitCoupon() {
+          var couponCode = document.getElementById("couponCode").value.trim();
+          var discount = document.getElementById("discount").value.trim();
+          var expiredate = document.getElementById("expiredate").value.trim();
+          var purchaseamount = document.getElementById("purchaseamount").value.trim();
+    
+          if (!couponCode || !discount || !expiredate || !purchaseamount) {
+            alert("Please fill in all fields.");
+            return false;
+          }
+    
+          if (/^\s*$/.test(couponCode)) {
+            alert("Coupon code cannot be empty or whitespace only.");
+            return false;
+          }
+    
+          if (isNaN(discount) || isNaN(purchaseamount)) {
+            alert("Discount and Purchase Amount must be numeric values.");
+            return false;
+          }
+    
+          var discountValue = parseFloat(discount);
+          var purchaseamountValue = parseFloat(purchaseamount);
+    
+          if (discountValue < 1 || discountValue > 100) {
+            alert("Discount must be between 1% and 100%.");
+            return false;
+          }
+    
+          if (purchaseamountValue <= 0) {
+            alert("Purchase Amount must be greater than 0.");
+            return false;
+          }
+    
+          // Check if coupon code already exists (case-insensitive)
+          var couponCodeLower = couponCode.toLowerCase();
+          var exists = existingCoupons.some(function(code) {
+            return code.toLowerCase() === couponCodeLower;
+          });
+    
+          if (exists) {
+            alert("Coupon code already exists.");
+            return false;
+          }
+    
+          alert('Coupon submitted!');
+          return true;
+        }
+      </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    
+            // Wait for the document to be fully loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                // Find the logout button element
+                const logoutButton = document.getElementById("logout-button");
+            
+                // Add a click event listener to the logout button
+                logoutButton.addEventListener("click", function (e) {
+                    // Prevent the default action (following the link)
+                    e.preventDefault();
+            
+                    // Show the SweetAlert confirmation dialog
+                    Swal.fire({
+                        title: "Logout",
+                        text: "Are you sure you want to logout?",
+                        icon: "warning",
+                        showCancelButton: true, 
+                        confirmButtonText: "Yes, logout",
+                        cancelButtonText: "No, cancel"
+                    }).then((result) => {
+                        // If the user confirms the logout
+                        if (result.isConfirmed) {
+                            // Redirect to the logout page
+                            window.location.href = "/admin/Logoutget";
+                        }
+                    });
+                });
+            });
+            
+</script>
 </body>
 </html>

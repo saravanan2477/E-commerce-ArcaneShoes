@@ -32,4 +32,10 @@ router.get('/cancelOrder/:orderId/:productId', orderController.cancelOrder);
 router.get('/return/:userid/:productid',orderController.orderReturn)
 
 
+//! invoice
+
+router.get('/Invoice/:orderid',checkSessionBlocked,orderController.Invoice)
+
+
+
 module.exports= router;
