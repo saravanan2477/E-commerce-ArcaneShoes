@@ -268,7 +268,7 @@
         // Validate password strength using regex
         var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{6,}$/;
         if (!passwordRegex.test(password)) {
-            errorMessage.textContent = "Enter Strong Password";
+            errorMessage.textContent = "Password must contain one capital letter,Number and must be atleast 7 charecters ";
             errorMessage.style.display = "block"; // Show the error message
             return false; // Prevent form submission
         }

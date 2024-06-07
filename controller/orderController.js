@@ -74,7 +74,7 @@ console.log("totalDiscount is ",totalDiscount)
 
       const address = await Address.find({ userid: userId });
 console.log("checkout is ", checkout);
-      res.render("CheckoutPage", { checkout, address, totalsum, totalTax, totalDiscount });
+      res.render("checkoutPage", { checkout, address, totalsum, totalTax, totalDiscount });
     } catch (error) {
       console.log(error);
       res.status(500).send("Error in product details");

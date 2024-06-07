@@ -30,7 +30,7 @@ const adminloginpost = async (req, res) => {
     try {
         const admin = {
             username: "admin",
-            password: "1234"
+            password: "12345"
         }
 
         if (req.body.username === admin.username && req.body.password === admin.password) {

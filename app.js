@@ -3,7 +3,7 @@ const path = require("path");
 const morgan = require('morgan');
 const nocache = require('nocache');
 const session = require('express-session');
-require("../sksproject/server");
+const mongoose = require("./server");
 const adminrouter = require('./routes/adminrouter');
 const userrouter = require("./routes/userrouter");
 const cartrouter=require("./routes/cartRouter")

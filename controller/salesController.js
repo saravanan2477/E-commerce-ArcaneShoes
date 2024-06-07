@@ -15,7 +15,7 @@ module.exports={
  sales: async(req,res)=>{
     try{
     const orderdetalist = await Ordercollection.find()
-    res.render("Sales", { orderdetalist});
+    res.render("sales", { orderdetalist});
     }catch (err) {
       console.error(err);
       return res.status(500).send("Failed to order page.");
